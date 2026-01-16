@@ -1,0 +1,68 @@
+{% load static %}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>EmailRush - Email Temporário</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='white' d='M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54.1 17.1-76.8 0L0 176z'/></svg>">
+
+<meta name="description" content="Obtenha um endereço de e-mail temporário gratuito e anônimo em segundos. Evite spam e proteja seu e-mail real com nosso serviço de temp mail.">
+<meta name="keywords" content="email temporário, email descartável, temp mail, evitar spam, email anônimo, EmailRush, serviço de email temporário, criar email temporário, email grátis, proteção de email, Email Rush, email temporário grátis, email temporário instantâneo, Rush Email, RushEmail">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="EmailRush - E-mail Temporário Grátis e Instantâneo">
+<meta property="og:description" content="Crie um e-mail descartável agora e mantenha sua caixa de entrada real limpa.">
+<meta property="og:image" content="https://seusite.com/img/preview-social.jpg">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="EmailRush - E-mail Descartável">
+<meta name="twitter:description" content="Não use seu e-mail real em sites suspeitos. Use nosso e-mail temporário.">
+<meta name="twitter:image" content="https://seusite.com/img/preview-social.jpg">
+
+<link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+<script src="{% static 'vendor/tailwindcss/tailwindcss-3.4.17.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'vendor/daisyui/daisyui-4.12.24-full.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/font-awesome/font-awesome-7.0.1-all.min.css' %}">
+<script src="{% static 'vendor/qr-code-styling/qr-code-styling-1.9.2.min.js' %}"></script>
+<script src="{% static 'vendor/htmx/htmx-2.0.8.min.js' %}"></script>
+
+<script>
+    tailwind.config = {
+        darkMode: 'class',
+        daisyui: { base: false },
+        theme: {
+            extend: {
+                fontFamily: {
+                    inter: ['Inter', 'sans-serif'],
+                    nunito: ['Nunito', 'sans-serif'],
+                    poppins: ['Poppins', 'sans-serif'],
+                },
+                colors: {
+                    brand: {
+                        orange: '#f97316',
+                        dark: '#ea580c',
+                    },
+                    dark: {
+                        bg: '#111827',
+                        card: '#1f2937',
+                        input: '#374151',
+                        text: '#f3f4f6'
+                    }
+                },
+            }
+        }
+    }
+</script>
+
+<script>
+    // Script de bloqueio de renderização para evitar Flash
+    (function () {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    })();
+</script>

@@ -1,0 +1,15 @@
+services:
+  tempmail:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: tempmail
+    command: /bin/sh -c "sh ./entrypoint.sh"
+    env_file:
+      - dotenv_files/.env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./tempmail:/tempmail
+      - ./base_static:/tempmail/base_static
+    #restart: always

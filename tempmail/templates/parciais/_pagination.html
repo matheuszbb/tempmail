@@ -1,0 +1,41 @@
+{% load static %}
+{% if page_obj %}
+<div class="flex justify-center my-6">
+    <div class="join shadow-sm border border-gray-100 dark:border-gray-700">
+        
+        {# Botão Início e Anterior #}
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600 transition-colors">
+                Início
+            </a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600">
+                «
+            </a>
+        {% endif %}
+
+        {# Números das Páginas #}
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <button class="join-item btn btn-sm md:btn-md btn-active bg-orange-600 hover:bg-orange-700 border-orange-600 text-white">
+                    {{ i }}
+                </button>
+            {% elif i > page_obj.number|add:"-3" and i < page_obj.number|add:"3" %}
+                <a href="?page={{ i }}" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700">
+                    {{ i }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {# Botão Próximo e Fim #}
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600">
+                »
+            </a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600">
+                Fim
+            </a>
+        {% endif %}
+        
+    </div>
+</div>
+{% endif %}

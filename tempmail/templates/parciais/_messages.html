@@ -1,0 +1,34 @@
+{% load static %}
+{% if messages %}
+<div class="fixed top-4 right-4 z-[1000] flex flex-col gap-3 w-full max-w-sm">
+    {% for message in messages %}
+        <div role="alert" class="alert shadow-lg border-l-4 
+            {% if message.tags == 'alert-danger' %}alert-error border-red-600
+            {% elif message.tags == 'alert-warning' %}alert-warning border-orange-500
+            {% elif message.tags == 'alert-success' %}alert-success border-green-600
+            {% else %}alert-info border-blue-600{% endif %} 
+            bg-white dark:bg-slate-800 transition-all duration-500 animate-in fade-in slide-in-from-right-4">
+            
+            <div class="flex items-center gap-2">
+                {% if message.tags == 'alert-danger' %}
+                    <i class="fa-solid fa-circle-xmark text-lg text-error"></i>
+                {% elif message.tags == 'alert-warning' %}
+                    <i class="fa-solid fa-triangle-exclamation text-lg text-warning"></i>
+                {% elif message.tags == 'alert-success' %}
+                    <i class="fa-solid fa-circle-check text-lg text-success"></i>
+                {% else %}
+                    <i class="fa-solid fa-circle-info text-lg text-info"></i>
+                {% endif %}
+                
+                <span class="text-sm font-bold text-gray-700 dark:text-gray-200">
+                    {{ message }}
+                </span>
+            </div>
+
+            <button onclick="this.parentElement.remove()" class="btn btn-ghost btn-xs btn-circle opacity-50 hover:opacity-100">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

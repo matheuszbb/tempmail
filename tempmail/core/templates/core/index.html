@@ -1,0 +1,424 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block conteudo %}
+<div class="relative bg-gradient-to-r from-orange-600 to-orange-500 pt-16 pb-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white relative z-10">
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Seu Email Temporário</h1>
+        <p class="text-orange-100 text-lg max-w-2xl">
+            Obtenha um endereço de e-mail temporário descartável e seguro instantaneamente.
+        </p>
+    </div>
+
+    <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-[0]">
+        <svg class="relative block w-[calc(150%+1.3px)] h-[180px] md:h-[220px]" viewBox="0 0 1200 120"
+            preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="transform: translateX(-15%);">
+
+            <path d="M0,120 C200,0 400,0 600,60 C800,120 1000,0 1200,80 L1200,120 L0,120 Z"
+                class="fill-white/10 dark:fill-white/10"></path>
+
+            <path d="M0,120 C150,40 350,40 500,80 C650,120 850,20 1200,100 L1200,120 L0,120 Z"
+                class="fill-white/20 dark:fill-white/20"></path>
+
+            <path d="M0,120 C300,20 600,120 900,40 C1050,0 1150,80 1200,110 L1200,120 L0,120 Z"
+                class="fill-white/30 dark:fill-white/30"></path>
+        </svg>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-24 relative z-20 pb-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+        <div class="lg:col-span-8 space-y-8">
+
+            <div id="emailCard"
+                class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 dark:border-gray-700 transition-colors">
+                <div class="flex flex-col md:flex-row items-center gap-3">
+
+                    <div
+                        class="hidden md:flex bg-gradient-to-br from-orange-400 to-orange-600 w-14 h-14 rounded-full items-center justify-center text-white text-2xl shadow-md shrink-0">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+
+                    <div
+                        class="flex-grow w-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 rounded-xl shadow-inner flex items-center relative group">
+                        <input type="text" id="emailDisplay" value="lavopa9885@icousd.com" readonly
+                            class="w-full bg-transparent text-white font-semibold text-lg px-4 outline-none placeholder-white/70 cursor-text">
+                    </div>
+
+                    <div class="flex gap-2 w-full md:w-auto justify-center md:justify-start">
+                        <button type="button" id="qrButton" onclick="toggleQR(event)"
+                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group">
+                            <i class="fa-solid fa-qrcode text-base group-hover:text-brand-orange"></i>
+                        </button>
+                        <button onclick="copyToClipboard(this)" data-copy-target="emailDisplay"
+                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition relative group"
+                            title="Copiar Email">
+                            <i class="fa-solid fa-copy text-base group-hover:text-brand-orange transition-colors"></i>
+                        </button>
+                        <button onclick="refreshEmail()"
+                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition btn-refresh-icon group"
+                            title="Atualizar Email">
+                            <i
+                                class="fa-solid fa-rotate-right transition-transform group-hover:text-brand-orange transition-colors"></i>
+                        </button>
+                        <button onclick="openEditModal()"
+                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group"
+                            title="Editar Email">
+                            <i class="fa-solid fa-pen group-hover:text-brand-orange transition-colors"></i>
+                        </button>
+                        <button onclick="deleteEmail()"
+                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group"
+                            title="Excluir">
+                            <i class="fa-solid fa-trash group-hover:text-red-500 transition-colors"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <p class="text-center text-gray-400 text-sm mt-3">O seu endereço de e-mail temporário</p>
+            </div>
+
+            <div class="w-full my-8">
+                <div class="relative">
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 w-full">
+
+                        <div class="hidden lg:block">
+                            <button onclick="toggleQR(event)" id="btn-qr-desktop"
+                                class="flex items-center justify-center w-full py-4 bg-white dark:bg-[#1e293b] rounded-xl border border-gray-200 dark:border-gray-700 hover:text-brand-orange transition-all group shadow-sm">
+                                <i
+                                    class="fa-solid fa-qrcode text-lg mr-2 group-hover:scale-110 transition-transform"></i>
+                                <span class="text-sm font-bold text-gray-700 dark:text-gray-200">QR Code</span>
+                            </button>
+                        </div>
+
+                        <button onclick="copyToClipboard(this)" data-copy-target="emailDisplay"
+                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                            <i
+                                class="fa-regular fa-copy text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Copiar</span>
+                        </button>
+
+                        <button onclick="refreshEmail()"
+                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                            <i
+                                class="fa-solid fa-rotate text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Atualizar</span>
+                        </button>
+
+                        <button onclick="openEditModal()"
+                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                            <i
+                                class="fa-solid fa-pen text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Alterar</span>
+                        </button>
+
+                        <button onclick="deleteEmail()"
+                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                            <i
+                                class="fa-solid fa-trash-can text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-red-500 transition-colors"></i>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Excluir</span>
+                        </button>
+                    </div>
+
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none lg:hidden">
+                        <button onclick="toggleQR(event)" id="btn-qr-mobile"
+                            class="pointer-events-auto z-10 w-16 h-16 bg-white dark:bg-[#1e293b] text-gray-700 dark:text-white rounded-full border-4 border-gray-50 dark:border-[#0f172a] shadow-2xl flex flex-col items-center justify-center transform transition-all active:scale-95 group cursor-pointer">
+                            <i
+                                class="fa-solid fa-qrcode text-xl group-hover:text-brand-orange transition-colors duration-300"></i>
+                            <span
+                                class="text-[10px] font-bold leading-none mt-1 uppercase text-gray-700 dark:text-gray-200 group-hover:brand-orange transition-colors">QR</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="lg:hidden w-full bg-[#1e1b4b] rounded-2xl overflow-hidden relative p-4 shadow-xl border border-white/10">
+
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-900 via-purple-900 to-blue-900 opacity-95">
+                </div>
+
+                <div class="relative z-10 max-w-md mx-auto flex flex-col items-center text-center gap-4">
+
+                    <div class="flex items-center gap-3">
+                        <div
+                            class="w-10 h-10 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.5)] shrink-0">
+                            <i class="fa-solid fa-comment-sms text-white text-2xl"></i>
+                        </div>
+                        <div class="text-xl font-black italic tracking-tighter font-inter leading-none">
+                            <span
+                                class="text-[#f97316] [filter:drop-shadow(0_2px_4px_rgba(249,115,22,0.4))]">SMS</span><span
+                                class="text-white">Rush</span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <h3 class="text-white font-bold text-sm sm:text-base leading-tight">
+                            Números temporários para SMS
+                        </h3>
+                        <p class="text-gray-200 text-xs sm:text-sm leading-relaxed px-4 font-medium">
+                            Receba códigos de verificação sem expor seu número real. <br class="hidden sm:block">
+                            Rápido, seguro e prático.
+                        </p>
+                    </div>
+
+                    <div class="w-full pt-1">
+                        <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_6px_15px_rgba(249,115,22,0.6)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.7)] hover:-translate-y-0.5">
+                            Acessar SMSRush
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-list"
+                class="bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col relative w-full">
+
+                <div
+                    class="px-4 py-6 bg-orange-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+                    <div class="flex items-center gap-3 w-full">
+                        <div class="flex-none w-[35%]">Remetente</div>
+                        <div class="flex-1 min-w-0">Assunto</div>
+                        <div class="flex-none text-right min-w-[50px] sm:min-w-[70px]">Visualizar</div>
+                    </div>
+                </div>
+
+                <div id="email-container"
+                    class="h-[400px] overflow-y-auto overflow-x-hidden bg-white dark:bg-dark-card">
+                    <div id="empty-state" class="flex flex-col items-center justify-center text-center h-full p-8">
+                        <div
+                            class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4 text-gray-300 dark:text-gray-500 text-3xl relative">
+                            <i class="fa-solid fa-envelope"></i>
+                            <div
+                                class="absolute animate-spin rounded-full h-24 w-24 border-t-2 border-b-2 border-gray-200 dark:border-gray-600 opacity-50">
+                            </div>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-700 dark:text-gray-200">Sua caixa de entrada está
+                            vazia</h3>
+                    </div>
+
+                    <div id="email-list" class="divide-y divide-gray-100 dark:divide-gray-700"></div>
+                </div>
+
+                <div class="mt-auto border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-dark-card">
+                    <div class="px-4 py-3 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="relative flex h-2 w-2">
+                                <span
+                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                            </span>
+                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400">Buscando
+                                novos e-mails</span>
+                        </div>
+                        <div
+                            class="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-100 dark:border-gray-700">
+                            <span data-time="10"
+                                class="js-timer font-mono font-bold text-orange-600 dark:text-orange-400 w-[35px] text-center inline-block">
+                                10s
+                            </span>
+                            <i class="fa-solid fa-circle-notch animate-spin text-orange-600 text-[15px]"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-content"
+                class="hidden bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col relative w-full h-[538px]">
+
+                <div
+                    class="flex-none px-4 py-5 bg-orange-600 text-white flex items-center justify-between z-20 shadow-md">
+                    <button onclick="backToList()"
+                        class="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-orange-700 px-3 py-1.5 rounded-lg transition-all">
+                        <i class="fa-solid fa-arrow-left-long"></i> Voltar
+                    </button>
+
+                    <div class="flex justify-center flex-1">
+                        <button id="header-title" onclick="scrollToTop(this)"
+                            class="text-sm font-bold uppercase tracking-tighter transition-all duration-300 flex items-center gap-2 cursor-default pointer-events-none hover:bg-black/40 dark:hover:bg-black/50 px-3 py-1 rounded-full">
+                            Leitura da Mensagem
+                        </button>
+                    </div>
+
+                    <div class="w-[60px] sm:w-[80px]"></div>
+                </div>
+
+                <div id="message-scroll-area"
+                    class="flex-1 overflow-y-auto overflow-x-hidden p-6 sm:p-10 custom-scrollbar bg-white dark:bg-dark-card relative scroll-smooth">
+
+                    <div class="flex flex-col gap-6 max-w-3xl mx-auto">
+
+                        <div class="flex flex-col gap-6 border-b border-gray-100 dark:border-gray-800 pb-6">
+
+                            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+
+                                <div class="flex items-start gap-4 flex-1 min-w-0">
+                                    <div class="flex-1 min-w-0">
+                                        <span
+                                            class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest block mb-2">
+                                            Remetente:
+                                        </span>
+
+                                        <div class="flex items-start gap-4">
+
+                                            <div id="msg-avatar"
+                                                class="flex-none w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 font-black text-xl border border-orange-500/20">
+                                                M
+                                            </div>
+
+                                            <div class="flex-1 min-w-0">
+                                                <h2 id="msg-nome"
+                                                    class="text-lg font-black text-gray-900 dark:text-white leading-tight break-words">
+                                                    nome sobrenome
+                                                </h2>
+                                                <p id="msg-email"
+                                                    class="text-sm font-medium text-gray-900 dark:text-white leading-relaxed break-all opacity-90">
+                                                    mail@eample.com
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-start sm:items-end flex-none">
+                                    <span
+                                        class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-0.5">
+                                        Recebido em
+                                    </span>
+                                    <time id="msg-data"
+                                        class="text-xs font-bold text-gray-700 dark:text-white whitespace-nowrap bg-gray-100 dark:bg-gray-800/50 px-2 py-1 rounded sm:bg-transparent sm:p-0">
+                                        10/01/2026 16:41:40
+                                    </time>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-col gap-1 bg-gray-50/50 dark:bg-gray-800/30 p-3">
+                                <span
+                                    class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+                                    Assunto
+                                </span>
+                                <h3 id="msg-assunto"
+                                    class="text-md sm:text-lg font-bold text-gray-800 dark:text-gray-100 leading-snug break-words">
+                                    teste de recebimento de e-mail com título extremamente longo para teste
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col gap-1">
+                            <span
+                                class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">Mensagem:</span>
+                            <h3 id="msg-assunto"
+                                class="text-md sm:text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight">
+                            </h3>
+                        </div>
+
+                        <div class="relative pb-4">
+                            <div id="msg-corpo"
+                                class="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium pl-2">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="hidden lg:block lg:col-span-4 mt-8 lg:mt-0">
+            <div
+                class="bg-gradient-to-br from-indigo-900 via-purple-800 to-blue-900 rounded-lg shadow-lg overflow-hidden text-white relative h-auto sticky top-8 flex flex-col items-center justify-center text-center p-6 border border-white/10">
+
+                <!-- Ícone + nome SMSRush -->
+                <div class="flex items-center gap-3 mb-4">
+                    <!-- Ícone -->
+                    <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-sms"
+                            class="svg-inline--fa fa-comment-sms text-white w-8 h-8" role="img"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                            <path fill="currentColor"
+                                d="M256 448c141.4 0 256-93.1 256-208S397.4 32 256 32S0 125.1 0 240c0 45.1 17.7 86.8 47.7 120.9c-1.9 24.5-11.4 46.3-21.4 62.9c-5.5 9.2-11.1 16.6-15.2 21.6c-2.1 2.5-3.7 4.4-4.9 5.7c-.6 .6-1 1.1-1.3 1.4l-.3 .3c0 0 0 0 0 0c0 0 0 0 0 0s0 0 0 0s0 0 0 0c-4.6 4.6-5.9 11.4-3.4 17.4c2.5 6 8.3 9.9 14.8 9.9c28.7 0 57.6-8.9 81.6-19.3c22.9-10 42.4-21.9 54.3-30.6c31.8 11.5 67 17.9 104.1 17.9zM96 212.8c0-20.3 16.5-36.8 36.8-36.8l19.2 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-19.2 0c-2.7 0-4.8 2.2-4.8 4.8c0 1.6 .8 3.1 2.2 4l29.4 19.6c10.3 6.8 16.4 18.3 16.4 30.7c0 20.3-16.5 36.8-36.8 36.8L112 304c-8.8 0-16-7.2-16-16s7.2-16 16-16l27.2 0c2.7 0 4.8-2.2 4.8-4.8c0-1.6-.8-3.1-2.2-4l-29.4-19.6C102.2 236.7 96 225.2 96 212.8zM372.8 176l19.2 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-19.2 0c-2.7 0-4.8 2.2-4.8 4.8c0 1.6 .8 3.1 2.2 4l29.4 19.6c10.2 6.8 16.4 18.3 16.4 30.7c0 20.3-16.5 36.8-36.8 36.8L352 304c-8.8 0-16-7.2-16-16s7.2-16 16-16l27.2 0c2.7 0 4.8-2.2 4.8-4.8c0-1.6-.8-3.1-2.2-4l-29.4-19.6c-10.2-6.8-16.4-18.3-16.4-30.7c0-20.3 16.5-36.8 36.8-36.8zm-152 6.4L256 229.3l35.2-46.9c4.1-5.5 11.3-7.8 17.9-5.6s10.9 8.3 10.9 15.2l0 96c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-48-19.2 25.6c-3 4-7.8 6.4-12.8 6.4s-9.8-2.4-12.8-6.4L224 240l0 48c0 8.8-7.2 16-16 16s-16-7.2-16-16l0-96c0-6.9 4.4-13 10.9-15.2s13.7 .1 17.9 5.6z">
+                            </path>
+                        </svg>
+                    </div>
+
+                    <!-- Nome SMSRush -->
+                    <div class="text-2xl font-bold font-inter">
+                        <span class="text-orange-600">SMS</span><span class="text-white">Rush</span>
+                    </div>
+                </div>
+
+                <!-- Título e descrição -->
+                <h3 class="text-2xl font-bold mb-2">Números temporários para SMS</h3>
+                <p class="text-sm text-gray-300 mb-6 px-4">
+                    Receba códigos de verificação sem expor seu número real. Rápido, seguro e prático.
+                </p>
+
+                <!-- Botão -->
+                <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_6px_15px_rgba(249,115,22,0.6)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.7)] hover:-translate-y-0.5">
+                    Acessar SMSRush
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="qrContent" class="hidden fixed z-[100] transition-all">
+    <div
+        class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white dark:bg-gray-800 rotate-45 border-l border-t border-gray-100 dark:border-gray-700 z-10">
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-4 shadow-2xl rounded-2xl border border-gray-100 dark:border-gray-700 w-64">
+        <div class="flex flex-col items-center gap-3">
+            <div
+                class="bg-white p-1.5 rounded-xl w-full aspect-square flex items-center justify-center shadow-inner overflow-hidden">
+                <div id="qrImage" class="w-full h-full flex items-center justify-center"></div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Escaneie seu email</span>
+                <span class="text-sm font-black text-orange-600 uppercase tracking-tighter">
+                    Email<span class="text-gray-900 dark:text-white">Rush</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="editModal"
+    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+    <div
+        class="bg-white dark:bg-dark-card w-full max-w-md mx-4 rounded-xl shadow-2xl transform transition-all scale-95 p-6 border border-gray-200 dark:border-gray-700">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Alterar Endereço</h3>
+        <div class="mb-4">
+            <label class="block text-gray-500 dark:text-gray-400 text-sm font-bold mb-2">Novo Nome de
+                Usuário</label>
+            <div
+                class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-input">
+                <input type="text" id="modalInputUser"
+                    class="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-white py-3 px-4 leading-tight focus:outline-none"
+                    placeholder="ex: usuario123">
+                <div
+                    class="bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 px-3 py-3 border-l border-gray-300 dark:border-gray-500 text-sm">
+                    @icousd.com</div>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="closeEditModal()"
+                class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-700 dark:text-gray-200 font-semibold transition">Cancelar</button>
+            <button onclick="saveEditModal()"
+                class="px-4 py-2 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition">Salvar
+                Alterações</button>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/global/timer.js' %}"></script>
+<script src="{% static 'js/global/scrollToTop.js' %}"></script>
+<script src="{% static 'js/global/copyToClipboard.js' %}"></script>
+{% endblock %}

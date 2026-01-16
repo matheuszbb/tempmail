@@ -1,0 +1,27 @@
+{% if form.errors %}
+<div class="flex flex-col gap-2 mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div role="alert" class="alert alert-error bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 shadow-sm py-3">
+                <i class="fa-solid fa-circle-exclamation text-red-600 dark:text-red-400"></i>
+                <div class="flex flex-col">
+                    <span class="text-xs font-black uppercase tracking-wider text-red-700 dark:text-red-400">
+                        Erro em {{ field.label }}
+                    </span>
+                    <span class="text-sm text-red-600 dark:text-red-300">
+                        {{ error|escape }}
+                    </span>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    
+    {# Tratamento para erros globais (non_field_errors) #}
+    {% for error in form.non_field_errors %}
+        <div role="alert" class="alert alert-error bg-red-50 dark:bg-red-900/10 border-l-4 border-red-600 shadow-sm py-3">
+            <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
+            <span class="text-sm font-bold text-red-700 dark:text-red-300">{{ error|escape }}</span>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}

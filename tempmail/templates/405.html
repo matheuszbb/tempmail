@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block conteudo %}
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+    <div class="text-center">
+        <div class="relative flex justify-center mb-8">
+            <div class="absolute inset-0 bg-orange-500/10 blur-3xl rounded-full scale-150"></div>
+            <div class="relative">
+                <i class="fa-solid fa-signs-post text-8xl text-orange-600 relative animate-pulse"></i>
+                <i class="fa-solid fa-ban text-4xl text-gray-400 dark:text-gray-600 absolute -bottom-2 -right-2"></i>
+            </div>
+        </div>
+
+        <span
+            class="px-4 py-1.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-black uppercase tracking-widest">
+            Requisição Inválida
+        </span>
+
+        <h1 class="mt-6 text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
+            Erro <span class="text-orange-600">405</span>
+        </h1>
+
+        <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
+            O método utilizado para acessar esta página não é permitido. Por favor, verifique o método utilizado e tente
+            novamente.
+        </p>
+
+        <div class="mt-10">
+            <a href="{% url 'index' %}"
+                class="btn btn-lg bg-orange-600 hover:bg-orange-700 border-none text-white px-8 rounded-2xl shadow-xl shadow-orange-600/20 group transition-all duration-300">
+                <i class="fa-solid fa-house-chimney mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                Retornar ao Início
+            </a>
+        </div>
+
+        <p class="mt-12 text-xs font-bold uppercase tracking-widest">
+            <span class="text-orange-600">Email</span><span class="text-gray-900 dark:text-gray-100">Rush</span>
+            <span class="text-gray-500 dark:text-gray-400">Protocol</span>
+        </p>
+    </div>
+</div>
+{% endblock %}
