@@ -1,5 +1,5 @@
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views import View
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound
@@ -12,9 +12,7 @@ import json
 from .models import Domain, EmailAccount, Message
 from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 
-
 logger = logging.getLogger(__name__)
-
 
 class HeartCheckView(View):
     async def get(self, request):
@@ -41,6 +39,7 @@ class Sitemap_xmlView(View):
 """
         return HttpResponse(sitemap_xml_content, content_type="application/xml", status=200)
     
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class IndexView(View):
     async def get(self, request):
         email_address = await sync_to_async(request.session.get)('email_address')
@@ -239,10 +238,14 @@ class TempEmailAPI(View):
                 session_start_val = await sync_to_async(request.session.get)('session_start')
                 session_start = datetime.fromisoformat(session_start_val)
                 
+                expires_at = session_start + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
+                expires_in = int((expires_at - timezone.now()).total_seconds())
+
                 return JsonResponse({
                     'success': True,
                     'email': account.address,
                     'session_start': session_start.isoformat(),
+                    'expires_in': max(0, expires_in),
                     'is_new_session': True,
                     'message': 'Sessão resetada com sucesso'
                 })
@@ -313,9 +316,15 @@ class TempEmailAPI(View):
             await sync_to_async(request.session.__setitem__)('session_start', timezone.now().isoformat())
             await sync_to_async(request.session.save)()
             
+            session_start_val = await sync_to_async(request.session.get)('session_start')
+            session_start = datetime.fromisoformat(session_start_val)
+            expires_at = session_start + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
+            expires_in = int((expires_at - timezone.now()).total_seconds())
+
             return JsonResponse({
                 'success': True,
                 'email': account.address,
+                'expires_in': max(0, expires_in),
                 'message': 'Email alterado com sucesso'
             })
 

@@ -9,6 +9,8 @@ class TempMailApp {
         this.pollingInterval = null;
         this.isRefreshing = false;
         this.isResetting = false; // Flag para bloquear polling durante reset/edição
+        this.sessionTimer = null; // Timer da sessão
+        this.sessionSecondsRemaining = 0;
         this.popoverActiveMobile = false; // Estado para controle de toque no mobile
 
         this.elements = {
@@ -43,7 +45,8 @@ class TempMailApp {
             downloadFileNameDisplay: document.getElementById('downloadFileNameDisplay'),
             confirmDownloadBtn: document.getElementById('confirmDownloadBtn'),
             btnHeaderAttachments: document.getElementById('btn-header-attachments'),
-            headerAttachmentsBadge: document.getElementById('header-attachments-badge')
+            headerAttachmentsBadge: document.getElementById('header-attachments-badge'),
+            sessionCountdown: document.getElementById('session-countdown')
         };
 
         this.init();
@@ -86,32 +89,23 @@ class TempMailApp {
      */
     async loadEmail() {
         this.showSkeleton();
-        try {
-            const response = await fetch('/api/email/');
-            const data = await response.json();
+        const { success, data } = await this._apiCall('/api/email/');
 
-            if (data.success) {
-                if (data.email) {
-                    this.currentEmail = data.email;
-                    if (this.elements.emailDisplay) {
-                        this.elements.emailDisplay.value = data.email;
-                        this.hideSkeleton();
-                        // Trigger QR code update if visible
-                        if (window.updateQRCode) window.updateQRCode(data.email);
-                    }
-                } else {
-                    console.error('Email não retornado pela API');
-                    this.showError('Erro ao carregar e-mail.');
-                    this.hideSkeleton();
-                }
-            } else {
-                Toast.error('Não foi possível carregar seu e-mail temporário.');
+        if (success && data && data.success) {
+            this.currentEmail = data.email;
+            if (this.elements.emailDisplay) {
+                this.elements.emailDisplay.value = data.email;
                 this.hideSkeleton();
+                if (window.updateQRCode) window.updateQRCode(data.email);
             }
-        } catch (error) {
-            console.error('Erro ao carregar email:', error);
-            Toast.error('Erro de conexão com o servidor.');
+
+            if (data.expires_in !== undefined) {
+                this.startSessionCountdown(data.expires_in);
+            }
+        } else {
+            // Falha silenciosa ou amigável
             this.hideSkeleton();
+            if (data && data.error) Toast.error(data.error);
         }
     }
 
@@ -754,44 +748,29 @@ class TempMailApp {
         this.backToList(); // <--- Voltar para a lista se estiver lendo uma mensagem
         this.showSkeleton();
 
-        try {
-            const response = await fetch('/api/email/', {
-                method: 'POST',
-                headers: {
-                    'X-CSRFToken': this.getCsrfToken()
-                }
-            });
-            const data = await response.json();
+        this.showSkeleton();
 
-            if (data.success) {
-                if (data.email) {
-                    this.currentEmail = data.email;
-                    if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
-                } else {
-                    console.error("Backend não retornou email!");
-                    Toast.error("Erro interno: Email inválido.");
-                }
+        const { success, data, status } = await this._apiCall('/api/email/', {
+            method: 'POST',
+            headers: { 'X-CSRFToken': this.getCsrfToken() }
+        });
 
-                // Limpar lista de mensagens localmente
-                this.clearMessageList();
+        if (success && data && data.success) {
+            this.currentEmail = data.email;
+            if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
+            this.clearMessageList();
+            if (window.generateQRCode && data.email) window.generateQRCode(data.email);
 
-                // Gerar novo QR Code se o script existir
-                if (window.generateQRCode && data.email) {
-                    window.generateQRCode(data.email);
-                }
-
-                Toast.success('Novo e-mail gerado com sucesso!');
-            } else {
-                Toast.error(data.error || 'Erro ao resetar email.');
-            }
-        } catch (error) {
-            console.error('Erro ao resetar email:', error);
-            Toast.error('Erro de conexão ao gerar novo e-mail.');
-        } finally {
-            this.hideSkeleton();
-            this.isResetting = false;
-            this.startPolling(); // <--- CRITICAL: Restart polling explicitly
+            Toast.success('Novo e-mail gerado com sucesso!');
+            if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
+        } else {
+            const errorMsg = data?.error || (status === 403 ? 'Sessão expirada. Recarregue a página.' : 'Erro ao resetar email.');
+            Toast.error(errorMsg);
         }
+
+        this.hideSkeleton();
+        this.isResetting = false;
+        this.startPolling();
     }
 
     async syncInbox(btn) {
@@ -880,52 +859,33 @@ class TempMailApp {
 
         if (this.isResetting) return;
         this.isResetting = true;
-        this.stopPolling(); // <--- CRITICAL: Stop polling explicitly
+        this.stopPolling();
 
-        try {
-            this.showSkeleton();
-            this.closeEditModal();
+        const { success, data, status } = await this._apiCall('/api/email/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': this.getCsrfToken()
+            },
+            body: JSON.stringify({ email: fullEmail })
+        });
 
-            const response = await fetch('/api/email/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.getCsrfToken()
-                },
-                body: JSON.stringify({ email: fullEmail })
-            });
+        if (success && data && data.success) {
+            this.currentEmail = data.email;
+            if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
+            this.clearMessageList();
+            if (window.generateQRCode && data.email) window.generateQRCode(data.email);
 
-            const data = await response.json();
-
-            if (data.success) {
-                if (data.email) {
-                    this.currentEmail = data.email;
-                    if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
-                } else {
-                    console.error("Backend não retornou email!");
-                    Toast.error("Erro interno: Email inválido.");
-                }
-
-                // Limpar lista mensagens
-                this.clearMessageList();
-
-                // Gerar novo QR Code se o script existir
-                if (window.generateQRCode && data.email) {
-                    window.generateQRCode(data.email);
-                }
-
-                Toast.success('E-mail alterado com sucesso!');
-            } else {
-                Toast.error(data.error || 'Erro ao alterar email.');
-            }
-        } catch (error) {
-            console.error('Erro ao salvar email customizado:', error);
-            Toast.error('Erro de conexão com o servidor.');
-        } finally {
-            this.hideSkeleton();
-            this.isResetting = false;
-            this.startPolling(); // <--- CRITICAL: Restart polling explicitly
+            Toast.success('E-mail alterado com sucesso!');
+            if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
+        } else {
+            const errorMsg = data?.error || (status === 403 ? 'Sessão inválida ou expirada.' : 'Erro ao alterar email.');
+            Toast.error(errorMsg);
         }
+
+        this.hideSkeleton();
+        this.isResetting = false;
+        this.startPolling();
     }
 
     // Helper para limpar lista
@@ -971,6 +931,75 @@ class TempMailApp {
             }
         }
         return cookieValue;
+    }
+
+    /**
+     * Inicia o contador decrescente da sessão
+     */
+    startSessionCountdown(seconds) {
+        if (this.sessionTimer) clearInterval(this.sessionTimer);
+
+        this.sessionSecondsRemaining = seconds;
+        this.updateCountdownUI();
+
+        this.sessionTimer = setInterval(() => {
+            this.sessionSecondsRemaining--;
+
+            if (this.sessionSecondsRemaining <= 0) {
+                clearInterval(this.sessionTimer);
+                this.updateCountdownUI();
+                return;
+            }
+
+            this.updateCountdownUI();
+        }, 1000);
+    }
+
+    updateCountdownUI() {
+        if (!this.elements.sessionCountdown) return;
+
+        if (this.sessionSecondsRemaining <= 0) {
+            this.elements.sessionCountdown.textContent = 'Expirado';
+            this.elements.sessionCountdown.classList.add('text-red-500');
+            return;
+        }
+
+        const minutes = Math.floor(this.sessionSecondsRemaining / 60);
+        const seconds = this.sessionSecondsRemaining % 60;
+
+        // Formato: 59:03 ou 5 minutos
+        if (minutes > 0) {
+            this.elements.sessionCountdown.textContent = `${minutes} min e ${seconds.toString().padStart(2, '0')}s`;
+        } else {
+            this.elements.sessionCountdown.textContent = `${seconds} segundos`;
+        }
+    }
+
+    /**
+     * Helper para requisições seguras e silenciosas (Security Hardening)
+     */
+    async _apiCall(url, options = {}) {
+        try {
+            const response = await fetch(url, options);
+
+            // Verificamos se a resposta é do tipo JSON antes de tentar o parse
+            const contentType = response.headers.get('content-type');
+            let data = null;
+
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            }
+
+            if (!response.ok) {
+                // Em caso de erro, não logamos o objeto de erro inteiro no console (Segurança)
+                return { success: false, status: response.status, data };
+            }
+
+            return { success: true, status: response.status, data };
+        } catch (error) {
+            // Log silencioso apenas para depuração interna se necessário
+            return { success: false, error: 'connection_error' };
+        }
     }
 }
 
