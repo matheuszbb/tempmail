@@ -20,9 +20,12 @@
   {% block extra_content %}
   {% endblock %}
 
+  {% include 'parciais/_toast.html' %}
+
   {% include 'parciais/_footer.html' %}
 
   <script src="{% static 'js/global/toggleTheme.js' %}"></script>
+  <script src="{% static 'js/global/toast.js' %}"></script>
   {% block scripts %}
   {% endblock %}
 </body>

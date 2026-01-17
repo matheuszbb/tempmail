@@ -1,22 +1,10 @@
-"""
-URL configuration for core project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path, include
-from .views import IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView
+from django.urls import path
+from .views import (
+    IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
+    TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI,
+    AttachmentDownloadAPI
+)
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -25,7 +13,14 @@ urlpatterns = [
     path('', IndexView.as_view(), name='index'),
     path('health/', HeartCheckView.as_view(), name='health_check'),
     path('robots.txt', Robots_txtView.as_view(), name='robots_txt'),
-    path('sitemap.xml', Sitemap_xmlView.as_view(), name='sitemap_xml'),    
+    path('sitemap.xml', Sitemap_xmlView.as_view(), name='sitemap_xml'),
+    
+    # Tempmail API (Async CBVs)
+    path('api/email/', TempEmailAPI.as_view(), name='temp_email_api'),
+    path('api/messages/', MessageListAPI.as_view(), name='message_list_api'),
+    path('api/messages/<int:message_id>/', MessageDetailAPI.as_view(), name='api-message-detail'),
+    path('api/messages/<int:message_id>/download/', MessageDownloadAPI.as_view(), name='api-message-download'),
+    path('api/messages/<int:message_id>/attachments/<str:attachment_id>/download/', AttachmentDownloadAPI.as_view(), name='api-attachment-download'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

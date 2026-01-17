@@ -1,0 +1,16 @@
+<div id="toast-container" class="toast toast-top toast-end z-[9999] pointer-events-none">
+    <!-- Toasts serão inseridos aqui dinamicamente -->
+</div>
+
+<!-- Mantemos apenas o estilo da animação do progresso, pois o Tailwind não gera keyframes dinâmicos para isso facilmente sem config extra -->
+<style>
+    @keyframes toast-progress-anim {
+        from {
+            transform: scaleX(1);
+        }
+
+        to {
+            transform: scaleX(0);
+        }
+    }
+</style>

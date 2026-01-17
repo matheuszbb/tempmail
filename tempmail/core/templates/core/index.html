@@ -41,9 +41,10 @@
                     </div>
 
                     <div
-                        class="flex-grow w-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 rounded-xl shadow-inner flex items-center relative group">
-                        <input type="text" id="emailDisplay" value="lavopa9885@icousd.com" readonly
-                            class="w-full bg-transparent text-white font-semibold text-lg px-4 outline-none placeholder-white/70 cursor-text">
+                        class="flex-grow w-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 rounded-xl shadow-inner flex items-center relative group min-h-[50px]">
+                        <div id="emailSkeleton" class="skeleton h-6 w-3/4 mx-4 bg-white/20"></div>
+                        <input type="text" id="emailDisplay" value="" readonly autocomplete="off" data-bwignore
+                            class="w-full bg-transparent text-white font-semibold text-lg px-4 outline-none placeholder-white/70 cursor-text hidden">
                     </div>
 
                     <div class="flex gap-2 w-full md:w-auto justify-center md:justify-start">
@@ -57,9 +58,9 @@
                             title="Copiar Email">
                             <i class="fa-solid fa-copy text-base group-hover:text-brand-orange transition-colors"></i>
                         </button>
-                        <button onclick="refreshEmail()"
+                        <button onclick="syncInbox(this)"
                             class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition btn-refresh-icon group"
-                            title="Atualizar Email">
+                            title="Atualizar">
                             <i
                                 class="fa-solid fa-rotate-right transition-transform group-hover:text-brand-orange transition-colors"></i>
                         </button>
@@ -68,7 +69,7 @@
                             title="Editar Email">
                             <i class="fa-solid fa-pen group-hover:text-brand-orange transition-colors"></i>
                         </button>
-                        <button onclick="deleteEmail()"
+                        <button onclick="resetSession()"
                             class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group"
                             title="Excluir">
                             <i class="fa-solid fa-trash group-hover:text-red-500 transition-colors"></i>
@@ -100,7 +101,7 @@
                             <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Copiar</span>
                         </button>
 
-                        <button onclick="refreshEmail()"
+                        <button onclick="syncInbox(this)"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-solid fa-rotate text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
@@ -114,7 +115,7 @@
                             <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Alterar</span>
                         </button>
 
-                        <button onclick="deleteEmail()"
+                        <button onclick="resetSession()"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-solid fa-trash-can text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-red-500 transition-colors"></i>
@@ -188,7 +189,8 @@
 
                 <div id="email-container"
                     class="h-[400px] overflow-y-auto overflow-x-hidden bg-white dark:bg-dark-card">
-                    <div id="empty-state" class="flex flex-col items-center justify-center text-center h-full p-8">
+                    <div id="empty-state"
+                        class="{% if initial_messages %}hidden{% endif %} flex flex-col items-center justify-center text-center h-full p-8">
                         <div
                             class="w-20 h-20 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4 text-gray-300 dark:text-gray-500 text-3xl relative">
                             <i class="fa-solid fa-envelope"></i>
@@ -200,7 +202,11 @@
                             vazia</h3>
                     </div>
 
-                    <div id="email-list" class="divide-y divide-gray-100 dark:divide-gray-700"></div>
+                    <div id="email-list" class="divide-y divide-gray-100 dark:divide-gray-700">
+                        {% for message in initial_messages %}
+                        {% include "core/parciais/_message_item.html" with message=message %}
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <div class="mt-auto border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-dark-card">
@@ -231,19 +237,43 @@
 
                 <div
                     class="flex-none px-4 py-5 bg-orange-600 text-white flex items-center justify-between z-20 shadow-md">
-                    <button onclick="backToList()"
-                        class="flex items-center gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest hover:bg-orange-700 px-3 py-1.5 rounded-lg transition-all">
-                        <i class="fa-solid fa-arrow-left-long"></i> Voltar
-                    </button>
-
-                    <div class="flex justify-center flex-1">
-                        <button id="header-title" onclick="scrollToTop(this)"
-                            class="text-sm font-bold uppercase tracking-tighter transition-all duration-300 flex items-center gap-2 cursor-default pointer-events-none hover:bg-black/40 dark:hover:bg-black/50 px-3 py-1 rounded-full">
-                            Leitura da Mensagem
+                    <div class="flex-none">
+                        <button onclick="backToList()"
+                            class="flex items-center justify-center w-auto px-2 sm:px-3 py-1.5 gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/20 shadow-sm"
+                            title="Voltar para a lista">
+                            <i class="fa-solid fa-arrow-left-long text-white"></i>
+                            <span class="text-white">Voltar</span>
                         </button>
                     </div>
 
-                    <div class="w-[60px] sm:w-[80px]"></div>
+                    <div class="flex-1 flex justify-center px-1 overflow-hidden">
+                        <button id="header-title" onclick="scrollToTop(this)"
+                            class="text-[10px] xs:text-xs sm:text-sm font-bold uppercase tracking-tighter whitespace-nowrap transition-all duration-300 flex items-center gap-2 cursor-default pointer-events-none hover:bg-black/40 dark:hover:bg-black/50 px-2 sm:px-3 py-1 rounded-full truncate max-w-full">
+                            <span class="hidden xs:inline">Leitura da Mensagem</span><span
+                                class="xs:hidden">Mensagem</span>
+                        </button>
+                    </div>
+
+                    <div class="flex-none flex items-center justify-end gap-2">
+                        <!-- Botão de Anexo no Header (com badge) -->
+                        <button id="btn-header-attachments" onclick="tempMailApp.scrollToAttachments()"
+                            class="hidden relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/20 shadow-sm"
+                            title="Ver anexos">
+                            <i class="fa-solid fa-paperclip text-sm sm:text-base"></i>
+                            <!-- Badge -->
+                            <span id="header-attachments-badge"
+                                class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-black rounded-full shadow-lg border-2 border-brand-orange animate-bounce">
+                                0
+                            </span>
+                        </button>
+
+                        <button id="btn-download" onclick="tempMailApp.downloadMessage()"
+                            class="flex items-center justify-center w-8 h-8 sm:w-auto sm:px-3 sm:py-1.5 gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/20 shadow-sm"
+                            title="Baixar arquivo .eml">
+                            <i class="fa-solid fa-download text-sm sm:text-base text-white"></i>
+                            <span class="hidden sm:inline text-white">Download</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="message-scroll-area"
@@ -279,7 +309,6 @@
                                                     mail@eample.com
                                                 </p>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -287,7 +316,7 @@
                                 <div class="flex flex-col items-start sm:items-end flex-none">
                                     <span
                                         class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-0.5">
-                                        Recebido em
+                                        Recebido em:
                                     </span>
                                     <time id="msg-data"
                                         class="text-xs font-bold text-gray-700 dark:text-white whitespace-nowrap bg-gray-100 dark:bg-gray-800/50 px-2 py-1 rounded sm:bg-transparent sm:p-0">
@@ -299,7 +328,7 @@
                             <div class="flex flex-col gap-1 bg-gray-50/50 dark:bg-gray-800/30 p-3">
                                 <span
                                     class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">
-                                    Assunto
+                                    Assunto:
                                 </span>
                                 <h3 id="msg-assunto"
                                     class="text-md sm:text-lg font-bold text-gray-800 dark:text-gray-100 leading-snug break-words">
@@ -311,14 +340,26 @@
                         <div class="flex flex-col gap-1">
                             <span
                                 class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">Mensagem:</span>
-                            <h3 id="msg-assunto"
-                                class="text-md sm:text-lg font-bold text-gray-800 dark:text-gray-100 leading-tight">
-                            </h3>
                         </div>
 
                         <div class="relative pb-4">
                             <div id="msg-corpo"
-                                class="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium pl-2">
+                                class="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-medium pl-2 break-all">
+                            </div>
+                        </div>
+
+                        <!-- Seção de Anexos -->
+                        <div id="attachments-section"
+                            class="hidden border-t border-gray-100 dark:border-gray-800 pt-6 mt-2">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i class="fa-solid fa-paperclip text-orange-600 dark:text-orange-400"></i>
+                                <span
+                                    class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">Anexos:</span>
+                                <span id="attachments-count"
+                                    class="badge badge-sm bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 border-none font-bold">0</span>
+                            </div>
+                            <div id="attachments-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <!-- Anexos injetados via JS -->
                             </div>
                         </div>
                     </div>
@@ -371,6 +412,9 @@
 {% block extra_content %}
 {% include 'parciais/_qrPopover.html' %}
 {% include './parciais/_editModal.html' %}
+{% include './parciais/_confirmationResetModal.html' %}
+{% include './parciais/_confirmationExternalLinkModal.html' %}
+{% include './parciais/_confirmationDownloadModal.html' %}
 {% endblock %}
 
 {% block scripts %}
@@ -378,4 +422,5 @@
 <script src="{% static 'js/global/scrollToTop.js' %}"></script>
 <script src="{% static 'js/global/copyToClipboard.js' %}"></script>
 <script src="{% static 'js/global/genQRCode.js' %}"></script>
+<script src="{% static 'js/index/tempmail.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,55 @@
+{% load static %}
+<div class="group px-4 py-4 sm:px-8 sm:py-6 hover:bg-orange-50/50 dark:hover:bg-gray-800/40 cursor-pointer transition-all duration-300 relative border-l-4 {% if not message.is_read %}bg-white dark:bg-dark-card font-semibold border-l-brand-orange{% else %}opacity-60 bg-gray-50 dark:bg-gray-800/40 border-l-transparent{% endif %}"
+    data-message-id="{{ message.id }}" onclick="tempMailApp.viewMessage('{{ message.id }}')">
+
+    <div class="flex items-center gap-3 w-full">
+        <div class="flex-none w-[35%] min-w-0 relative">
+            <p
+                class="{% if not message.is_read %}text-gray-900 dark:text-white{% else %}text-gray-600 dark:text-gray-400 font-normal{% endif %} text-[11px] sm:text-sm truncate leading-tight group-hover:underline decoration-gray-900 dark:decoration-white underline-offset-2">
+                {{ message.from_name|default:message.from_address }}
+            </p>
+            <p
+                class="font-bold text-[9px] sm:text-xs text-gray-800 dark:text-gray-100 truncate group-hover:underline decoration-gray-600 dark:decoration-gray-300 underline-offset-2">
+                {{ message.from_address }}
+            </p>
+
+            <!-- Popover Desktop (CSS-only ou JS controlled) -->
+            <div
+                class="js-popover absolute invisible opacity-0 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-3 rounded-lg shadow-2xl left-0 whitespace-nowrap pointer-events-none border border-gray-200 dark:border-gray-700 min-w-[280px] z-[100]">
+                <div class="flex flex-col gap-2">
+                    <div class="flex flex-col">
+                        <span
+                            class="text-[12px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tighter">Remetente:</span>
+                        <span class="text-xs font-bold">{{ message.from_name|default:message.from_address }}</span>
+                        <span
+                            class="text-[13px] font-bold text-gray-900 dark:text-gray-200 break-all whitespace-normal leading-tight">
+                            {{ message.from_address }}
+                        </span>
+                    </div>
+                    <div class="h-[1px] bg-gray-200 dark:bg-gray-700 w-full my-1"></div>
+                    <div class="flex flex-col">
+                        <span
+                            class="text-[12px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tighter">Assunto:</span>
+                        <span
+                            class="text-[13px] font-bold leading-relaxed text-gray-900 dark:text-gray-200 whitespace-normal max-w-[260px] break-words">
+                            {{ message.subject|default:"(Sem assunto)" }}
+                        </span>
+                    </div>
+                </div>
+                <div
+                    class="js-arrow absolute left-4 w-2 h-2 bg-white dark:bg-gray-800 rotate-45 border-gray-200 dark:border-gray-700">
+                </div>
+            </div>
+        </div>
+
+        <div class="flex-1 min-w-0">
+            <p class="text-[12px] sm:text-sm font-bold text-gray-900 dark:text-white truncate">
+                {{ message.subject|default:"(Sem assunto)" }}
+            </p>
+        </div>
+
+        <div class="flex-none text-right text-gray-300 group-hover:text-orange-600 transition-colors">
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+        </div>
+    </div>
+</div>

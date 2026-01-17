@@ -191,13 +191,27 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'WARNING',  # Ajuste conforme necessário
+            #'level': 'WARNING',  # Ajuste conforme necessário
+            'level': 'INFO',  # Ajuste conforme necessário
             'propagate': True,
         },
         'django.request': {
             'handlers': ['console'],
             'level': 'ERROR',
             'propagate': False,
-        }
+        },
+        'core': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
     },
 }
+
+# SMTP.dev API Configuration
+SMTPLABS_API_KEY = os.getenv('SMTPLABS_KEY')
+SMTPLABS_BASE_URL = 'https://api.smtp.dev'
+
+# Tempmail Settings
+TEMPMAIL_SESSION_DURATION = 3600  # 1 hora em segundos
+TEMPMAIL_REUSE_COOLDOWN = 7200    # 2 horas em segundos
