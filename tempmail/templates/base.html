@@ -7,19 +7,24 @@
   {% block style %}{% endblock %}
 </head>
 
-<body class="bg-gray-100 text-gray-700 dark:bg-dark-bg dark:text-dark-text antialiased font-sans flex flex-col min-h-screen">
-  
+<body
+  class="bg-gray-100 text-gray-700 dark:bg-dark-bg dark:text-dark-text antialiased font-sans flex flex-col min-h-screen">
+
   {% include "parciais/_nav.html" %}
-  
+
   <main class="flex-grow flex flex-col">
     {% block conteudo %}
     {% endblock %}
   </main>
-  
+
+  {% block extra_content %}
+  {% endblock %}
+
   {% include 'parciais/_footer.html' %}
 
+  <script src="{% static 'js/global/toggleTheme.js' %}"></script>
   {% block scripts %}
-    <script src="{% static 'js/global/toggleTheme.js' %}"></script>
   {% endblock %}
 </body>
+
 </html>
