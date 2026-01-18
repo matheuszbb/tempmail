@@ -1,0 +1,67 @@
+{% load static %}
+
+<!-- Tabela para desktop -->
+<div class="overflow-x-auto hidden md:block">
+    <table class="table table-zebra w-full">
+        <thead>
+            <tr>
+                <th class="text-left">#</th>
+                <th class="text-left">Domínio</th>
+                <th class="text-right">Emails Recebidos</th>
+                <th class="text-right">%</th>
+            </tr>
+        </thead>
+        <tbody id="sitesTableBody">
+            {% for site in top_100_sites %}
+            <tr>
+                <td class="font-semibold">{{ forloop.counter }}</td>
+                <td>
+                    <div class="flex items-center gap-2">
+                        <div class="w-6 h-6 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                            <i class="fas fa-globe text-green-600 text-xs"></i>
+                        </div>
+                        <span class="font-medium">{{ site.dominio|truncatechars:50|escape }}</span>
+                    </div>
+                </td>
+                <td class="text-right font-semibold">{{ site.quantidade }}</td>
+                <td class="text-right text-sm text-gray-600 dark:text-gray-400">
+                    {% widthratio site.quantidade total_mensagens 100 %}%
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center py-8 text-gray-500 dark:text-gray-400">
+                    Nenhum dado disponível
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Lista para mobile -->
+<div id="sitesMobileList" class="space-y-3 md:hidden">
+    {% for site in top_100_sites %}
+    <div class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div class="flex items-center gap-3">
+            <span class="font-semibold text-gray-600 dark:text-gray-400 w-8">
+                {{ forloop.counter }}.
+            </span>
+            <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                <i class="fas fa-globe text-green-600 text-sm"></i>
+            </div>
+                            <span class="font-medium text-gray-900 dark:text-white">{{ site.dominio|truncatechars:50|escape }}</span>
+        </div>
+        <div class="text-right">
+            <div class="font-semibold text-gray-900 dark:text-white">{{ site.quantidade }}</div>
+            <div class="text-xs text-gray-600 dark:text-gray-400">
+                {% widthratio site.quantidade total_mensagens 100 %}%
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-8 text-gray-500 dark:text-gray-400">
+        Nenhum dado disponível
+    </div>
+    {% endfor %}
+</div>

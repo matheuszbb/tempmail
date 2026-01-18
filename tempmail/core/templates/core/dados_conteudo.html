@@ -1,0 +1,312 @@
+{% load static %}
+
+<!-- Filtros de Data -->
+<div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
+    <div class="card-body p-6">
+        <h3 class="card-title text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <i class="fas fa-calendar-alt mr-2 text-green-600"></i>
+            Filtros por Período
+        </h3>
+                <form method="GET"
+              hx-get="{% url 'dados_admin' %}"
+              hx-target="#dashboard-content"
+              hx-swap="innerHTML"
+              hx-indicator="#loading-indicator"
+              class="flex flex-wrap gap-4 items-end">
+            {% csrf_token %}
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text text-gray-700 dark:text-gray-300">Data Inicial</span>
+                </label>
+                <input type="date" name="data_inicio" value="{{ data_inicio|date:'Y-m-d' }}"
+                       class="input input-bordered bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                       min="2020-01-01" max="{{ data_fim|date:'Y-m-d' }}">
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text text-gray-700 dark:text-gray-300">Data Final</span>
+                </label>
+                <input type="date" name="data_fim" value="{{ data_fim|date:'Y-m-d' }}"
+                       class="input input-bordered bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white"
+                       min="{{ data_inicio|date:'Y-m-d' }}" max="{% now 'Y-m-d' %}">
+            </div>
+            <div class="form-control">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search mr-2"></i>
+                    Aplicar Filtros
+                </button>
+            </div>
+            <div class="form-control">
+                <a href="{% url 'dados_admin' %}"
+                   hx-get="{% url 'dados_admin' %}"
+                   hx-target="#dashboard-content"
+                   hx-swap="innerHTML"
+                   class="btn btn-outline">
+                    <i class="fas fa-undo mr-2"></i>
+                    Limpar Filtros
+                </a>
+            </div>
+        </form>
+        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400 period-info">
+            <i class="fas fa-info-circle mr-1"></i>
+            Mostrando dados do período: <strong>{{ data_inicio|date:'d/m/Y' }} até {{ data_fim|date:'d/m/Y' }}</strong>
+            ({{ dias_periodo }} dias)
+        </div>
+    </div>
+</div>
+
+<!-- Cards de Estatísticas Principais -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total de Contas -->
+    <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="card-body p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="card-title text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        Total de Contas
+                    </h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white" data-stat="total_contas">
+                        {{ total_contas|default:0 }}
+                    </p>
+                </div>
+                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                    <i class="fas fa-envelope text-blue-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 flex items-center text-sm">
+                <span class="text-green-600 font-medium"><span data-stat="contas_ativas">{{ contas_ativas }}</span> ativas</span>
+                <span class="text-gray-400 mx-2">•</span>
+                <span class="text-orange-600 font-medium"><span data-stat="contas_em_uso">{{ contas_em_uso }}</span> em uso</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total de Mensagens -->
+    <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="card-body p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="card-title text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        Total de Mensagens
+                    </h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white" data-stat="total_mensagens">
+                        {{ total_mensagens|default:0 }}
+                    </p>
+                </div>
+                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                    <i class="fas fa-inbox text-green-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                <span data-stat="mensagens_periodo">{{ mensagens_periodo }}</span> no período selecionado
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensagens com Anexos -->
+    <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="card-body p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="card-title text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        Com Anexos
+                    </h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">
+                        {{ mensagens_com_anexos|default:0 }}
+                    </p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
+                    <i class="fas fa-paperclip text-purple-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                {{ total_anexos|default:0 }} anexos totais
+            </div>
+        </div>
+    </div>
+
+    <!-- Domínios Ativos -->
+    <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="card-body p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="card-title text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                        Domínios Ativos
+                    </h3>
+                    <p class="text-3xl font-bold text-gray-900 dark:text-white">
+                        {{ dominios_ativos|default:0 }}
+                    </p>
+                </div>
+                <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center">
+                    <i class="fas fa-globe text-orange-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                de {{ total_dominios|default:0 }} domínios
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráficos e Tabelas -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Distribuição por Domínio -->
+    <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="card-body p-6">
+            <h3 class="card-title text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <i class="fas fa-chart-pie mr-2 text-blue-600"></i>
+                Contas por Domínio
+            </h3>
+            <div class="space-y-3">
+                {% for item in contas_por_dominio %}
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {{ item.dominio|truncatechars:50|escape }}
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-blue-600 h-2 rounded-full"
+                                 style="width: {% widthratio item.quantidade total_contas 100 %}%"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white min-w-[2rem] text-right">
+                            {{ item.quantidade }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 dark:text-gray-400 text-center py-4">
+                    Nenhum dado disponível
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Tipos de Anexo -->
+    <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+        <div class="card-body p-6">
+            <h3 class="card-title text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <i class="fas fa-file-alt mr-2 text-purple-600"></i>
+                Tipos de Anexo (Top 10)
+            </h3>
+            <div class="space-y-3">
+                {% for tipo, quantidade in tipos_anexo.items %}
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {{ tipo|upper|truncatechars:20|escape }}
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <div class="w-24 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="bg-purple-600 h-2 rounded-full"
+                                 style="width: {% widthratio quantidade total_anexos 100 %}%"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-900 dark:text-white min-w-[2rem] text-right">
+                            {{ quantidade }}
+                        </span>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-gray-500 dark:text-gray-400 text-center py-4">
+                    Nenhum anexo encontrado
+                </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top 100 Sites -->
+<div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
+    <div class="card-body p-6">
+        <h3 class="card-title text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <i class="fas fa-globe mr-2 text-green-600"></i>
+            Top 100 Sites que Enviam Emails
+        </h3>
+
+        <!-- Filtros/Tabs para diferentes visualizações -->
+        <div class="flex w-full gap-1 mb-6 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg" id="sites-tabs">
+            <a class="tab-link flex-1 cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-all text-center !bg-brand-orange !text-white"
+               hx-get="{% url 'dados_admin' %}?filter=all"
+               hx-target="#sites-content"
+               data-filter="all">Top 100</a>
+            
+            <a class="tab-link flex-1 cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-all text-center text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+               hx-get="{% url 'dados_admin' %}?filter=top50"
+               hx-target="#sites-content"
+               data-filter="top50">Top 50</a>
+            
+            <a class="tab-link flex-1 cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-all text-center text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+               hx-get="{% url 'dados_admin' %}?filter=top10"
+               hx-target="#sites-content"
+               data-filter="top10">Top 10</a>
+        </div>
+
+        <!-- Container para conteúdo dos sites -->
+        <div id="sites-content">
+            {% include 'core/dados_sites.html' %}
+        </div>
+    </div>
+</div>
+
+<!-- Indicador de loading -->
+<div id="loading-indicator" class="htmx-indicator">
+    <div class="flex justify-center items-center py-8">
+        <div class="loading loading-spinner loading-lg text-primary"></div>
+        <span class="ml-2 text-gray-600 dark:text-gray-400">Atualizando dados...</span>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Selecionamos todos os links que possuem a classe tab-link
+    const tabLinks = document.querySelectorAll('.tab-link');
+
+    /**
+     * Função principal para alternar a identidade visual
+     * Remove as classes de todas e aplica o laranja (brand-orange) apenas na ativa
+     */
+    function updateActiveVisual(activeElement) {
+        if (!activeElement) return;
+
+        tabLinks.forEach(tab => {
+            // Reset total: remove laranja e garante cores neutras/hover
+            tab.classList.remove('!bg-brand-orange', '!text-white', '!border-brand-orange');
+            tab.classList.add('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-200', 'dark:hover:bg-gray-700');
+        });
+
+        // Aplica o estado Ativo (Quem manda é o seu brand-orange)
+        activeElement.classList.add('!bg-brand-orange', '!text-white', '!border-brand-orange');
+        // Remove os estados neutros para não haver conflito de cor
+        activeElement.classList.remove('text-gray-600', 'dark:text-gray-400', 'hover:bg-gray-200', 'dark:hover:bg-gray-700');
+    }
+
+    // 1. Ouvinte de Clique Manual (Para resposta instantânea na UI)
+    tabLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            updateActiveVisual(this);
+        });
+    });
+
+    // 2. Sincronização com HTMX (Garante que a aba certa fique laranja após o carregamento)
+    // Usamos 'htmx:afterOnLoad' para garantir que o conteúdo já foi processado
+    document.body.addEventListener('htmx:afterOnLoad', function(evt) {
+        // Verifica se o alvo da atualização foi o conteúdo dos sites
+        if (evt.detail.target.id === 'sites-content' || evt.detail.target.id === 'dashboard-content') {
+            try {
+                // Extrai o filtro da URL da requisição feita pelo HTMX
+                const path = evt.detail.requestConfig.path;
+                const url = new URL(path, window.location.origin);
+                const filterParam = url.searchParams.get('filter') || 'all';
+
+                // Localiza a aba correspondente ao filtro aplicado
+                const targetTab = document.querySelector(`.tab-link[data-filter="${filterParam}"]`);
+                if (targetTab) {
+                    updateActiveVisual(targetTab);
+                }
+            } catch (e) {
+                console.debug('Aguardando parâmetro de filtro...');
+            }
+        }
+    });
+});
+</script>

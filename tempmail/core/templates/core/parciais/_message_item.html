@@ -1,5 +1,5 @@
 {% load static %}
-<div class="group px-4 py-4 sm:px-8 sm:py-6 hover:bg-orange-50/50 dark:hover:bg-gray-800/40 cursor-pointer transition-all duration-300 relative border-l-4 {% if not message.is_read %}bg-white dark:bg-dark-card font-semibold border-l-brand-orange{% else %}opacity-60 bg-gray-50 dark:bg-gray-800/40 border-l-transparent{% endif %}"
+<div class="group px-4 py-4 sm:px-8 sm:py-6 hover:bg-orange-50/50 dark:hover:bg-gray-800/40 cursor-pointer transition-all duration-300 relative border-l-4 {% if not message.is_read %}bg-white dark:bg-dark-card font-semibold border-l-brand-orange dark:border-l-orange-400{% else %}opacity-60 bg-gray-50 dark:bg-gray-800/40 border-l-transparent{% endif %}"
     data-message-id="{{ message.id }}" onclick="tempMailApp.viewMessage('{{ message.id }}')">
 
     <div class="flex items-center gap-3 w-full">

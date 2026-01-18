@@ -243,7 +243,7 @@ class TempMailApp {
             const assuntoCompleto = this.escapeHtml(msg.subject || '(Sem assunto)');
 
             // Estilos condicionais para lido/não lido
-            const isReadClass = msg.is_read ? 'opacity-60 bg-gray-50 dark:bg-gray-800/40' : 'bg-white dark:bg-dark-card font-semibold border-l-4 border-l-brand-orange';
+            const isReadClass = msg.is_read ? 'opacity-60 bg-gray-50 dark:bg-gray-800/40' : 'bg-white dark:bg-dark-card font-semibold border-l-4 border-l-brand-orange dark:border-l-orange-400';
             const textClass = msg.is_read ? 'text-gray-600 dark:text-gray-400 font-normal' : 'text-gray-900 dark:text-white font-bold';
             const subjectClass = msg.is_read ? 'text-gray-600 dark:text-gray-400 font-normal' : 'text-gray-900 dark:text-white font-bold';
 
@@ -393,7 +393,7 @@ class TempMailApp {
                 // ATUALIZAÇÃO VISUAL IMEDIATA: Marcar como lido na lista DOM
                 const listItem = document.querySelector(`div[data-message-id="${messageId}"]`);
                 if (listItem) {
-                    listItem.classList.remove('bg-white', 'dark:bg-dark-card', 'font-semibold', 'border-l-4', 'border-l-brand-orange');
+                    listItem.classList.remove('bg-white', 'dark:bg-dark-card', 'font-semibold', 'border-l-4', 'border-l-brand-orange', 'dark:border-l-orange-400');
                     listItem.classList.add('opacity-60', 'bg-gray-50', 'dark:bg-gray-800/40');
 
                     // Atualizar textos internos para cinza/normal

@@ -1,17 +1,22 @@
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.cache import cache_control
 from django.views import View
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseBadRequest
 from django.utils import timezone
 from django.conf import settings
 from asgiref.sync import sync_to_async
 from datetime import datetime, timedelta
 import logging
 import json
+import re
+import asyncio
+from collections import Counter
 from .models import Domain, EmailAccount, Message
 from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 from django.middleware.csrf import get_token
+from django.contrib.auth import get_user_model
 
 logger = logging.getLogger(__name__)
 
@@ -750,3 +755,366 @@ class AttachmentDownloadAPI(View):
         except Exception as e:
             logger.error(f"Erro no download do anexo: {e}", exc_info=True)
             return HttpResponseServerError("Não foi possível processar o download do arquivo.")
+
+
+class DadosView(View):
+    """View para dashboard administrativo com estatísticas"""
+
+    async def _get_date_filters(self, request):
+        """Extrai e valida os filtros de data da requisição com validações de segurança"""
+        hoje = timezone.now().date()
+
+        # Parâmetros de data da requisição com sanitização
+        data_inicio_str = request.GET.get('data_inicio', '').strip()
+        data_fim_str = request.GET.get('data_fim', '').strip()
+
+        # Validação de formato: apenas YYYY-MM-DD
+        date_pattern = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+
+        # Valores padrão: últimos 30 dias
+        if not data_inicio_str or not date_pattern.match(data_inicio_str):
+            data_inicio = hoje - timedelta(days=30)
+        else:
+            try:
+                data_inicio = datetime.strptime(data_inicio_str, '%Y-%m-%d').date()
+
+                # Validações de segurança: não permitir datas muito antigas ou futuras
+                if data_inicio < hoje - timedelta(days=365):  # Máximo 1 ano atrás
+                    logger.warning(f"Data início muito antiga de: {data_inicio}")
+                    data_inicio = hoje - timedelta(days=365)
+
+                if data_inicio > hoje + timedelta(days=1):  # Máximo 1 dia no futuro
+                    logger.warning(f"Data início no futuro de: {data_inicio}")
+                    data_inicio = hoje
+
+            except (ValueError, OverflowError) as e:
+                logger.warning(f"Erro ao parsear data_inicio de: {e}")
+                data_inicio = hoje - timedelta(days=30)
+
+        if not data_fim_str or not date_pattern.match(data_fim_str):
+            data_fim = hoje
+            logger.info(f"Data fim inválida ou ausente, usando padrão")
+        else:
+            try:
+                data_fim = datetime.strptime(data_fim_str, '%Y-%m-%d').date()
+
+                # Validações de segurança
+                if data_fim > hoje + timedelta(days=1):  # Máximo 1 dia no futuro
+                    logger.warning(f"Data fim no futuro de: {data_fim}")
+                    data_fim = hoje
+
+                if data_fim < data_inicio - timedelta(days=365):  # Previne intervalos muito grandes
+                    logger.warning(f"Intervalo muito grande de: {data_inicio} até {data_fim}")
+                    data_fim = data_inicio + timedelta(days=365)  # Máximo 365 dias
+
+            except (ValueError, OverflowError) as e:
+                logger.warning(f"Erro ao parsear data_fim de: {e}")
+                data_fim = hoje
+
+        # Validações finais de lógica
+        if data_inicio > data_fim:
+            logger.warning(f"Data início > data fim de: {data_inicio} > {data_fim}")
+            data_inicio = data_fim - timedelta(days=30)
+
+        # Impedir intervalos maiores que 365 dias (1 ano)
+        if (data_fim - data_inicio).days > 365:
+            logger.warning(f"Intervalo muito grande de: {(data_fim - data_inicio).days} dias")
+            data_inicio = data_fim - timedelta(days=365)
+
+        logger.info(f"Filtros validados para: {data_inicio} até {data_fim}")
+        return data_inicio, data_fim
+
+    def _validate_filter_param(self, filter_param):
+        """Valida o parâmetro filter para prevenir ataques"""
+        allowed_filters = {'all', 'top10', 'top50'}
+
+        if not filter_param:
+            return 'all'
+
+        # Sanitização básica
+        filter_clean = str(filter_param).strip().lower()
+
+        if filter_clean not in allowed_filters:
+            logger.warning(f"Parâmetro filter inválido: {filter_param}")
+            return 'all'
+
+        return filter_clean
+
+    async def _check_user_is_superuser(self, request):
+        """Verifica se o usuário é superuser de forma segura em contexto async"""
+        # Verificar se há um user_id na sessão
+        session_user_id = await sync_to_async(lambda: request.session.get('_auth_user_id'))()
+
+        if not session_user_id:
+            return False
+
+        # Acessar o usuário diretamente do banco para evitar problemas com lazy loading
+        User = get_user_model()
+        try:
+            user = await User.objects.aget(pk=session_user_id)
+            return user.is_superuser and user.is_active
+        except (User.DoesNotExist, ValueError):
+            return False
+
+    @method_decorator(cache_control(no_cache=True, no_store=True, must_revalidate=True))
+    async def get(self, request):
+        """Dashboard administrativo - apenas admins podem acessar"""
+        try:
+            # Verificar se é admin
+            user_is_superuser = await self._check_user_is_superuser(request)
+            if not user_is_superuser:
+                return HttpResponseNotFound()
+
+            # Obter filtros de data com validações de segurança
+            data_inicio, data_fim = await self._get_date_filters(request)
+
+            # Obter filtro de sites (para abas HTMX) com validação
+            filter_sites = self._validate_filter_param(request.GET.get('filter'))
+
+        except Exception as e:
+            logger.error(f"Erro inesperado no processamento da requisição GET: {e}", exc_info=True)
+            return HttpResponseServerError("Erro interno do servidor")
+
+        # Converter para datetime com timezone para consultas
+        data_inicio_dt = timezone.make_aware(datetime.combine(data_inicio, datetime.min.time()))
+        data_fim_dt = timezone.make_aware(datetime.combine(data_fim, datetime.max.time()))
+
+        # Estatísticas de contas de email (filtradas por data de criação) - executadas em paralelo
+        contas_task = EmailAccount.objects.filter(created_at__gte=data_inicio_dt, created_at__lte=data_fim_dt).acount()
+        contas_ativas_task = EmailAccount.objects.filter(is_available=True, created_at__gte=data_inicio_dt, created_at__lte=data_fim_dt).acount()
+        mensagens_task = Message.objects.filter(received_at__gte=data_inicio_dt, received_at__lte=data_fim_dt).acount()
+        mensagens_anexos_task = Message.objects.filter(has_attachments=True, received_at__gte=data_inicio_dt, received_at__lte=data_fim_dt).acount()
+
+        # Executar consultas em paralelo
+        total_contas, contas_ativas, total_mensagens, mensagens_com_anexos = await asyncio.gather(
+            contas_task, contas_ativas_task, mensagens_task, mensagens_anexos_task
+        )
+
+        contas_em_uso = total_contas - contas_ativas
+
+        # Estatísticas de domínios (contas criadas no período) - otimizado
+        dominios_ativos_ids = set()
+        async for conta in EmailAccount.objects.filter(
+            created_at__gte=data_inicio_dt,
+            created_at__lte=data_fim_dt
+        ).only('domain_id')[:10000]:  # Limitar para performance
+            if conta.domain_id:
+                dominios_ativos_ids.add(conta.domain_id)
+
+        total_dominios = len(dominios_ativos_ids)
+        if dominios_ativos_ids:
+            dominios_ativos = await Domain.objects.filter(id__in=dominios_ativos_ids, is_active=True).acount()
+        else:
+            dominios_ativos = 0
+
+        # Distribuição de contas por domínio (filtrada por período) - otimizado
+        contas_por_dominio = []
+        async for dominio in Domain.objects.filter(is_active=True).only('id', 'domain'):
+            count = await dominio.accounts.filter(
+                created_at__gte=data_inicio_dt,
+                created_at__lte=data_fim_dt
+            ).acount()
+            if count > 0:
+                contas_por_dominio.append({
+                    'dominio': dominio.domain,
+                    'quantidade': count
+                })
+
+        # Estatísticas de anexos e top sites (filtradas por período) - otimizado
+        total_anexos = 0
+        tipos_anexo = Counter()
+        dominios_remetentes = Counter()
+
+        # Processar mensagens com anexos e coletar remetentes em uma única iteração
+        async for msg in Message.objects.filter(
+            received_at__gte=data_inicio_dt,
+            received_at__lte=data_fim_dt
+        ).only('from_address', 'attachments', 'has_attachments')[:50000]:  # Limitar para performance
+
+            # Coletar remetentes para top sites
+            if msg.from_address and '@' in msg.from_address:
+                dominio = msg.from_address.split('@')[1].lower()
+                # Sanitizar domínio
+                dominio = re.sub(r'[^a-zA-Z0-9.-]', '', dominio)[:100]
+                dominios_remetentes[dominio] += 1
+
+            # Processar anexos apenas se houver
+            if msg.has_attachments and msg.attachments:
+                total_anexos += len(msg.attachments)
+                for anexo in msg.attachments:
+                    content_type = anexo.get('contentType', 'unknown')
+                    # Extrair tipo principal (ex: 'application/pdf' -> 'pdf')
+                    tipo_principal = content_type.split('/')[-1] if '/' in content_type else content_type
+                    # Limitar tamanho do tipo
+                    tipo_principal = tipo_principal[:20]
+                    tipos_anexo[tipo_principal] += 1
+
+        # Aplicar filtro de sites baseado no parâmetro filter com limite de segurança
+        if filter_sites == 'top10':
+            limit = min(10, len(dominios_remetentes))
+        elif filter_sites == 'top50':
+            limit = min(50, len(dominios_remetentes))
+        else:  # 'all' ou qualquer outro valor
+            limit = min(100, len(dominios_remetentes))  # Limitar para performance
+
+        top_100_sites = [
+            {'dominio': dominio, 'quantidade': count}
+            for dominio, count in dominios_remetentes.most_common(limit)
+        ]
+
+        # Estatísticas temporais (usando o período selecionado)
+        contas_periodo = total_contas
+        mensagens_periodo = total_mensagens
+
+        context = {
+            'total_contas': total_contas,
+            'contas_ativas': contas_ativas,
+            'contas_em_uso': contas_em_uso,
+            'total_dominios': total_dominios,
+            'dominios_ativos': dominios_ativos,
+            'contas_por_dominio': contas_por_dominio,
+            'total_mensagens': total_mensagens,
+            'mensagens_com_anexos': mensagens_com_anexos,
+            'total_anexos': total_anexos,
+            'tipos_anexo': dict(tipos_anexo.most_common(10)),  # Top 10 tipos
+            'top_100_sites': top_100_sites,
+            'contas_periodo': contas_periodo,
+            'mensagens_periodo': mensagens_periodo,
+            'data_inicio': data_inicio,
+            'data_fim': data_fim,
+            'dias_periodo': (data_fim - data_inicio).days + 1,
+            'filter_sites': filter_sites,
+        }
+
+        # Verificar se é uma requisição HTMX para conteúdo parcial
+        try:
+            if request.headers.get('HX-Request'):
+                # Se tem parâmetro filter, é uma requisição das abas (retornar apenas sites)
+                if request.GET.get('filter'):
+                    response = await sync_to_async(render)(request, 'core/dados_sites.html', context)
+                else:
+                    # Requisição HTMX geral (retornar conteúdo completo)
+                    response = await sync_to_async(render)(request, 'core/dados_conteudo.html', context)
+            else:
+                # Requisição normal (retornar página completa)
+                response = await sync_to_async(render)(request, 'core/dados.html', context)
+
+            # Adicionar headers de segurança
+            response['X-Content-Type-Options'] = 'nosniff'
+            response['X-Frame-Options'] = 'DENY'
+            response['X-XSS-Protection'] = '1; mode=block'
+            response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+
+            return response
+        except Exception as e:
+            logger.error(f"Erro ao renderizar template: {e}", exc_info=True)
+            return HttpResponseServerError("Erro ao processar a página")
+
+    @method_decorator(cache_control(no_cache=True, no_store=True, must_revalidate=True))
+    async def post(self, request):
+        """API endpoint para atualização dinâmica dos dados via AJAX"""
+        try:
+            # Verificar se é admin
+            user_is_superuser = await self._check_user_is_superuser(request)
+            if not user_is_superuser:
+                return JsonResponse({'error': 'Acesso negado'}, status=403)
+
+            # Validar CSRF token
+            csrf_token = request.POST.get('csrfmiddlewaretoken') or request.META.get('HTTP_X_CSRFTOKEN')
+            if not csrf_token:
+                return JsonResponse({'error': 'Token CSRF inválido'}, status=403)
+
+            # Validar se a requisição é realmente AJAX/HTMX
+            if not request.headers.get('HX-Request') and not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'error': 'Requisição inválida'}, status=400)
+
+            # Obter filtros de data com validações de segurança
+            data_inicio, data_fim = await self._get_date_filters(request)
+
+        except Exception as e:
+            logger.error(f"Erro inesperado no processamento da requisição POST: {e}", exc_info=True)
+            return JsonResponse({'error': 'Erro interno do servidor'}, status=500)
+
+        # Processar a requisição POST validada
+        try:
+            # Converter para datetime com timezone para consultas
+            data_inicio_dt = timezone.make_aware(datetime.combine(data_inicio, datetime.min.time()))
+            data_fim_dt = timezone.make_aware(datetime.combine(data_fim, datetime.max.time()))
+
+            # Coletar todos os dados filtrados com validações adicionais
+            total_contas = await EmailAccount.objects.filter(
+                created_at__gte=data_inicio_dt,
+                created_at__lte=data_fim_dt
+            ).acount()
+
+            if total_contas > 50000:  # Limite de segurança aumentado para períodos maiores
+                logger.warning(f"Consulta POST muito grande rejeitada: {total_contas} contas")
+                return JsonResponse({'error': 'Período muito grande. Reduza o intervalo.'}, status=400)
+
+            contas_ativas = await EmailAccount.objects.filter(
+                is_available=True,
+                created_at__gte=data_inicio_dt,
+                created_at__lte=data_fim_dt
+            ).acount()
+
+            total_mensagens = await Message.objects.filter(
+                received_at__gte=data_inicio_dt,
+                received_at__lte=data_fim_dt
+            ).acount()
+
+            if total_mensagens > 200000:  # Limite de segurança aumentado para períodos maiores
+                logger.warning(f"Consulta POST muito grande rejeitada: {total_mensagens} mensagens")
+                return JsonResponse({'error': 'Período muito grande. Reduza o intervalo.'}, status=400)
+
+            mensagens_com_anexos = await Message.objects.filter(
+                has_attachments=True,
+                received_at__gte=data_inicio_dt,
+                received_at__lte=data_fim_dt
+            ).acount()
+
+            # Top 100 sites com limite de segurança
+            dominios_remetentes = Counter()
+            async for msg in Message.objects.filter(
+                received_at__gte=data_inicio_dt,
+                received_at__lte=data_fim_dt
+            )[:10000]:  # Limitar para performance
+                if msg.from_address and '@' in msg.from_address:
+                    dominio = msg.from_address.split('@')[1].lower()
+                    # Sanitizar domínio (remover caracteres especiais)
+                    dominio = re.sub(r'[^a-zA-Z0-9.-]', '', dominio)[:100]  # Limitar tamanho
+                    dominios_remetentes[dominio] += 1
+
+            top_100_sites = [
+                {'dominio': dominio, 'quantidade': count}
+                for dominio, count in dominios_remetentes.most_common(100)
+            ]
+
+            # Logging de auditoria para API
+            logger.info(f"API dashboard acessada, período: {data_inicio} até {data_fim}, "
+                       f"resultados: {total_contas} contas, {total_mensagens} mensagens")
+
+            response = JsonResponse({
+                'success': True,
+                'data': {
+                    'total_contas': total_contas,
+                    'contas_ativas': contas_ativas,
+                    'contas_em_uso': total_contas - contas_ativas,
+                    'total_mensagens': total_mensagens,
+                    'mensagens_com_anexos': mensagens_com_anexos,
+                    'top_100_sites': top_100_sites,
+                    'data_inicio': data_inicio.strftime('%Y-%m-%d'),
+                    'data_fim': data_fim.strftime('%Y-%m-%d'),
+                    'dias_periodo': (data_fim - data_inicio).days + 1,
+                }
+            })
+
+            # Adicionar headers de segurança
+            response['X-Content-Type-Options'] = 'nosniff'
+            response['X-Frame-Options'] = 'DENY'
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+
+            return response
+
+        except Exception as e:
+            logger.error(f"Erro no processamento dos dados da API: {e}", exc_info=True)
+            return JsonResponse({'error': 'Erro ao processar dados'}, status=500)

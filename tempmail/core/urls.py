@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
     TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI,
-    AttachmentDownloadAPI
+    AttachmentDownloadAPI, DadosView
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -14,7 +14,8 @@ urlpatterns = [
     path('health/', HeartCheckView.as_view(), name='health_check'),
     path('robots.txt', Robots_txtView.as_view(), name='robots_txt'),
     path('sitemap.xml', Sitemap_xmlView.as_view(), name='sitemap_xml'),
-    
+    path('dados/', DadosView.as_view(), name='dados_admin'),
+
     # Tempmail API (Async CBVs)
     path('api/email/', TempEmailAPI.as_view(), name='temp_email_api'),
     path('api/messages/', MessageListAPI.as_view(), name='message_list_api'),

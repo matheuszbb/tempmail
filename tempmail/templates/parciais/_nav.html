@@ -3,17 +3,18 @@
     <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
 
-            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
-                <div
-                    class="w-9 h-9 sm:w-11 sm:h-11 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22)]">
+            <a href="{% url 'index' %}" 
+                class="flex items-center gap-2 sm:gap-3 shrink-0 cursor-pointer group">
+                
+                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22)] group-hover:opacity-90 transition-all">
                     <i class="fa-solid fa-envelope text-white text-lg sm:text-xl"></i>
                 </div>
-
+            
                 <span class="text-xl sm:text-2xl font-black italic tracking-tighter font-inter">
                     <span class="text-[#f97316] drop-shadow-[0_6px_10px_rgba(249,115,22)]">Email</span><span
                         class="text-gray-800 dark:text-white">Rush</span>
                 </span>
-            </div>
+            </a>
 
             <div class="flex items-center gap-3 sm:gap-8">
 
