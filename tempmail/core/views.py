@@ -11,6 +11,7 @@ import logging
 import json
 from .models import Domain, EmailAccount, Message
 from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
+from django.middleware.csrf import get_token
 
 logger = logging.getLogger(__name__)
 
@@ -48,10 +49,20 @@ class IndexView(View):
             try:
                 account = await EmailAccount.objects.aget(address=email_address)
                 
-                # Buscar mensagens da sessão atual (última 1 hora)
+                # Buscar mensagens desde a primeira vez que este email foi usado na sessão
+                email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
                 session_start_val = await sync_to_async(request.session.get)('session_start')
-                if session_start_val:
-                    session_start = datetime.fromisoformat(session_start_val)
+                
+                # Usar o timestamp da primeira vez que este email foi usado, se disponível
+                if isinstance(email_sessions, dict) and email_address in email_sessions:
+                    session_start_str = email_sessions[email_address]
+                elif session_start_val:
+                    session_start_str = session_start_val
+                else:
+                    session_start_str = None
+                
+                if session_start_str:
+                    session_start = datetime.fromisoformat(session_start_str)
                     messages_qs = Message.objects.filter(
                         account=account,
                         received_at__gte=session_start
@@ -67,8 +78,6 @@ class IndexView(View):
             'initial_messages': messages
         })
         
-        # Garante que o cookie CSRF seja enviado (Substitui o ensure_csrf_cookie para Views Async)
-        from django.middleware.csrf import get_token
         get_token(request)
         
         return response
@@ -106,8 +115,16 @@ async def _get_or_create_temp_email_async(request) -> tuple[EmailAccount, bool]:
         # Reutilizar conta existente (mark_as_used ainda é síncrono no model, chamamos via sync_to_async)
         await sync_to_async(available_account.mark_as_used)()
         
+        # Registrar no histórico de emails
+        email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
+        if not isinstance(email_sessions, dict):
+            email_sessions = {}
+        if available_account.address not in email_sessions:
+            email_sessions[available_account.address] = timezone.now().isoformat()
+        await sync_to_async(request.session.__setitem__)('email_sessions', email_sessions)
+        
         await sync_to_async(request.session.__setitem__)('email_address', available_account.address)
-        await sync_to_async(request.session.__setitem__)('session_start', timezone.now().isoformat())
+        await sync_to_async(request.session.__setitem__)('session_start', email_sessions[available_account.address])
         await sync_to_async(request.session.save)()
         logger.info(f"Reutilizando conta: {available_account.address}")
         return available_account, True
@@ -156,9 +173,17 @@ async def _get_or_create_temp_email_async(request) -> tuple[EmailAccount, bool]:
             last_used_at=timezone.now()
         )
         
+        # Registrar no histórico de emails
+        email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
+        if not isinstance(email_sessions, dict):
+            email_sessions = {}
+        if account.address not in email_sessions:
+            email_sessions[account.address] = timezone.now().isoformat()
+        await sync_to_async(request.session.__setitem__)('email_sessions', email_sessions)
+        
         # Salvar na sessão
         await sync_to_async(request.session.__setitem__)('email_address', account.address)
-        await sync_to_async(request.session.__setitem__)('session_start', timezone.now().isoformat())
+        await sync_to_async(request.session.__setitem__)('session_start', email_sessions[account.address])
         await sync_to_async(request.session.save)()
         
         logger.info(f"Conta criada com sucesso: {address}")
@@ -237,6 +262,15 @@ class TempEmailAPI(View):
                 logger.info("Sessão limpa. Gerando novo email imediatamente...")
                 account, is_new = await _get_or_create_temp_email_async(request)
 
+                # Registrar o novo email no histórico
+                email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
+                if not isinstance(email_sessions, dict):
+                    email_sessions = {}
+                
+                if account.address not in email_sessions:
+                    email_sessions[account.address] = timezone.now().isoformat()
+                await sync_to_async(request.session.__setitem__)('email_sessions', email_sessions)
+                
                 session_start_val = await sync_to_async(request.session.get)('session_start')
                 session_start = datetime.fromisoformat(session_start_val)
                 
@@ -263,6 +297,11 @@ class TempEmailAPI(View):
             session_used_emails = await sync_to_async(request.session.get)('used_emails', [])
             if not isinstance(session_used_emails, list):
                 session_used_emails = []
+            
+            # 0.1. Obter histórico de quando cada email foi usado pela primeira vez
+            email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
+            if not isinstance(email_sessions, dict):
+                email_sessions = {}
             
             # 0.1. Liberar o email anterior da sessão (se houver)
             if session_email and session_email != custom_email:
@@ -357,18 +396,24 @@ class TempEmailAPI(View):
 
             # 4. Atualizar sessão
             await sync_to_async(request.session.__setitem__)('email_address', account.address)
-            await sync_to_async(request.session.__setitem__)('session_start', timezone.now().isoformat())
             
             # Adicionar email ao histórico de emails usados nesta sessão
             if account.address not in session_used_emails:
                 session_used_emails.append(account.address)
             await sync_to_async(request.session.__setitem__)('used_emails', session_used_emails)
             
+            # Registrar quando este email foi usado pela primeira vez (ou manter o existente)
+            if account.address not in email_sessions:
+                email_sessions[account.address] = timezone.now().isoformat()
+            await sync_to_async(request.session.__setitem__)('email_sessions', email_sessions)
+            
+            # Usar o timestamp da primeira vez que este email foi usado para calcular expiração
+            first_used_at = datetime.fromisoformat(email_sessions[account.address])
+            await sync_to_async(request.session.__setitem__)('session_start', first_used_at.isoformat())
+            
             await sync_to_async(request.session.save)()
             
-            session_start_val = await sync_to_async(request.session.get)('session_start')
-            session_start = datetime.fromisoformat(session_start_val)
-            expires_at = session_start + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
+            expires_at = first_used_at + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
             expires_in = int((expires_at - timezone.now()).total_seconds())
 
             return JsonResponse({
@@ -394,11 +439,22 @@ class MessageListAPI(View):
         try:
             session_email = await sync_to_async(request.session.get)('email_address')
             session_start = await sync_to_async(request.session.get)('session_start')
+            email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
             
-            if not session_email or not session_start:
+            if not session_email:
                 return JsonResponse({'success': False, 'error': 'Sessão não encontrada'}, status=200)
             
             account = await EmailAccount.objects.aget(address=session_email)
+            
+            # Usar o timestamp da primeira vez que este email foi usado, se disponível
+            if isinstance(email_sessions, dict) and session_email in email_sessions:
+                session_start_str = email_sessions[session_email]
+            elif session_start:
+                session_start_str = session_start
+            else:
+                return JsonResponse({'success': False, 'error': 'Sessão não encontrada'}, status=200)
+            
+            session_start_dt = datetime.fromisoformat(session_start_str)
             
             # --- Lógica de Sincronização Inteligente (Throttle de 10s) ---
             now = timezone.now()
@@ -501,7 +557,6 @@ class MessageListAPI(View):
                     logger.error(f"Erro na sincronização automática: {str(e)}")
             # ----------------------------------------------------------
 
-            session_start_dt = datetime.fromisoformat(session_start)
             session_end = session_start_dt + timedelta(hours=1)
             
             messages_qs = Message.objects.filter(

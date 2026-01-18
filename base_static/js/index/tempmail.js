@@ -12,6 +12,8 @@ class TempMailApp {
         this.sessionTimer = null; // Timer da sessão
         this.sessionSecondsRemaining = 0;
         this.popoverActiveMobile = false; // Estado para controle de toque no mobile
+        this.pollingTimer = null; // Timer do polling (contador de 10s)
+        this.pollingSecondsRemaining = 10; // Segundos restantes até próxima busca
 
         this.elements = {
             emailDisplay: document.getElementById('emailDisplay'),
@@ -46,7 +48,8 @@ class TempMailApp {
             confirmDownloadBtn: document.getElementById('confirmDownloadBtn'),
             btnHeaderAttachments: document.getElementById('btn-header-attachments'),
             headerAttachmentsBadge: document.getElementById('header-attachments-badge'),
-            sessionCountdown: document.getElementById('session-countdown')
+            sessionCountdown: document.getElementById('session-countdown'),
+            pollingTimer: document.querySelector('.js-timer') // Timer do polling
         };
 
         this.init();
@@ -121,12 +124,52 @@ class TempMailApp {
 
     startPolling() {
         this.stopPolling();
+        // Resetar timer do polling
+        this.pollingSecondsRemaining = 10;
+        this.updatePollingTimer();
+        // Iniciar timer do polling (contador)
+        this.startPollingTimer();
         // Polling de 10 segundos
         this.pollingInterval = setInterval(() => this.refreshMessages(), 10000);
     }
 
     stopPolling() {
         if (this.pollingInterval) clearInterval(this.pollingInterval);
+        this.stopPollingTimer();
+    }
+
+    /**
+     * Inicia o timer do polling (contador de 10s)
+     */
+    startPollingTimer() {
+        this.stopPollingTimer();
+        this.pollingTimer = setInterval(() => {
+            this.pollingSecondsRemaining--;
+            this.updatePollingTimer();
+            
+            if (this.pollingSecondsRemaining <= 0) {
+                this.pollingSecondsRemaining = 10;
+            }
+        }, 1000);
+    }
+
+    /**
+     * Para o timer do polling
+     */
+    stopPollingTimer() {
+        if (this.pollingTimer) {
+            clearInterval(this.pollingTimer);
+            this.pollingTimer = null;
+        }
+    }
+
+    /**
+     * Atualiza a UI do timer do polling
+     */
+    updatePollingTimer() {
+        if (this.elements.pollingTimer) {
+            this.elements.pollingTimer.textContent = `${this.pollingSecondsRemaining}s`;
+        }
     }
 
     /**
@@ -140,7 +183,16 @@ class TempMailApp {
         const isReadingMessage = this.elements.viewList && this.elements.viewList.classList.contains('hidden');
 
         if (this.isRefreshing || this.isResetting || document.hidden || isReadingMessage) {
+            // Pausar timer quando polling está pausado
+            if (this.pollingTimer) {
+                this.stopPollingTimer();
+            }
             return;
+        }
+        
+        // Garantir que o timer está rodando quando o polling está ativo
+        if (!this.pollingTimer) {
+            this.startPollingTimer();
         }
 
         this.isRefreshing = true;
@@ -158,6 +210,10 @@ class TempMailApp {
         }
 
         this.isRefreshing = false;
+        
+        // Resetar timer do polling após buscar mensagens
+        this.pollingSecondsRemaining = 10;
+        this.updatePollingTimer();
     }
 
     /**
@@ -759,6 +815,8 @@ class TempMailApp {
         // Encontrar o ícone dentro do botão
         const icon = btn.querySelector('i');
         if (icon) {
+            // Remover classes de cor padrão e adicionar classes de rotação e cor laranja
+            icon.classList.remove('text-gray-600', 'dark:text-gray-300', 'group-hover:text-brand-orange');
             icon.classList.add('fa-spin', 'text-brand-orange', 'dark:text-orange-400');
         }
 
@@ -771,7 +829,9 @@ class TempMailApp {
             Toast.error('Erro ao atualizar mensagens.');
         } finally {
             if (icon) {
+                // Restaurar classes padrão e remover rotação
                 icon.classList.remove('fa-spin', 'text-brand-orange', 'dark:text-orange-400');
+                icon.classList.add('text-gray-600', 'dark:text-gray-300', 'group-hover:text-brand-orange');
             }
             this.isSyncing = false;
         }
@@ -859,13 +919,19 @@ class TempMailApp {
 
             Toast.success('E-mail alterado com sucesso!');
             if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
+            
+            // Permitir busca imediata mesmo durante reset
+            this.isResetting = false;
+            
+            // Buscar mensagens imediatamente após alterar o email
+            await this.refreshMessages();
         } else {
             const errorMsg = data?.error || (status === 403 ? 'Sessão inválida ou expirada.' : 'Erro ao alterar email.');
             Toast.error(errorMsg);
+            this.isResetting = false;
         }
 
         this.hideSkeleton();
-        this.isResetting = false;
         this.startPolling();
     }
 
