@@ -3,7 +3,7 @@ from django.urls import path
 from .views import (
     IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
     TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI,
-    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView
+    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -11,6 +11,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view(), name='index'),
+    path('sobre/', SobreView.as_view(), name='sobre'),
     path('privacidade/', PrivacidadeView.as_view(), name='privacidade'),
     path('termos/', TermosView.as_view(), name='termos'),
     path('contato/', ContatoView.as_view(), name='contato'),

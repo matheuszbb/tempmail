@@ -29,6 +29,10 @@ class Robots_txtView(View):
         robots_txt_content = f"""\
 User-Agent: *
 Allow: /
+Allow: /sobre
+Allow: /privacidade
+Allow: /termos
+Allow: /contato
 Sitemap: {request.build_absolute_uri('/sitemap.xml')}
 """
         return HttpResponse(robots_txt_content, content_type="text/plain", status=200)
@@ -40,6 +44,28 @@ class Sitemap_xmlView(View):
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
     <loc>{site_url}</loc>
+    <priority>1.0</priority>
+    <changefreq>daily</changefreq>
+</url>
+<url>
+    <loc>{site_url}/sobre</loc>
+    <priority>0.8</priority>
+    <changefreq>monthly</changefreq>
+</url>
+<url>
+    <loc>{site_url}/privacidade</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+</url>
+<url>
+    <loc>{site_url}/termos</loc>
+    <priority>0.6</priority>
+    <changefreq>monthly</changefreq>
+</url>
+<url>
+    <loc>{site_url}/contato</loc>
+    <priority>0.4</priority>
+    <changefreq>yearly</changefreq>
 </url>
 </urlset>
 """
@@ -1118,6 +1144,12 @@ class DadosView(View):
         except Exception as e:
             logger.error(f"Erro no processamento dos dados da API: {e}", exc_info=True)
             return JsonResponse({'error': 'Erro ao processar dados'}, status=500)
+
+
+class SobreView(View):
+    """Página Sobre o EmailRush"""
+    async def get(self, request):
+        return await sync_to_async(render)(request, 'sobre.html')
 
 
 class PrivacidadeView(View):
