@@ -991,7 +991,7 @@ class DadosView(View):
             if request.headers.get('HX-Request'):
                 # Se tem parâmetro filter, é uma requisição das abas (retornar apenas sites)
                 if request.GET.get('filter'):
-                    response = await sync_to_async(render)(request, 'core/dados_sites.html', context)
+                    response = await sync_to_async(render)(request, 'core/parciais/dados/_dadosTop.html', context)
                 else:
                     # Requisição HTMX geral (retornar conteúdo completo)
                     response = await sync_to_async(render)(request, 'core/dados_conteudo.html', context)

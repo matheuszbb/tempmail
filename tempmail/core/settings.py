@@ -213,5 +213,5 @@ SMTPLABS_API_KEY = os.getenv('SMTPLABS_KEY')
 SMTPLABS_BASE_URL = 'https://api.smtp.dev'
 
 # Tempmail Settings
-TEMPMAIL_SESSION_DURATION = 3600  # 1 hora em segundos
-TEMPMAIL_REUSE_COOLDOWN = 7200    # 2 horas em segundos
+TEMPMAIL_SESSION_DURATION = 60  # 3600 = 1 hora em segundos
+TEMPMAIL_REUSE_COOLDOWN = 7200    # 7200 = 2 horas em segundos

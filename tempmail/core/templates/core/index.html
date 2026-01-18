@@ -58,6 +58,9 @@
                     <span>O seu endereço de e-mail temporário por</span>
                     <span id="session-countdown"
                         class="font-bold text-orange-600 dark:text-orange-400 tracking-tight">...</span>
+                    <button onclick="openSessionInfoModal()" class="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Sobre o tempo da sessão">
+                        <i class="fas fa-info-circle text-sm"></i>
+                    </button>
                 </p>
             </div>
 
@@ -185,7 +188,7 @@
 
                     <div id="email-list" class="divide-y divide-gray-100 dark:divide-gray-700">
                         {% for message in initial_messages %}
-                        {% include "core/parciais/_message_item.html" with message=message %}
+                            {% include "./parciais/index/_message_item.html" with message=message %}
                         {% endfor %}
                     </div>
                 </div>
@@ -203,7 +206,7 @@
                         </div>
                         <div
                             class="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-100 dark:border-gray-700">
-                            <span class="js-timer font-mono font-bold text-orange-600 dark:text-orange-400 w-[35px] text-center inline-block">
+                            <span class="js-polling-timer font-mono font-bold text-orange-600 dark:text-orange-400 w-[35px] text-center inline-block">
                                 10s
                             </span>
                             <i class="fa-solid fa-circle-notch animate-spin text-orange-600 text-[15px]"></i>
@@ -390,17 +393,16 @@
 {% endblock %}
 
 {% block extra_content %}
-{% include 'parciais/_qrPopover.html' %}
-{% include './parciais/_editModal.html' %}
-{% include './parciais/_confirmationResetModal.html' %}
-{% include './parciais/_confirmationExternalLinkModal.html' %}
-{% include './parciais/_confirmationDownloadModal.html' %}
+    {% include 'parciais/_qrPopover.html' %}
+    {% include './parciais/index/_editModal.html' %}
+    {% include './parciais/index/_confirmationResetModal.html' %}
+    {% include './parciais/index/_confirmationExternalLinkModal.html' %}
+    {% include './parciais/index/_confirmationDownloadModal.html' %}
+    {% include './parciais/index/_sessionInfoModal.html' %}
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'js/global/timer.js' %}"></script>
-<script src="{% static 'js/global/scrollToTop.js' %}"></script>
-<script src="{% static 'js/global/copyToClipboard.js' %}"></script>
-<script src="{% static 'js/global/genQRCode.js' %}"></script>
-<script src="{% static 'js/index/tempmail.js' %}"></script>
+    <script src="{% static 'js/global/copyToClipboard.js' %}"></script>
+    <script src="{% static 'js/global/genQRCode.js' %}"></script>
+    <script src="{% static 'js/index/tempmail.js' %}"></script>
 {% endblock %}

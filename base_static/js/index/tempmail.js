@@ -1,8 +1,3 @@
-/**
- * Tempmail - Integração Frontend-Backend
- * Gerencia a obtenção de e-mails, polling de mensagens e exibição.
- */
-
 class TempMailApp {
     constructor() {
         this.currentEmail = null;
@@ -14,6 +9,13 @@ class TempMailApp {
         this.popoverActiveMobile = false; // Estado para controle de toque no mobile
         this.pollingTimer = null; // Timer do polling (contador de 10s)
         this.pollingSecondsRemaining = 10; // Segundos restantes até próxima busca
+        this.backgroundPollingTimer = null; // Timer para polling em background (5min)
+        this.originalTitle = document.title; // Título original da página
+        this.unreadCount = 0; // Contagem de mensagens não lidas
+        this.lastMessageCount = 0; // Contagem anterior de mensagens para detectar novas
+        this.notificationInterval = null; // Timer para notificações visuais
+        this.retryCount = 0; // Contador de tentativas de backoff
+        this.maxRetries = 5; // Máximo de tentativas em caso de erro
 
         this.elements = {
             emailDisplay: document.getElementById('emailDisplay'),
@@ -49,7 +51,7 @@ class TempMailApp {
             btnHeaderAttachments: document.getElementById('btn-header-attachments'),
             headerAttachmentsBadge: document.getElementById('header-attachments-badge'),
             sessionCountdown: document.getElementById('session-countdown'),
-            pollingTimer: document.querySelector('.js-timer') // Timer do polling
+            pollingTimer: document.querySelector('.js-polling-timer') // Timer do polling
         };
 
         this.init();
@@ -57,6 +59,7 @@ class TempMailApp {
 
     async init() {
         this.setupScrollBehavior();
+        this.setupVisibilityChange();
         await this.loadEmail();
         this.startPolling();
     }
@@ -76,6 +79,133 @@ class TempMailApp {
                 }
             });
         }
+    }
+
+    setupVisibilityChange() {
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // Quando a aba fica oculta
+                // Se faltar menos de 60s, fazemos um fetch imediato de "última chance" antes do freeze do browser
+                if (this.sessionSecondsRemaining > 0 && this.sessionSecondsRemaining < 60) {
+                    this.refreshMessages();
+                }
+
+                this.startBackgroundPolling();
+            } else {
+                // Quando a página volta a ficar visível
+                this.stopBackgroundPolling();
+
+                // Limpa notificações visuais se existirem
+                if (this.notificationInterval) {
+                    clearInterval(this.notificationInterval);
+                    document.title = this.originalTitle;
+                }
+
+                // Atualizar título (vai restaurar para original se não há mensagens não lidas)
+                this.updateTabTitle();
+
+                // Se não estamos lendo uma mensagem e a sessão não expirou, reinicia o timer e faz um refresh
+                const isReadingMessage = this.elements.viewList && this.elements.viewList.classList.contains('hidden');
+                if (!isReadingMessage && !this.isResetting && this.sessionSecondsRemaining > 0) {
+                    // Só reinicia se não estiver rodando
+                    if (!this.pollingTimer) {
+                        this.pollingSecondsRemaining = 10;
+                        this.updatePollingTimer();
+                        this.startPollingTimer();
+                    }
+
+                    // Faz um refresh imediato das mensagens
+                    this.refreshMessages();
+                }
+            }
+        });
+    }
+
+    /**
+     * Inicia polling em background a cada 5 minutos quando aba está oculta
+     */
+    startBackgroundPolling() {
+        this.stopBackgroundPolling(); // Garante que não há timers duplicados
+
+        // Só inicia se a sessão não estiver expirada
+        if (this.sessionSecondsRemaining <= 0) return;
+
+        this.backgroundPollingTimer = setInterval(() => {
+            // Só faz polling se não estiver no modo crítico (últimos 10s são tratados pelo polling normal)
+            if (this.sessionSecondsRemaining > 10) {
+                this.refreshMessages();
+            }
+        }, 5 * 60 * 1000); // 5 minutos
+    }
+
+    /**
+     * Para o polling em background
+     */
+    stopBackgroundPolling() {
+        if (this.backgroundPollingTimer) {
+            clearInterval(this.backgroundPollingTimer);
+            this.backgroundPollingTimer = null;
+        }
+    }
+
+    /**
+     * Agenda uma nova tentativa com backoff em caso de erro
+     */
+    scheduleRetryWithBackoff() {
+        if (this.retryCount >= this.maxRetries) {
+            this.retryCount = 0; // Reset para próximas tentativas
+            return;
+        }
+
+        this.retryCount++;
+
+        // Backoff exponencial: 2s, 4s, 8s, 16s, 32s
+        const delay = Math.pow(2, this.retryCount) * 1000;
+
+        setTimeout(() => {
+            this.refreshMessages();
+        }, delay);
+    }
+
+    /**
+     * Atualiza o título da aba baseado na contagem de mensagens não lidas
+     */
+    updateTabTitle() {
+        if (this.unreadCount > 0 && document.hidden) {
+            // Mostra contagem igual ao Gmail: (1), (2), etc.
+            const countText = this.unreadCount === 1 ? '1' : this.unreadCount.toString();
+            document.title = `📧 (${countText}) - ${this.originalTitle}`;
+        } else {
+            // Restaura título original quando não há mensagens não lidas ou aba está visível
+            document.title = this.originalTitle;
+        }
+    }
+
+    /**
+     * Notifica o usuário sobre novo email com alerta visual
+     */
+    notifyNewEmail() {
+        // Alerta Visual no Título (Piscar) - sem som para não ser chato
+        if (this.notificationInterval) clearInterval(this.notificationInterval);
+
+        const oldTitle = document.title;
+        let isAlert = false;
+
+        this.notificationInterval = setInterval(() => {
+            document.title = isAlert ? "📧 NOVO E-MAIL!" : "⚠️ VEJA AGORA!";
+            isAlert = !isAlert;
+        }, 1000);
+
+        // Para o alerta após 10 segundos ou quando o usuário focar na aba
+        const stopAlert = () => {
+            clearInterval(this.notificationInterval);
+            document.title = oldTitle;
+            window.removeEventListener('focus', stopAlert);
+        };
+        window.addEventListener('focus', stopAlert);
+
+        // Timeout de segurança para parar o alerta
+        setTimeout(stopAlert, 10000);
     }
 
     scrollToTop() {
@@ -123,34 +253,60 @@ class TempMailApp {
     }
 
     startPolling() {
+        // Não iniciar polling se a sessão estiver expirada
+        if (this.sessionSecondsRemaining <= 0) {
+            return;
+        }
+
         this.stopPolling();
         // Resetar timer do polling
         this.pollingSecondsRemaining = 10;
         this.updatePollingTimer();
         // Iniciar timer do polling (contador)
         this.startPollingTimer();
-        // Polling de 10 segundos
-        this.pollingInterval = setInterval(() => this.refreshMessages(), 10000);
     }
 
     stopPolling() {
         if (this.pollingInterval) clearInterval(this.pollingInterval);
         this.stopPollingTimer();
+        this.stopBackgroundPolling();
     }
 
     /**
-     * Inicia o timer do polling (contador de 10s)
+     * Inicia o timer do polling com intervalo adaptativo
      */
-    startPollingTimer() {
+    startPollingTimer(customInterval = null) {
         this.stopPollingTimer();
-        this.pollingTimer = setInterval(() => {
+
+        const updateTimer = () => {
             this.pollingSecondsRemaining--;
             this.updatePollingTimer();
-            
+
             if (this.pollingSecondsRemaining <= 0) {
-                this.pollingSecondsRemaining = 10;
+                // Sempre faz refreshMessages quando chega a 0, mas ela decide se faz GET ou não
+                this.refreshMessages();
+
+                // Só reseta o contador se a sessão ainda não expirou
+                if (this.sessionSecondsRemaining > 0) {
+                    this.pollingSecondsRemaining = 10;
+                    this.updatePollingTimer();
+                } else {
+                    // Sessão expirou - mantém em 0 e para o timer
+                    this.pollingSecondsRemaining = 0;
+                    this.updatePollingTimer();
+                    this.stopPollingTimer();
+                    return;
+                }
             }
-        }, 1000);
+
+            // Intervalo sempre de 1 segundo para manter o countdown funcionando
+            const nextInterval = 1000;
+
+            this.pollingTimer = setTimeout(updateTimer, nextInterval);
+        };
+
+        // Iniciar timer
+        this.pollingTimer = setTimeout(updateTimer, 1000);
     }
 
     /**
@@ -158,7 +314,7 @@ class TempMailApp {
      */
     stopPollingTimer() {
         if (this.pollingTimer) {
-            clearInterval(this.pollingTimer);
+            clearTimeout(this.pollingTimer);
             this.pollingTimer = null;
         }
     }
@@ -176,44 +332,78 @@ class TempMailApp {
      * Busca novas mensagens do servidor
      */
     async refreshMessages() {
-        // PAUSA INTELIGENTE:
-        // 1. Se estiver resetando (isResetting)
-        // 2. Se a aba estiver oculta (document.hidden)
-        // 3. Se estiver LENDO uma mensagem (view-list oculto)
+        // Janela crítica aumentada para 25s (cobre atraso de suspensão do navegador)
+        const isCriticalTime = this.sessionSecondsRemaining > 0 && this.sessionSecondsRemaining <= 25;
         const isReadingMessage = this.elements.viewList && this.elements.viewList.classList.contains('hidden');
 
-        if (this.isRefreshing || this.isResetting || document.hidden || isReadingMessage) {
-            // Pausar timer quando polling está pausado
-            if (this.pollingTimer) {
-                this.stopPollingTimer();
-            }
+        // Se estiver lendo e-mail ou resetando, ignoramos
+        if (this.isRefreshing || this.isResetting || isReadingMessage) return;
+
+        // Se a aba estiver oculta, SÓ fazemos polling se for tempo crítico
+        if (document.hidden && !isCriticalTime) return;
+
+        // Se o tempo acabou de fato, mata o processo
+        if (this.sessionSecondsRemaining <= 0) {
+            this.stopPolling();
             return;
         }
         
-        // Garantir que o timer está rodando quando o polling está ativo
-        if (!this.pollingTimer) {
-            this.startPollingTimer();
-        }
+        // O timer é controlado pelo countdown, não deve ser reiniciado aqui
 
         this.isRefreshing = true;
 
-        const { success, data, status } = await this._apiCall('/api/messages/', {
-            headers: { 'X-CSRFToken': this.getCsrfToken() }
-        });
+        try {
+            const response = await fetch('/api/messages/', {
+                headers: { 'X-CSRFToken': this.getCsrfToken() }
+            });
+            const data = await response.json();
 
-        if (success && data && data.success) {
-            this.renderMessages(data.messages || []);
-        } else if ((data && data.error === 'Sessão não encontrada') || status === 400) {
-            if (!this.isResetting) {
-                await this.loadEmail();
+            if (data.success) {
+                const newMessages = data.messages || [];
+
+                // Verifica se recebeu mensagens novas
+                if (newMessages.length > this.lastMessageCount) {
+                    this.renderMessages(newMessages);
+
+                    // Se o usuário não está vendo e é tempo crítico, avisa ele!
+                    if (document.hidden && isCriticalTime) {
+                        this.notifyNewEmail();
+                    }
+
+                    this.lastMessageCount = newMessages.length;
+                } else if (newMessages.length === 0) {
+                    // Reseta contador se não há mensagens
+                    this.lastMessageCount = 0;
+                }
+
+                // Sucesso: reset do contador de retry
+                this.retryCount = 0;
+            } else if ((data && data.error === 'Sessão não encontrada') || response.status === 400) {
+                if (!this.isResetting) {
+                    await this.loadEmail();
+                }
+            } else if (response.status >= 500) {
+                // Erro de servidor: implementar backoff
+                console.warn(`Erro ${response.status}, tentando novamente com backoff`);
+                this.scheduleRetryWithBackoff();
+                this.isRefreshing = false;
+                return; // Não continua o fluxo normal
             }
+        } catch (e) {
+            // Erro de rede: implementar backoff
+            console.error("Erro de conexão, tentando novamente com backoff", e);
+            this.scheduleRetryWithBackoff();
+            this.isRefreshing = false;
+            return; // Não continua o fluxo normal
         }
 
         this.isRefreshing = false;
-        
-        // Resetar timer do polling após buscar mensagens
-        this.pollingSecondsRemaining = 10;
-        this.updatePollingTimer();
+
+        // Re-agendar polling normal apenas se sessão não expirou
+        if (this.sessionSecondsRemaining > 0) {
+            this.stopPollingTimer();
+            this.startPollingTimer();
+        }
     }
 
     /**
@@ -221,6 +411,13 @@ class TempMailApp {
      */
     renderMessages(messages) {
         if (!this.elements.emailList) return;
+
+        // Contar mensagens não lidas
+        const unreadMessages = messages ? messages.filter(msg => !msg.is_read) : [];
+        this.unreadCount = unreadMessages.length;
+
+        // Atualizar título da aba se houver mensagens não lidas e aba estiver oculta
+        this.updateTabTitle();
 
         // Limpa a lista atual
         this.elements.emailList.innerHTML = '';
@@ -379,6 +576,7 @@ class TempMailApp {
      */
     async viewMessage(messageId) {
         this.currentMessageId = messageId;
+
         try {
             const response = await fetch(`/api/messages/${messageId}/`, {
                 headers: {
@@ -809,6 +1007,12 @@ class TempMailApp {
     }
 
     async syncInbox(btn) {
+        // Verificar se a sessão está expirada
+        if (this.sessionSecondsRemaining <= 0) {
+            Toast.warning('Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço temporário.');
+            return;
+        }
+
         if (this.isSyncing) return;
         this.isSyncing = true;
 
@@ -835,6 +1039,39 @@ class TempMailApp {
             }
             this.isSyncing = false;
         }
+    }
+
+    // ==================== SESSION INFO MODAL ====================
+
+    openSessionInfoModal() {
+        const modal = document.getElementById('sessionInfoModal');
+        if (!modal) return;
+
+        const modalContent = modal.querySelector('div > div');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('opacity-100');
+            if (modalContent) {
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }
+        }, 10);
+    }
+
+    closeSessionInfoModal() {
+        const modal = document.getElementById('sessionInfoModal');
+        if (!modal) return;
+
+        const modalContent = modal.querySelector('div > div');
+        modal.classList.remove('opacity-100');
+        if (modalContent) {
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+        }
+
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
     }
 
     // ==================== MODAL EDIT LOGIC ====================
@@ -960,6 +1197,11 @@ class TempMailApp {
     backToList() {
         if (this.elements.viewContent) this.elements.viewContent.classList.add('hidden');
         if (this.elements.viewList) this.elements.viewList.classList.remove('hidden');
+
+        // Reiniciar timer quando volta para a lista (se não estiver rodando e sessão não expirou)
+        if (!this.pollingTimer && !this.isResetting && this.sessionSecondsRemaining > 0) {
+            this.startPollingTimer();
+        }
     }
 
     getCsrfToken() {
@@ -1064,6 +1306,8 @@ window.backToList = () => window.app.backToList();
 window.openEditModal = () => window.app.openEditModal();
 window.closeEditModal = () => window.app.closeEditModal();
 window.saveEditModal = () => window.app.saveEditModal();
+window.openSessionInfoModal = () => window.app.openSessionInfoModal();
+window.closeSessionInfoModal = () => window.app.closeSessionInfoModal();
 window.scrollToTop = () => window.app.scrollToTop();
 window.scrollToAttachments = () => window.app.scrollToAttachments();
 window.downloadMessage = () => window.app.downloadMessage();
