@@ -1118,3 +1118,21 @@ class DadosView(View):
         except Exception as e:
             logger.error(f"Erro no processamento dos dados da API: {e}", exc_info=True)
             return JsonResponse({'error': 'Erro ao processar dados'}, status=500)
+
+
+class PrivacidadeView(View):
+    """Página de Política de Privacidade"""
+    async def get(self, request):
+        return await sync_to_async(render)(request, 'privacidade.html')
+
+
+class TermosView(View):
+    """Página de Termos de Serviço"""
+    async def get(self, request):
+        return await sync_to_async(render)(request, 'termos.html')
+
+
+class ContatoView(View):
+    """Página de Contato"""
+    async def get(self, request):
+        return await sync_to_async(render)(request, 'contato.html')
