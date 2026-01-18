@@ -145,27 +145,19 @@ class TempMailApp {
 
         this.isRefreshing = true;
 
-        try {
-            const response = await fetch('/api/messages/', {
-                headers: {
-                    'X-CSRFToken': this.getCsrfToken()
-                }
-            });
-            const data = await response.json();
+        const { success, data, status } = await this._apiCall('/api/messages/', {
+            headers: { 'X-CSRFToken': this.getCsrfToken() }
+        });
 
-            if (data.success) {
-                this.renderMessages(data.messages);
-            } else if (data.error === 'Sessão não encontrada' || response.status === 400) {
-                if (!this.isResetting) {
-                    console.warn('Sessão perdida. Tentando recuperar...');
-                    await this.loadEmail();
-                }
+        if (success && data && data.success) {
+            this.renderMessages(data.messages || []);
+        } else if ((data && data.error === 'Sessão não encontrada') || status === 400) {
+            if (!this.isResetting) {
+                await this.loadEmail();
             }
-        } catch (error) {
-            console.error('Erro ao atualizar mensagens:', error);
-        } finally {
-            this.isRefreshing = false;
         }
+
+        this.isRefreshing = false;
     }
 
     /**
@@ -367,7 +359,7 @@ class TempMailApp {
 
                 // Lógica de UI (baseada na solicitação do user "openEmail")
                 if (!this.elements.viewList || !this.elements.viewContent) {
-                    console.error("ERRO: Containers de view não encontrados");
+                    // Containers não encontrados
                     return;
                 }
 
@@ -411,7 +403,6 @@ class TempMailApp {
                 this.renderAttachments(msg.attachments, messageId);
             }
         } catch (error) {
-            console.error('Erro ao abrir mensagem:', error);
             Toast.error('Não foi possível abrir a mensagem.');
         }
     }
@@ -602,20 +593,13 @@ class TempMailApp {
     async downloadAttachment(messageId, attachmentId, filename) {
         if (!messageId || !attachmentId) return;
 
-        Toast.info('Iniciando download do anexo...', 2000);
+        Toast.info('Iniciando download...', 2000);
 
-        try {
-            const response = await fetch(`/api/messages/${messageId}/attachments/${attachmentId}/download/`, {
-                headers: {
-                    'X-CSRFToken': this.getCsrfToken()
-                }
-            });
+        const response = await fetch(`/api/messages/${messageId}/attachments/${attachmentId}/download/`, {
+            headers: { 'X-CSRFToken': this.getCsrfToken() }
+        });
 
-            if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData || 'Erro ao baixar anexo');
-            }
-
+        if (response.ok) {
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -625,11 +609,9 @@ class TempMailApp {
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
-
             Toast.success('Download concluído!');
-        } catch (error) {
-            console.error('Download error:', error);
-            Toast.error(`Erro no download: ${error.message}`);
+        } else {
+            Toast.error('Erro ao baixar anexo.');
         }
     }
 
@@ -714,8 +696,7 @@ class TempMailApp {
 
             Toast.success('Download pronto!');
         } catch (error) {
-            console.error('Download failed:', error);
-            Toast.error(`Erro ao baixar: ${error.message}`);
+            Toast.error('Erro ao processar download.');
         }
     }
 
@@ -746,8 +727,6 @@ class TempMailApp {
         // Limpar display IMEDIATAMENTE antes do fetch
         if (this.elements.emailDisplay) this.elements.emailDisplay.value = '';
         this.backToList(); // <--- Voltar para a lista se estiver lendo uma mensagem
-        this.showSkeleton();
-
         this.showSkeleton();
 
         const { success, data, status } = await this._apiCall('/api/email/', {
@@ -789,7 +768,6 @@ class TempMailApp {
             // Manter girando e laranja por pelo menos 2 segundos
             await new Promise(resolve => setTimeout(resolve, 2000));
         } catch (error) {
-            console.error('Erro na sincronização manual:', error);
             Toast.error('Erro ao atualizar mensagens.');
         } finally {
             if (icon) {
@@ -861,6 +839,9 @@ class TempMailApp {
         this.isResetting = true;
         this.stopPolling();
 
+        this.showSkeleton();
+        this.closeEditModal();
+
         const { success, data, status } = await this._apiCall('/api/email/', {
             method: 'POST',
             headers: {
@@ -907,8 +888,7 @@ class TempMailApp {
     }
 
     showError(msg) {
-        console.error(msg);
-        // Opcional: implementar um toast
+        // Silencioso
     }
 
     backToList() {

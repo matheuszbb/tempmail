@@ -39,7 +39,6 @@ class Sitemap_xmlView(View):
 """
         return HttpResponse(sitemap_xml_content, content_type="application/xml", status=200)
     
-@method_decorator(ensure_csrf_cookie, name='dispatch')
 class IndexView(View):
     async def get(self, request):
         email_address = await sync_to_async(request.session.get)('email_address')
@@ -64,12 +63,15 @@ class IndexView(View):
             except EmailAccount.DoesNotExist:
                 pass
                 
-        return await sync_to_async(render)(request, 'core/index.html', {
+        response = await sync_to_async(render)(request, 'core/index.html', {
             'initial_messages': messages
         })
-
-
-# ==================== TEMPMAIL API VIEWS (ASYNC CBVs) ====================
+        
+        # Garante que o cookie CSRF seja enviado (Substitui o ensure_csrf_cookie para Views Async)
+        from django.middleware.csrf import get_token
+        get_token(request)
+        
+        return response
 
 async def _get_or_create_temp_email_async(request) -> tuple[EmailAccount, bool]:
     """
@@ -255,11 +257,53 @@ class TempEmailAPI(View):
             
             # Validar formato básico
             if '@' not in custom_email:
-                return JsonResponse({'success': False, 'error': 'Endereço de email inválido'}, status=400)
+                return JsonResponse({'success': False, 'error': 'Endereço de email inválido'}, status=200)
+
+            # 0. Obter histórico de emails usados nesta sessão
+            session_used_emails = await sync_to_async(request.session.get)('used_emails', [])
+            if not isinstance(session_used_emails, list):
+                session_used_emails = []
+            
+            # 0.1. Liberar o email anterior da sessão (se houver)
+            if session_email and session_email != custom_email:
+                try:
+                    previous_account = await EmailAccount.objects.aget(address=session_email)
+                    # Liberar o email anterior imediatamente (mesmo que não tenha passado o cooldown)
+                    previous_account.is_available = True
+                    # Resetar last_used_at para permitir reutilização imediata
+                    previous_account.last_used_at = None
+                    await sync_to_async(previous_account.save)(update_fields=['is_available', 'last_used_at', 'updated_at'])
+                    logger.info(f"Email anterior liberado: {session_email}")
+                except EmailAccount.DoesNotExist:
+                    pass
 
             # 1. Verificar se a conta já existe no nosso banco
             try:
                 account = await EmailAccount.objects.aget(address=custom_email)
+                
+                # Verificar se este email foi usado pelo mesmo usuário nesta sessão
+                email_was_used_in_session = custom_email in session_used_emails
+                
+                # --- TRAVA DE SEGURANÇA: Verificar se o email já está ocupado por outro usuário ---
+                # Se o email não está disponível E não pode ser reutilizado (cooldown não passou),
+                # E não foi usado pelo mesmo usuário nesta sessão, então está sendo usado por outro usuário
+                if not account.is_available and not account.can_be_reused() and not email_was_used_in_session:
+                    return JsonResponse({
+                        'success': False, 
+                        'error': 'Este endereço de e-mail já está sendo usado por outro usuário.'
+                    }, status=200)
+                
+                # Se o email foi usado nesta sessão, liberar antes de reutilizar
+                if email_was_used_in_session and not account.is_available:
+                    account.is_available = True
+                    account.last_used_at = None
+                    await sync_to_async(account.save)(update_fields=['is_available', 'last_used_at', 'updated_at'])
+                    logger.info(f"Email usado nesta sessão, liberado para reutilização: {custom_email}")
+                
+                # Se estava disponível OU cooldown passou, marcamos como usada por este usuário
+                await sync_to_async(account.mark_as_used)()
+                logger.info(f"Usuário assumiu conta existente e liberada: {custom_email}")
+
             except EmailAccount.DoesNotExist:
                 # 2. Se não existe, precisamos criar. 
                 # Primeiro pegamos o domínio do banco
@@ -267,7 +311,7 @@ class TempEmailAPI(View):
                 try:
                     domain = await Domain.objects.aget(domain=domain_part)
                 except Domain.DoesNotExist:
-                    return JsonResponse({'success': False, 'error': 'Domínio não suportado'}, status=400)
+                    return JsonResponse({'success': False, 'error': 'Domínio não suportado'}, status=200)
                 
                 # 3. Tentar criar na API do SMTP.dev
                 client = SMTPLabsClient()
@@ -306,7 +350,7 @@ class TempEmailAPI(View):
                                 last_used_at=timezone.now()
                             )
                         else:
-                            return JsonResponse({'success': False, 'error': 'E-mail em uso por outro usuário ou domínio inválido'}, status=422)
+                            return JsonResponse({'success': False, 'error': 'E-mail em uso por outro usuário ou domínio inválido'}, status=200)
                     else:
                         logger.error(f"Erro ao criar conta customizada na API: {str(e)}")
                         return JsonResponse({'success': False, 'error': 'Não foi possível criar esta conta na API'}, status=500)
@@ -314,6 +358,12 @@ class TempEmailAPI(View):
             # 4. Atualizar sessão
             await sync_to_async(request.session.__setitem__)('email_address', account.address)
             await sync_to_async(request.session.__setitem__)('session_start', timezone.now().isoformat())
+            
+            # Adicionar email ao histórico de emails usados nesta sessão
+            if account.address not in session_used_emails:
+                session_used_emails.append(account.address)
+            await sync_to_async(request.session.__setitem__)('used_emails', session_used_emails)
+            
             await sync_to_async(request.session.save)()
             
             session_start_val = await sync_to_async(request.session.get)('session_start')
@@ -346,7 +396,7 @@ class MessageListAPI(View):
             session_start = await sync_to_async(request.session.get)('session_start')
             
             if not session_email or not session_start:
-                return JsonResponse({'success': False, 'error': 'Sessão não encontrada'}, status=400)
+                return JsonResponse({'success': False, 'error': 'Sessão não encontrada'}, status=200)
             
             account = await EmailAccount.objects.aget(address=session_email)
             

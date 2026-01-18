@@ -32,49 +32,25 @@
         <div class="lg:col-span-8 space-y-8">
 
             <div id="emailCard"
-                class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 dark:border-gray-700 transition-colors">
-                <div class="flex flex-col md:flex-row items-center gap-3">
+                class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 dark:border-gray-700 transition-colors w-full overflow-hidden">
+                <div class="flex flex-col gap-3 w-full min-w-0">
+                    <!-- Linha do Email -->
+                    <div class="flex items-center gap-3 w-full min-w-0">
+                        <div
+                            class="flex bg-gradient-to-br from-orange-400 to-orange-600 w-12 h-12 sm:w-14 sm:h-14 rounded-full items-center justify-center text-white text-xl sm:text-2xl shadow-md shrink-0">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </div>
 
-                    <div
-                        class="hidden md:flex bg-gradient-to-br from-orange-400 to-orange-600 w-14 h-14 rounded-full items-center justify-center text-white text-2xl shadow-md shrink-0">
-                        <i class="fa-solid fa-paper-plane"></i>
+                        <div
+                            class="flex-1 w-full min-w-0 bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 sm:p-2 rounded-xl shadow-inner flex items-center relative group min-h-[50px] sm:min-h-[60px]">
+                            <div id="emailSkeleton" class="skeleton h-6 sm:h-8 w-3/4 mx-4 bg-white/40 shrink-0"></div>
+                            <div class="flex-1 min-w-0 overflow-hidden">
+                                <input type="text" id="emailDisplay" value="" readonly autocomplete="off" data-bwignore
+                                    class="block w-full bg-transparent text-white font-semibold text-[clamp(0.8rem,3vw,1.25rem)] px-2 outline-none cursor-text hidden truncate">
+                            </div>
+                        </div>
                     </div>
 
-                    <div
-                        class="flex-grow w-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 rounded-xl shadow-inner flex items-center relative group min-h-[50px]">
-                        <div id="emailSkeleton" class="skeleton h-6 w-3/4 mx-4 bg-white/20"></div>
-                        <input type="text" id="emailDisplay" value="" readonly autocomplete="off" data-bwignore
-                            class="w-full bg-transparent text-white font-semibold text-lg px-4 outline-none placeholder-white/70 cursor-text hidden">
-                    </div>
-
-                    <div class="flex gap-2 w-full md:w-auto justify-center md:justify-start">
-                        <button type="button" id="qrButton" data-qr-trigger data-qr-source="emailDisplay"
-                            onclick="toggleQR(event)"
-                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group">
-                            <i class="fa-solid fa-qrcode text-base group-hover:text-brand-orange"></i>
-                        </button>
-                        <button onclick="copyToClipboard(this)" data-copy-target="emailDisplay"
-                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition relative group"
-                            title="Copiar Email">
-                            <i class="fa-solid fa-copy text-base group-hover:text-brand-orange transition-colors"></i>
-                        </button>
-                        <button onclick="syncInbox(this)"
-                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition btn-refresh-icon group"
-                            title="Atualizar">
-                            <i
-                                class="fa-solid fa-rotate-right transition-transform group-hover:text-brand-orange transition-colors"></i>
-                        </button>
-                        <button onclick="openEditModal()"
-                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group"
-                            title="Editar Email">
-                            <i class="fa-solid fa-pen group-hover:text-brand-orange transition-colors"></i>
-                        </button>
-                        <button onclick="resetSession()"
-                            class="w-10 h-10 md:w-12 md:h-12 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-lg flex items-center justify-center transition group"
-                            title="Excluir">
-                            <i class="fa-solid fa-trash group-hover:text-red-500 transition-colors"></i>
-                        </button>
-                    </div>
                 </div>
 
                 <p
