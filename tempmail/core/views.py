@@ -222,7 +222,8 @@ async def _get_or_create_temp_email_async(request) -> tuple[EmailAccount, bool]:
         
     except SMTPLabsAPIError as e:
         logger.error(f"Erro ao criar conta: {str(e)}")
-        raise
+        # Em vez de levantar, retorna None para tratamento no nível superior
+        return None, False
     except Exception as e:
         logger.error(f"Erro inesperado ao criar conta: {str(e)}")
         raise
@@ -235,6 +236,13 @@ class TempEmailAPI(View):
         """Retorna email temporário da sessão atual ou cria um novo"""
         try:
             account, is_new = await _get_or_create_temp_email_async(request)
+
+            # Verificar se houve erro na criação da conta
+            if account is None:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Serviço temporariamente indisponível. Tente novamente em alguns minutos.'
+                }, status=200)
             
             session_start_val = await sync_to_async(request.session.get)('session_start')
             session_start = datetime.fromisoformat(session_start_val)
@@ -292,6 +300,13 @@ class TempEmailAPI(View):
                 # Gerar novo email imediatamente (Atomic Reset)
                 logger.info("Sessão limpa. Gerando novo email imediatamente...")
                 account, is_new = await _get_or_create_temp_email_async(request)
+
+                # Verificar se houve erro na criação da conta
+                if account is None:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Serviço temporariamente indisponível. Tente novamente em alguns minutos.'
+                    }, status=200)
 
                 # Registrar o novo email no histórico
                 email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
@@ -454,11 +469,31 @@ class TempEmailAPI(View):
                 'message': 'Email alterado com sucesso'
             })
 
-        except Exception as e:
-            logger.exception("Erro ao processar POST em TempEmailAPI")
+        except SMTPLabsAPIError as e:
+            logger.error(f"Erro na API externa SMTPLabs: {str(e)}")
+
+            # Mensagens específicas para diferentes tipos de erro
+            error_message = 'Erro interno ao processar requisição'
+
+            if '504' in str(e) or 'Gateway Timeout' in str(e):
+                error_message = 'Serviço temporariamente indisponível. Tente novamente em alguns minutos.'
+            elif '500' in str(e) or 'Internal Server Error' in str(e):
+                error_message = 'Erro temporário no servidor. Tente novamente em alguns instantes.'
+            elif '429' in str(e) or 'Too Many Requests' in str(e):
+                error_message = 'Muitas tentativas. Aguarde alguns minutos antes de tentar novamente.'
+            elif 'timeout' in str(e).lower():
+                error_message = 'Conexão lenta. Verifique sua internet e tente novamente.'
+
             return JsonResponse({
                 'success': False,
-                'error': 'Erro interno ao processar requisição'
+                'error': error_message
+            }, status=200)  # Mantém 200 para não quebrar o frontend
+
+        except Exception as e:
+            logger.exception("Erro inesperado ao processar POST em TempEmailAPI")
+            return JsonResponse({
+                'success': False,
+                'error': 'Erro interno do servidor. Nossa equipe foi notificada.'
             }, status=500)
 
 
