@@ -1,34 +1,72 @@
-{% load static %}
+{% load i18n %}
+
 {% if messages %}
-<div class="fixed top-4 right-4 z-[1000] flex flex-col gap-3 w-full max-w-sm">
+<div class="flex flex-col gap-4 mb-6 w-full animate-in fade-in duration-500">
     {% for message in messages %}
-        <div role="alert" class="alert shadow-lg border-l-4 
-            {% if message.tags == 'alert-danger' %}alert-error border-red-600
-            {% elif message.tags == 'alert-warning' %}alert-warning border-orange-500
-            {% elif message.tags == 'alert-success' %}alert-success border-green-600
-            {% else %}alert-info border-blue-600{% endif %} 
-            bg-white dark:bg-slate-800 transition-all duration-500 animate-in fade-in slide-in-from-right-4">
-            
-            <div class="flex items-center gap-2">
-                {% if message.tags == 'alert-danger' %}
-                    <i class="fa-solid fa-circle-xmark text-lg text-error"></i>
-                {% elif message.tags == 'alert-warning' %}
-                    <i class="fa-solid fa-triangle-exclamation text-lg text-warning"></i>
-                {% elif message.tags == 'alert-success' %}
-                    <i class="fa-solid fa-circle-check text-lg text-success"></i>
+    <div id="alert-{{ forloop.counter }}">
+        <div class="flex p-4 rounded-lg border relative w-full
+            {% if message.tags == 'error' or message.tags == 'alert-danger' %}
+                bg-red-50 text-red-800 border-red-200 dark:bg-gray-800 dark:text-red-400 dark:border-red-900
+            {% elif message.tags == 'warning' or message.tags == 'alert-warning' %}
+                bg-yellow-50 text-yellow-800 border-yellow-200 dark:bg-gray-800 dark:text-yellow-300 dark:border-yellow-900
+            {% elif message.tags == 'success' or message.tags == 'alert-success' %}
+                bg-green-50 text-green-800 border-green-200 dark:bg-gray-800 dark:text-green-400 dark:border-green-900
+            {% else %}
+                bg-blue-50 text-blue-800 border-blue-200 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-900
+            {% endif %}" role="alert">
+
+            <span class="inline-flex shrink-0 justify-center items-center w-5 h-5 mt-0.5">
+                {% if message.tags == 'error' or message.tags == 'alert-danger' %}
+                <i class="fa-solid fa-circle-xmark"></i>
+                {% elif message.tags == 'warning' or message.tags == 'alert-warning' %}
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                {% elif message.tags == 'success' or message.tags == 'alert-success' %}
+                <i class="fa-solid fa-circle-check"></i>
                 {% else %}
-                    <i class="fa-solid fa-circle-info text-lg text-info"></i>
+                <i class="fa-solid fa-circle-info"></i>
                 {% endif %}
-                
-                <span class="text-sm font-bold text-gray-700 dark:text-gray-200">
+            </span>
+
+            <div class="ms-3 text-sm font-medium flex-1 min-w-0">
+
+                {% with msg_str=message|stringformat:"s" %}
+                {% if msg_str|length > 100 %}
+                <input type="checkbox" id="toggle-{{ forloop.counter }}" class="peer hidden">
+
+                <div
+                    class="line-clamp-2 peer-checked:line-clamp-none break-words overflow-hidden transition-all duration-300">
                     {{ message }}
-                </span>
+                </div>
+
+                <label for="toggle-{{ forloop.counter }}" class="mt-2 inline-flex peer-checked:hidden items-center gap-1 font-bold text-xs uppercase cursor-pointer select-none text-current 
+                               rounded-lg p-1.5 -ms-1.5 transition-colors
+                               hover:bg-black/5 dark:hover:bg-white/10">
+                    <i class="fa-solid fa-plus text-[10px]"></i>
+                    {% trans "Ver mais" %}
+                </label>
+
+                <label for="toggle-{{ forloop.counter }}" class="mt-2 hidden peer-checked:inline-flex items-center gap-1 font-bold text-xs uppercase cursor-pointer select-none text-current 
+                               rounded-lg p-1.5 -ms-1.5 transition-colors
+                               hover:bg-black/5 dark:hover:bg-white/10">
+                    <i class="fa-solid fa-minus text-[10px]"></i>
+                    {% trans "Ver menos" %}
+                </label>
+
+                {% else %}
+                <div class="break-words">
+                    {{ message }}
+                </div>
+                {% endif %}
+                {% endwith %}
+
             </div>
 
-            <button onclick="this.parentElement.remove()" class="btn btn-ghost btn-xs btn-circle opacity-50 hover:opacity-100">
+            <button type="button" onclick="this.closest('#alert-{{ forloop.counter }}').remove()"
+                class="ms-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex items-center justify-center h-8 w-8 shrink-0 hover:bg-black/5 dark:hover:bg-white/10">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
+    </div>
     {% endfor %}
 </div>
 {% endif %}

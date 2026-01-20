@@ -1,4 +1,4 @@
-<!-- Modal de Confirmação de Download -->
+{% load i18n %}
 <dialog id="downloadConfirmModal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-700 shadow-2xl">
         <div class="flex items-center gap-4 mb-4">
@@ -6,15 +6,15 @@
                 class="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600">
                 <i class="fa-solid fa-file-shield text-2xl"></i>
             </div>
-            <h3 class="font-black text-xl text-gray-900 dark:text-white">Confirmar Download</h3>
+            <h3 class="font-black text-xl text-gray-900 dark:text-white">{% trans "Confirmar Download" %}</h3>
         </div>
 
         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl mb-4 border border-gray-100 dark:border-gray-700">
             <p class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">
-                Arquivo:</p>
+                {% trans "Arquivo:" %}</p>
             <p id="downloadFileNameDisplay"
                 class="text-sm font-bold truncate text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
-                nome_do_arquivo.zip
+                {% trans "nome_do_arquivo.zip" %}
             </p>
         </div>
 
@@ -22,23 +22,22 @@
             class="alert alert-warning shadow-sm mb-4 bg-yellow-50 dark:bg-yellow-900/10 border-yellow-100 dark:border-yellow-900/30">
             <i class="fa-solid fa-circle-exclamation text-yellow-600"></i>
             <span class="text-xs font-medium text-yellow-800 dark:text-yellow-200">
-                Atenção: Arquivos de fontes desconhecidas podem conter vírus ou scripts maliciosos.
-                Baixe apenas se confiar no remetente.
+                {% trans "Atenção: Arquivos de fontes desconhecidas podem conter vírus ou scripts maliciosos. Baixe apenas se confiar no remetente." %}
             </span>
         </div>
 
         <div class="modal-action gap-2 mt-6">
             <form method="dialog" class="flex-1 sm:flex-none">
                 <button
-                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">Cancelar</button>
+                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">{% trans "Cancelar" %}</button>
             </form>
             <button id="confirmDownloadBtn"
                 class="btn bg-brand-orange hover:bg-brand-dark text-white border-none px-8 font-extrabold uppercase tracking-tight shadow-lg shadow-orange-500/20 flex-1 sm:flex-none flex items-center gap-2">
-                Sim, baixar arquivo <i class="fa-solid fa-download text-xs"></i>
+                {% trans "Sim, baixar arquivo" %} <i class="fa-solid fa-download text-xs"></i>
             </button>
         </div>
     </div>
     <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm">
-        <button>close</button>
+        <button>{% trans "fechar" %}</button>
     </form>
 </dialog>

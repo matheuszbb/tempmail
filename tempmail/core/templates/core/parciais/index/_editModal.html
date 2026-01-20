@@ -1,27 +1,46 @@
+{% load i18n %}
 <div id="editModal"
+    role="dialog"
+    aria-labelledby="modalTitle"
+    aria-modal="true"
     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-    <div
-        class="bg-white dark:bg-dark-card w-full max-w-md mx-4 rounded-xl shadow-2xl transform transition-all scale-95 p-6 border border-gray-200 dark:border-gray-700">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">Alterar Endereço</h3>
+    
+    <div class="bg-white dark:bg-dark-card w-full max-w-md mx-4 rounded-xl shadow-2xl transform transition-all scale-95 p-6 border border-gray-200 dark:border-gray-700">
+        
+        <h3 id="modalTitle" class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+            {% trans "Alterar Endereço" %}
+        </h3>
+        
         <div class="mb-4">
-            <label class="block text-gray-500 dark:text-gray-400 text-sm font-bold mb-2">Novo Nome de
-                Usuário</label>
-            <div
-                class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-input">
-                <input type="text" id="modalInputUser"
-                    class="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-white py-3 px-4 leading-tight focus:outline-none"
-                    placeholder="ex: usuario123">
+            <label for="modalInputUser" class="block text-gray-500 dark:text-gray-400 text-sm font-bold mb-2">
+                {% trans "Novo Nome de Usuário" %}
+            </label>
+            
+            <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-input focus-within:ring-2 focus-within:ring-brand-orange transition-all">
+                <input type="text" 
+                       id="modalInputUser" 
+                       name="new_username"
+                       class="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-white py-3 px-4 leading-tight focus:outline-none"
+                       placeholder="{% trans 'ex: usuario123' %}">
+                
                 <div id="modalDomainLabel"
-                    class="bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 px-3 py-3 border-l border-gray-300 dark:border-gray-500 text-sm">
-                    @icousd.com</div>
+                     class="bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 px-3 py-3 border-l border-gray-300 dark:border-gray-500 text-sm whitespace-nowrap">
+                    @example.com
+                </div>
             </div>
         </div>
+
         <div class="flex justify-end gap-3 mt-6">
-            <button onclick="closeEditModal()"
-                class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-700 dark:text-gray-200 font-semibold transition">Cancelar</button>
-            <button onclick="saveEditModal()"
-                class="px-4 py-2 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition">Salvar
-                Alterações</button>
+            <button type="button" 
+                    onclick="closeEditModal()"
+                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-700 dark:text-gray-200 font-semibold transition">
+                {% trans "Cancelar" %}
+            </button>
+            <button type="button" 
+                    onclick="saveEditModal()"
+                    class="px-4 py-2 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition">
+                {% trans "Salvar Alterações" %}
+            </button>
         </div>
     </div>
 </div>

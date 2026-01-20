@@ -1,61 +1,62 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block conteudo %}
 <div class="max-w-4xl mx-auto px-4 py-8">
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100 dark:border-gray-700">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">Política de Privacidade</h1>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">{% trans "Política de Privacidade" %}</h1>
 
         <div class="prose dark:prose-invert max-w-none">
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-                Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais quando você utiliza nosso serviço de email temporário.
+                {% trans "Esta Política de Privacidade descreve como coletamos, usamos e protegemos suas informações pessoais quando você utiliza nosso serviço de email temporário." %}
             </p>
 
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">1. Informações que Coletamos</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "1. Informações que Coletamos" %}</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-4">
-                Nosso serviço de email temporário é projetado para ser anônimo e não requer registro ou coleta de dados pessoais.
+                {% trans "Nosso serviço de email temporário é projetado para ser anônimo e não requer registro ou coleta de dados pessoais." %}
             </p>
 
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">2. Retenção de Dados</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "2. Retenção de Dados" %}</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-                Os emails temporários e seu conteúdo são automaticamente excluídos após o período de expiração.
+                {% trans "Os emails temporários e seu conteúdo são automaticamente excluídos após o período de expiração." %}
             </p>
 
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">3. Seus Direitos</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "3. Seus Direitos" %}</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-4">
-                Como nosso serviço não requer identificação pessoal, a maioria dos direitos tradicionais de privacidade não se aplica. No entanto, você sempre pode:
+                {% trans "Como nosso serviço não requer identificação pessoal, a maioria dos direitos tradicionais de privacidade não se aplica. No entanto, você sempre pode:" %}
             </p>
             <ul class="list-disc list-inside text-gray-600 dark:text-gray-300 mb-6">
-                <li>Escolher não usar o serviço</li>
-                <li>Limpar dados locais do navegador</li>
-                <li>Entrar em contato conosco para dúvidas</li>
+                <li>{% trans "Escolher não usar o serviço" %}</li>
+                <li>{% trans "Limpar dados locais do navegador" %}</li>
+                <li>{% trans "Entrar em contato conosco para dúvidas" %}</li>
             </ul>
 
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">4. Segurança</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "4. Segurança" %}</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-                Implementamos medidas técnicas e organizacionais apropriadas para proteger as informações contra acesso não autorizado, alteração, divulgação ou destruição.
+                {% trans "Implementamos medidas técnicas e organizacionais apropriadas para proteger as informações contra acesso não autorizado, alteração, divulgação ou destruição." %}
             </p>
 
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">5. Cookies e Tecnologias Similares</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "5. Cookies e Tecnologias Similares" %}</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-4">
-                Podemos usar cookies técnicos necessários para o funcionamento adequado do site. No futuro, poderemos implementar anúncios de terceiros para sustentar o serviço, o que pode envolver cookies de publicidade de empresas parceiras.
+                {% trans "Podemos usar cookies técnicos necessários para o funcionamento adequado do site. No futuro, poderemos implementar anúncios de terceiros para sustentar o serviço, o que pode envolver cookies de publicidade de empresas parceiras." %}
             </p>
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-                <strong>Importante:</strong> O site em si não coleta dados pessoais dos usuários. Qualquer coleta de dados relacionada a anúncios será feita exclusivamente pelas plataformas de publicidade terceiras, conforme suas próprias políticas de privacidade.
-            </p>
-
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">6. Alterações nesta Política</h2>
-            <p class="text-gray-600 dark:text-gray-300 mb-6">
-                Podemos atualizar esta política periodicamente. Alterações significativas serão comunicadas através do site ou por outros meios apropriados.
+                <strong>{% trans "Importante:" %}</strong> {% trans "O site em si não coleta dados pessoais dos usuários. Qualquer coleta de dados relacionada a anúncios será feita exclusivamente pelas plataformas de publicidade terceiras, conforme suas próprias políticas de privacidade." %}
             </p>
 
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">7. Contato</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "6. Alterações nesta Política" %}</h2>
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-                Se você tiver dúvidas sobre esta política de privacidade, entre em contato conosco através da página de contato.
+                {% trans "Podemos atualizar esta política periodicamente. Alterações significativas serão comunicadas através do site ou por outros meios apropriados." %}
+            </p>
+
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mt-8 mb-4">{% trans "7. Contato" %}</h2>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                {% trans "Se você tiver dúvidas sobre esta política de privacidade, entre em contato conosco através da página de contato." %}
             </p>
 
             <div class="mt-8 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
                 <p class="text-sm text-orange-800 dark:text-orange-200">
-                    <strong>Última atualização:</strong> Janeiro de 2026
+                    <strong>{% trans "Última atualização:" %}</strong> {% trans "Janeiro de 2026" %}
                 </p>
             </div>
         </div>

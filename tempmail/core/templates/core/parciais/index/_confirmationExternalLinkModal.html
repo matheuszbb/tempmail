@@ -1,4 +1,4 @@
-<!-- Modal de Confirmação de Link Externo -->
+{% load i18n %}
 <dialog id="linkConfirmModal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-700 shadow-2xl">
         <div class="flex items-center gap-4 mb-4">
@@ -6,12 +6,13 @@
                 class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
                 <i class="fa-solid fa-link text-2xl"></i>
             </div>
-            <h3 class="font-black text-xl text-gray-900 dark:text-white">Aviso de Link Externo</h3>
+            <h3 class="font-black text-xl text-gray-900 dark:text-white">{% trans "Aviso de Link Externo" %}</h3>
         </div>
 
         <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl mb-4 border border-gray-100 dark:border-gray-700">
-            <p class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">URL de
-                Destino:</p>
+            <p class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">
+                {% trans "URL de Destino:" %}
+            </p>
             <p id="targetLinkDisplay"
                 class="text-sm font-mono break-all text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
                 https://exemplo.com/diretorio/arquivo.txt
@@ -19,32 +20,32 @@
         </div>
 
         <p class="py-2 text-gray-600 dark:text-gray-300 font-medium leading-relaxed text-sm">
-            Você está prestes a sair do EmailRush e visitar um site externo.
-            <span class="text-orange-600 dark:text-orange-400 font-bold">Certifique-se de que o site é seguro</span>
-            antes de prosseguir.
+            {% trans "Você está prestes a sair do EmailRush e visitar um site externo." %}
+            <span class="text-orange-600 dark:text-orange-400 font-bold">{% trans "Certifique-se de que o site é seguro" %}</span>
+            {% trans "antes de prosseguir." %}
         </p>
 
         <div id="hiddenUrlWarning"
             class="hidden mt-3 p-3 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 rounded-lg flex items-center gap-3">
             <i class="fa-solid fa-triangle-exclamation text-red-500 text-lg"></i>
             <p class="text-xs text-red-700 dark:text-red-300 font-bold">
-                ⚠️ Cuidado: O link visível no e-mail era diferente do destino real!
+                {% trans "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!" %}
             </p>
         </div>
 
         <div class="modal-action gap-2 mt-6">
             <form method="dialog" class="flex-1 sm:flex-none">
                 <button
-                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">Cancelar</button>
+                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">{% trans "Cancelar" %}</button>
             </form>
             <a id="confirmLinkBtn" href="#" target="_blank"
                 onclick="document.getElementById('linkConfirmModal').close()"
                 class="btn bg-brand-orange hover:bg-brand-dark text-white border-none px-8 font-extrabold uppercase tracking-tight shadow-lg shadow-orange-500/20 flex-1 sm:flex-none flex items-center gap-2">
-                Prosseguir <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                {% trans "Prosseguir" %} <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
             </a>
         </div>
     </div>
     <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm">
-        <button>close</button>
+        <button>{% trans "fechar" %}</button>
     </form>
 </dialog>

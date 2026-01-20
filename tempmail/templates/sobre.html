@@ -1,164 +1,162 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block conteudo %}
 <div class="max-w-6xl mx-auto px-4 py-8">
-    <!-- Hero Section -->
     <div class="text-center mb-12">
         <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-6">
-            Por que usar <span class="text-orange-600">EmailRush</span>?
+            {% trans "Por que usar" %} <span class="text-orange-600">EmailRush</span>?
         </h1>
         <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Proteja sua privacidade e evite spam com endereços de email temporários seguros e eficientes
+            {% trans "Proteja sua privacidade e evite spam com endereços de email temporários seguros e eficientes" %}
         </p>
     </div>
 
-    <!-- O que é Email Temporário -->
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-8 md:p-12 mb-12 border border-gray-100 dark:border-gray-700">
-        <div class="grid md:grid-cols-2 gap-8 items-center">
-            <div>
+        <div class="grid md:grid-cols-5 gap-8 items-stretch">
+            
+            <div class="md:col-span-3 flex flex-col justify-center">
                 <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">
-                    O que é um endereço de email temporário?
+                    {% trans "O que é um endereço de email temporário?" %}
                 </h2>
                 <div class="space-y-4 text-gray-600 dark:text-gray-300">
                     <p>
-                        Um endereço de email temporário permite criar um email válido e único para se cadastrar em serviços e sites sem revelar sua identidade real.
+                        {% trans "Um endereço de email temporário permite criar um email válido e único para se cadastrar em serviços e sites sem revelar sua identidade real." %}
                     </p>
                     <p>
-                        Se o endereço temporário for comprometido ou usado em atividades abusivas, você pode simplesmente descartá-lo sem afetar seus outros contatos.
+                        {% trans "Se o endereço temporário for comprometido ou usado em atividades abusivas, você pode simplesmente descartá-lo sem afetar seus outros contatos." %}
                     </p>
-                    <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border-l-4 border-orange-500">
+                    <div class="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border-l-4 border-orange-500 mt-6">
                         <p class="font-semibold text-orange-800 dark:text-orange-200">
-                            💡 Dica: O email temporário funciona como um "passaporte descartável" para suas atividades online.
+                            💡 {% trans "Dica: O email temporário funciona como um 'passaporte descartável' para suas atividades online." %}
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="text-center">
-                <div class="bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 p-8 rounded-2xl">
-                    <i class="fas fa-envelope-open-text text-6xl text-orange-600 dark:text-orange-400 mb-4"></i>
-                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">Email Temporário</h3>
-                    <p class="text-gray-600 dark:text-gray-300">Seguro • Anônimo • Descartável</p>
+
+            <div class="md:col-span-2">
+                <div class="h-full bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 p-8 rounded-2xl flex flex-col items-center justify-center border border-orange-200/50 dark:border-orange-700/30">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-full shadow-inner mb-6">
+                        <i class="fas fa-envelope-open-text text-6xl text-orange-600 dark:text-orange-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2 text-center">
+                        {% trans "Email Temporário" %}
+                    </h3>
+                    <p class="text-gray-600 dark:text-gray-300 text-center font-medium">
+                        {% trans "Seguro • Anônimo • Descartável" %}
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Benefícios -->
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        <!-- Proteção contra Spam -->
         <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-green-100 dark:bg-green-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-shield-alt text-2xl text-green-600 dark:text-green-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Elimine o Spam</h3>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{% trans "Elimine o Spam" %}</h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-                Evite receber milhares de emails promocionais indesejados. Use endereços temporários para cadastros em lojas, concursos e ofertas.
+                {% trans "Evite receber milhares de emails promocionais indesejados. Use endereços temporários para cadastros em lojas, concursos e ofertas." %}
             </p>
         </div>
 
-        <!-- Proteção de Privacidade -->
         <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-blue-100 dark:bg-blue-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-lock text-2xl text-blue-600 dark:text-blue-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Proteja sua Privacidade</h3>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{% trans "Proteja sua Privacidade" %}</h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-                Mantenha seu email real seguro. Se uma loja for invadida, apenas o endereço temporário será comprometido.
+                {% trans "Mantenha seu email real seguro. Se uma loja for invadida, apenas o endereço temporário será comprometido." %}
             </p>
         </div>
 
-        <!-- Testes e Desenvolvimento -->
         <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-purple-100 dark:bg-purple-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-code text-2xl text-purple-600 dark:text-purple-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Teste Aplicativos</h3>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{% trans "Teste Aplicativos" %}</h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-                Desenvolvedores podem testar aplicações criando múltiplas contas temporárias sem usar emails reais.
+                {% trans "Desenvolvedores podem testar aplicações criando múltiplas contas temporárias sem usar emails reais." %}
             </p>
         </div>
 
-        <!-- Períodos de Teste -->
         <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-orange-100 dark:bg-orange-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-clock text-2xl text-orange-600 dark:text-orange-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Períodos de Teste</h3>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{% trans "Períodos de Teste" %}</h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-                Aproveite trials gratuitos de Netflix, Amazon Prime e outros serviços sem comprometer seu email principal.
+                {% trans "Aproveite trials gratuitos de Netflix, Amazon Prime e outros serviços sem comprometer seu email principal." %}
             </p>
         </div>
 
-        <!-- Contas Duplas -->
         <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-indigo-100 dark:bg-indigo-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-user-friends text-2xl text-indigo-600 dark:text-indigo-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Contas Múltiplas</h3>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{% trans "Contas Múltiplas" %}</h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-                Crie contas adicionais em serviços como IFTTT, Twitter e outros sem gerenciar múltiplas caixas de entrada.
+                {% trans "Crie contas adicionais em serviços como IFTTT, Twitter e outros sem gerenciar múltiplas caixas de entrada." %}
             </p>
         </div>
 
-        <!-- Segurança Online -->
         <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-red-100 dark:bg-red-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-exclamation-triangle text-2xl text-red-600 dark:text-red-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">Segurança Online</h3>
+                <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">{% trans "Segurança Online" %}</h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 text-center">
-                Proteja-se em fóruns, wikis e salas de chat. Sua identidade real nunca será revelada ou vendida.
+                {% trans "Proteja-se em fóruns, wikis e salas de chat. Sua identidade real nunca será revelada ou vendida." %}
             </p>
         </div>
     </div>
 
-    <!-- Como Funciona -->
     <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-8 md:p-12 text-white mb-12">
-        <h2 class="text-3xl font-bold mb-8 text-center">Como Funciona o EmailRush</h2>
+        <h2 class="text-3xl font-bold mb-8 text-center">{% trans "Como Funciona o EmailRush" %}</h2>
 
         <div class="grid md:grid-cols-3 gap-8">
             <div class="text-center">
                 <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold">1</span>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Crie seu Email</h3>
-                <p class="text-orange-100">Gere um endereço temporário único com apenas um clique. Sem cadastro ou informações pessoais.</p>
+                <h3 class="text-xl font-bold mb-2">{% trans "Crie seu Email" %}</h3>
+                <p class="text-orange-100">{% trans "Gere um endereço temporário único com apenas um clique. Sem cadastro ou informações pessoais." %}</p>
             </div>
 
             <div class="text-center">
                 <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold">2</span>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Use Onde Quiser</h3>
-                <p class="text-orange-100">Cadastre-se em qualquer serviço, loja ou aplicativo usando seu email temporário.</p>
+                <h3 class="text-xl font-bold mb-2">{% trans "Use Onde Quiser" %}</h3>
+                <p class="text-orange-100">{% trans "Cadastre-se em qualquer serviço, loja ou aplicativo usando seu email temporário." %}</p>
             </div>
 
             <div class="text-center">
                 <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold">3</span>
                 </div>
-                <h3 class="text-xl font-bold mb-2">Receba Mensagens</h3>
-                <p class="text-orange-100">Veja seus emails na interface do EmailRush. Após o tempo expirar, tudo é automaticamente excluído.</p>
+                <h3 class="text-xl font-bold mb-2">{% trans "Receba Mensagens" %}</h3>
+                <p class="text-orange-100">{% trans "Veja seus emails na interface do EmailRush. Após o tempo expirar, tudo é automaticamente excluído." %}</p>
             </div>
         </div>
     </div>
 
-    <!-- Por que escolher EmailRush -->
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-8 md:p-12 mb-12 border border-gray-100 dark:border-gray-700">
         <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">
-            Por que escolher EmailRush?
+            {% trans "Por que escolher EmailRush?" %}
         </h2>
 
         <div class="grid md:grid-cols-2 gap-8">
@@ -168,8 +166,8 @@
                         <i class="fas fa-check text-green-600 dark:text-green-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">100% Anônimo</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Nenhum cadastro, nenhuma informação pessoal. Totalmente anônimo.</p>
+                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">{% trans "100% Anônimo" %}</h3>
+                        <p class="text-gray-600 dark:text-gray-300">{% trans "Nenhum cadastro, nenhuma informação pessoal. Totalmente anônimo." %}</p>
                     </div>
                 </div>
 
@@ -178,8 +176,8 @@
                         <i class="fas fa-check text-blue-600 dark:text-blue-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">Interface Intuitiva</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Design moderno e responsivo para desktop e mobile.</p>
+                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">{% trans "Interface Intuitiva" %}</h3>
+                        <p class="text-gray-600 dark:text-gray-300">{% trans "Design moderno e responsivo para desktop e mobile." %}</p>
                     </div>
                 </div>
 
@@ -188,8 +186,8 @@
                         <i class="fas fa-check text-purple-600 dark:text-purple-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">Sem Limitações</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Crie quantos emails temporários precisar, quando quiser.</p>
+                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">{% trans "Sem Limitações" %}</h3>
+                        <p class="text-gray-600 dark:text-gray-300">{% trans "Crie quantos emails temporários precisar, quando quiser." %}</p>
                     </div>
                 </div>
             </div>
@@ -200,8 +198,8 @@
                         <i class="fas fa-check text-orange-600 dark:text-orange-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">Seguro e Confiável</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Seus dados são automaticamente excluídos. Privacidade garantida.</p>
+                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">{% trans "Seguro e Confiável" %}</h3>
+                        <p class="text-gray-600 dark:text-gray-300">{% trans "Seus dados são automaticamente excluídos. Privacidade garantida." %}</p>
                     </div>
                 </div>
 
@@ -210,8 +208,8 @@
                         <i class="fas fa-check text-red-600 dark:text-red-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">Anti-Spam</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Mantenha sua caixa de entrada real livre de spam promocional.</p>
+                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">{% trans "Anti-Spam" %}</h3>
+                        <p class="text-gray-600 dark:text-gray-300">{% trans "Mantenha sua caixa de entrada real livre de spam promocional." %}</p>
                     </div>
                 </div>
 
@@ -220,26 +218,25 @@
                         <i class="fas fa-check text-indigo-600 dark:text-indigo-400"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">Gratuito</h3>
-                        <p class="text-gray-600 dark:text-gray-300">Serviço completamente gratuito, sem custos ocultos.</p>
+                        <h3 class="font-bold text-gray-800 dark:text-white mb-1">{% trans "Gratuito" %}</h3>
+                        <p class="text-gray-600 dark:text-gray-300">{% trans "Serviço completamente gratuito, sem custos ocultos." %}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Call to Action -->
     <div class="text-center">
         <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">
-            Pronto para proteger sua privacidade?
+            {% trans "Pronto para proteger sua privacidade?" %}
         </h2>
         <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
-            Comece a usar EmailRush agora mesmo - é gratuito e leva apenas alguns segundos!
+            {% trans "Comece a usar EmailRush agora mesmo - é gratuito e leva apenas alguns segundos!" %}
         </p>
         <a href="{% url 'index' %}"
            class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-lg transition duration-300 shadow-lg shadow-orange-500/30 transform hover:scale-105">
             <i class="fas fa-envelope mr-2"></i>
-            Criar Email Temporário
+            {% trans "Criar Email Temporário" %}
         </a>
     </div>
 </div>

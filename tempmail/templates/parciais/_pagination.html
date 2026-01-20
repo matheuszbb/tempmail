@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+
 {% if page_obj %}
 <div class="flex justify-center my-6">
     <div class="join shadow-sm border border-gray-100 dark:border-gray-700">
@@ -6,7 +8,7 @@
         {# Botão Início e Anterior #}
         {% if page_obj.has_previous %}
             <a href="?page=1" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600 transition-colors">
-                Início
+                {% trans "Início" %}
             </a>
             <a href="?page={{ page_obj.previous_page_number }}" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600">
                 «
@@ -32,7 +34,7 @@
                 »
             </a>
             <a href="?page={{ page_obj.paginator.num_pages }}" class="join-item btn btn-sm md:btn-md bg-white dark:bg-slate-800 text-gray-500 hover:text-orange-600">
-                Fim
+                {% trans "Fim" %}
             </a>
         {% endif %}
         

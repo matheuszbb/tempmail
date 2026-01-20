@@ -1,7 +1,17 @@
 {% load static %}
+{% load i18n %}
+
 <footer class="max-w-7xl mx-auto px-4 py-6 text-gray-500 text-xs sm:text-sm font-medium flex gap-6 justify-center flex-wrap">
-    <a href="{% url 'sobre' %}" class="hover:text-orange-600 transition">Sobre</a>
-    <a href="{% url 'privacidade' %}" class="hover:text-orange-600 transition">Política de Privacidade</a>
-    <a href="{% url 'termos' %}" class="hover:text-orange-600 transition">Termos de Serviço</a>
-    <a href="{% url 'contato' %}" class="hover:text-orange-600 transition">Contato</a>
+    <a href="{% url 'sobre' %}" class="hover:text-orange-600 transition">
+        {% trans "Sobre" %}
+    </a>
+    <a href="{% url 'privacidade' %}" class="hover:text-orange-600 transition">
+        {% trans "Política de Privacidade" %}
+    </a>
+    <a href="{% url 'termos' %}" class="hover:text-orange-600 transition">
+        {% trans "Termos de Serviço" %}
+    </a>
+    <a href="{% url 'contato' %}" class="hover:text-orange-600 transition">
+        {% trans "Contato" %}
+    </a>
 </footer>

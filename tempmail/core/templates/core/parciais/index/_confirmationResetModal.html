@@ -1,4 +1,4 @@
-<!-- Modal de Confirmação DaisyUI -->
+{% load i18n %}
 <dialog id="confirmResetModal" class="modal modal-bottom sm:modal-middle">
     <div class="modal-box bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-700 shadow-2xl">
         <div class="flex items-center gap-4 mb-4">
@@ -6,25 +6,24 @@
                 class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-brand-orange">
                 <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
             </div>
-            <h3 class="font-black text-xl text-gray-900 dark:text-white">Gerar novo e-mail?</h3>
+            <h3 class="font-black text-xl text-gray-900 dark:text-white">{% trans "Gerar novo e-mail?" %}</h3>
         </div>
         <p class="py-2 text-gray-600 dark:text-gray-300 font-medium leading-relaxed">
-            Deseja gerar um novo endereço de e-mail? <br>
-            <span class="text-orange-600 dark:text-orange-400 font-bold">Atenção:</span> Todas as mensagens recebidas na
-            sessão atual serão permanentemente perdidas.
+            {% trans "Deseja gerar um novo endereço de e-mail?" %} <br>
+            <span class="text-orange-600 dark:text-orange-400 font-bold">{% trans "Atenção:" %}</span> {% trans "Todas as mensagens recebidas na sessão atual serão permanentemente perdidas." %}
         </p>
         <div class="modal-action gap-2">
             <form method="dialog" class="flex-1 sm:flex-none">
                 <button
-                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">Cancelar</button>
+                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">{% trans "Cancelar" %}</button>
             </form>
             <button onclick="confirmResetEmail()"
                 class="btn bg-brand-orange hover:bg-brand-dark text-white border-none px-8 font-extrabold uppercase tracking-tight shadow-lg shadow-orange-500/20 flex-1 sm:flex-none">
-                Sim, Gerar Novo
+                {% trans "Sim, Gerar Novo" %}
             </button>
         </div>
     </div>
     <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm">
-        <button>close</button>
+        <button>{% trans "fechar" %}</button>
     </form>
 </dialog>

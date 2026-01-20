@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block conteudo %}
 <div class="max-w-4xl mx-auto px-4 py-8">
+    {% include 'parciais/_messages.html' %}
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-6 md:p-8 border border-gray-100 dark:border-gray-700">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">Entre em Contato</h1>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">{% trans "Entre em Contato" %}</h1>
 
         <div class="grid md:grid-cols-2 gap-8">
-            <!-- Informações de Contato -->
             <div>
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Fale Conosco</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">{% trans "Fale Conosco" %}</h2>
 
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
@@ -17,7 +18,7 @@
                             <i class="fas fa-envelope text-orange-600 dark:text-orange-400"></i>
                         </div>
                         <div>
-                            <p class="font-semibold text-gray-800 dark:text-white">Email</p>
+                            <p class="font-semibold text-gray-800 dark:text-white">{% trans "Email" %}</p>
                             <p class="text-gray-600 dark:text-gray-300">contato@emailrush.com</p>
                         </div>
                     </div>
@@ -27,7 +28,7 @@
                             <i class="fas fa-globe text-blue-600 dark:text-blue-400"></i>
                         </div>
                         <div>
-                            <p class="font-semibold text-gray-800 dark:text-white">Website</p>
+                            <p class="font-semibold text-gray-800 dark:text-white">{% trans "Website" %}</p>
                             <p class="text-gray-600 dark:text-gray-300">www.emailrush.com</p>
                         </div>
                     </div>
@@ -37,42 +38,42 @@
                             <i class="fas fa-clock text-green-600 dark:text-green-400"></i>
                         </div>
                         <div>
-                            <p class="font-semibold text-gray-800 dark:text-white">Horário de Atendimento</p>
-                            <p class="text-gray-600 dark:text-gray-300">Segunda a Sexta, 9h às 18h</p>
+                            <p class="font-semibold text-gray-800 dark:text-white">{% trans "Horário de Atendimento" %}</p>
+                            <p class="text-gray-600 dark:text-gray-300">{% trans "Segunda a Sexta, 9h às 18h" %}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="mt-8 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">Sobre nós</h3>
+                    <h3 class="font-semibold text-gray-800 dark:text-white mb-2">{% trans "Sobre nós" %}</h3>
                     <p class="text-sm text-gray-600 dark:text-gray-300">
-                        EmailRush é um serviço gratuito de email temporário desenvolvido para proteger sua privacidade e combater spam.
-                        Nosso compromisso é fornecer uma ferramenta segura e eficiente para suas necessidades de comunicação temporária.
+                        {% trans "EmailRush é um serviço gratuito de email temporário desenvolvido para proteger sua privacidade e combater spam. Nosso compromisso é fornecer uma ferramenta segura e eficiente para suas necessidades de comunicação temporária." %}
                     </p>
                 </div>
             </div>
 
-            <!-- Formulário de Contato -->
             <div>
-                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Envie sua Mensagem</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">{% trans "Envie sua Mensagem" %}</h2>
 
-                <form id="contact-form" class="space-y-4">
+                <form id="contact-form" method="POST" action="{% url 'contato' %}" class="space-y-4">
+                    {% csrf_token %}
+
                     <div>
                         <label for="nome" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Nome (opcional)
+                            {% trans "Nome (opcional)" %}
                         </label>
                         <input
                             type="text"
                             id="nome"
                             name="nome"
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                            placeholder="Seu nome"
+                            placeholder="{% trans 'Seu nome' %}"
                         >
                     </div>
 
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Email de resposta
+                            {% trans "Email de resposta" %}
                         </label>
                         <input
                             type="email"
@@ -86,7 +87,7 @@
 
                     <div>
                         <label for="assunto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Assunto
+                            {% trans "Assunto" %}
                         </label>
                         <select
                             id="assunto"
@@ -94,18 +95,18 @@
                             required
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                         >
-                            <option value="">Selecione um assunto</option>
-                            <option value="suporte">Suporte Técnico</option>
-                            <option value="privacidade">Questões de Privacidade</option>
-                            <option value="denuncia">Denúncia de Abuso</option>
-                            <option value="sugestao">Sugestão de Melhoria</option>
-                            <option value="outros">Outros</option>
+                            <option value="">{% trans "Selecione um assunto" %}</option>
+                            <option value="suporte" selected>{% trans "Suporte Técnico" %}</option>
+                            <option value="privacidade">{% trans "Questões de Privacidade" %}</option>
+                            <option value="denuncia">{% trans "Denúncia de Abuso" %}</option>
+                            <option value="sugestao">{% trans "Sugestão de Melhoria" %}</option>
+                            <option value="outros">{% trans "Outros" %}</option>
                         </select>
                     </div>
 
                     <div>
                         <label for="mensagem" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Mensagem
+                            {% trans "Mensagem" %}
                         </label>
                         <textarea
                             id="mensagem"
@@ -113,7 +114,7 @@
                             rows="5"
                             required
                             class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-dark-input text-gray-900 dark:text-white focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-vertical"
-                            placeholder="Digite sua mensagem aqui..."
+                            placeholder="{% trans 'Digite sua mensagem aqui...' %}"
                         ></textarea>
                     </div>
 
@@ -122,22 +123,18 @@
                         class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 shadow-lg shadow-orange-500/30"
                     >
                         <i class="fas fa-paper-plane mr-2"></i>
-                        Enviar Mensagem
+                        {% trans "Enviar Mensagem" %}
                     </button>
                 </form>
 
                 <div class="mt-6 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                     <p class="text-sm text-blue-800 dark:text-blue-200">
                         <i class="fas fa-info-circle mr-1"></i>
-                        Responderemos o mais breve possível. Para questões urgentes, considere usar outros canais de comunicação.
+                        {% trans "Responderemos o mais breve possível. Para questões urgentes, considere usar outros canais de comunicação." %}
                     </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block scripts %}
-    <script src="{% static 'js/contato/form.js' %}"></script>
 {% endblock %}

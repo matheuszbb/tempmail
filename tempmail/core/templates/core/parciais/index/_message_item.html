@@ -1,4 +1,5 @@
 {% load static %}
+{% load i18n %}
 <div class="group px-4 py-4 sm:px-8 sm:py-6 hover:bg-orange-50/50 dark:hover:bg-gray-800/40 cursor-pointer transition-all duration-300 relative border-l-4 {% if not message.is_read %}bg-white dark:bg-dark-card font-semibold border-l-brand-orange dark:border-l-orange-400{% else %}opacity-60 bg-gray-50 dark:bg-gray-800/40 border-l-transparent{% endif %}"
     data-message-id="{{ message.id }}" onclick="tempMailApp.viewMessage('{{ message.id }}')">
 
@@ -13,13 +14,12 @@
                 {{ message.from_address }}
             </p>
 
-            <!-- Popover Desktop (CSS-only ou JS controlled) -->
             <div
                 class="js-popover absolute invisible opacity-0 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-3 rounded-lg shadow-2xl left-0 whitespace-nowrap pointer-events-none border border-gray-200 dark:border-gray-700 min-w-[280px] z-[100]">
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-col">
                         <span
-                            class="text-[12px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tighter">Remetente:</span>
+                            class="text-[12px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tighter">{% trans "Remetente:" %}</span>
                         <span class="text-xs font-bold">{{ message.from_name|default:message.from_address }}</span>
                         <span
                             class="text-[13px] font-bold text-gray-900 dark:text-gray-200 break-all whitespace-normal leading-tight">
@@ -29,10 +29,10 @@
                     <div class="h-[1px] bg-gray-200 dark:bg-gray-700 w-full my-1"></div>
                     <div class="flex flex-col">
                         <span
-                            class="text-[12px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tighter">Assunto:</span>
+                            class="text-[12px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tighter">{% trans "Assunto:" %}</span>
                         <span
                             class="text-[13px] font-bold leading-relaxed text-gray-900 dark:text-gray-200 whitespace-normal max-w-[260px] break-words">
-                            {{ message.subject|default:"(Sem assunto)" }}
+                            {% if message.subject %}{{ message.subject }}{% else %}{% trans "(Sem assunto)" %}{% endif %}
                         </span>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
 
         <div class="flex-1 min-w-0">
             <p class="text-[12px] sm:text-sm font-bold text-gray-900 dark:text-white truncate">
-                {{ message.subject|default:"(Sem assunto)" }}
+                {% if message.subject %}{{ message.subject }}{% else %}{% trans "(Sem assunto)" %}{% endif %}
             </p>
         </div>
 

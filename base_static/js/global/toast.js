@@ -1,6 +1,3 @@
-/**
- * Sistema de Notificações Toast utilizando DaisyUI e Tailwind CSS
- */
 const Toast = {
     container: null,
 
@@ -8,14 +5,10 @@ const Toast = {
         this.container = document.getElementById('toast-container');
     },
 
-    /**
-     * Mostra uma notificação profissional estilo DaisyUI
-     */
     show(message, type = 'info', duration = 6000) {
         if (!this.container) this.init();
         if (!this.container) return;
 
-        // Classes de cores do DaisyUI/Tailwind
         const alertTypes = {
             success: 'alert-success',
             error: 'alert-error',
@@ -33,9 +26,9 @@ const Toast = {
         const alertClass = alertTypes[type] || 'alert-info';
         const icon = icons[type] || 'fa-circle-info';
 
-        // Elemento Toast Individual
         const toastItem = document.createElement('div');
-        // Adicionando largura máxima e permitindo que o flex se ajuste
+        
+        // Estado inicial de entrada: deslocado para direita e invisível
         toastItem.className = 'pointer-events-auto transition-all duration-300 ease-in-out translate-x-full opacity-0 w-full max-w-[320px] sm:max-w-sm ml-auto';
 
         toastItem.innerHTML = `
@@ -43,12 +36,11 @@ const Toast = {
                 <i class="fa-solid ${icon} text-xl mt-0.5 flex-shrink-0"></i>
                 <span class="text-sm whitespace-normal break-words flex-1 leading-tight">${message}</span>
                 
-                <!-- Barra de progresso com Tailwind + estilo inline para animação -->
-                <!-- Reduzimos 100ms da animação para garantir que ela termine visualmente antes do fechamento -->
-                <div class="absolute bottom-0 left-0 h-1 bg-white/40 w-full origin-left" 
-                     style="animation: toast-progress-anim ${duration - 100}ms linear forwards"></div>
+                <div id="progress-${Date.now()}" 
+                     class="absolute bottom-0 left-0 h-1 bg-white/40 w-full origin-left transform scale-x-100 transition-transform ease-linear" 
+                     style="transition-duration: ${duration}ms;">
+                </div>
                 
-                <!-- Botão de fechar -->
                 <button class="absolute top-2 right-2 opacity-50 hover:opacity-100 transition-opacity p-1" onclick="this.closest('.pointer-events-auto').remove()">
                     <i class="fa-solid fa-xmark text-sm"></i>
                 </button>
@@ -57,17 +49,33 @@ const Toast = {
 
         this.container.appendChild(toastItem);
 
-        // Disparar animações de entrada do Tailwind
+        // Animações
         requestAnimationFrame(() => {
+            // 1. Animação de Entrada do Toast
             toastItem.classList.remove('translate-x-full', 'opacity-0');
             toastItem.classList.add('translate-x-0', 'opacity-100');
+        
+            // 2. Animação da Barra de Progresso
+            const progressBar = toastItem.querySelector('div[id^="progress-"]');
+            if (progressBar) {
+                // O "pulo do gato": um pequeno delay para o navegador processar a escala inicial
+                setTimeout(() => {
+                    progressBar.classList.remove('scale-x-100');
+                    progressBar.classList.add('scale-x-0');
+                }, 10); 
+            }
         });
 
-        // Auto-remover com animação de saída
+        // Auto-remover
         setTimeout(() => {
-            toastItem.classList.remove('translate-x-0', 'opacity-100');
-            toastItem.classList.add('translate-x-full', 'opacity-0');
-            setTimeout(() => toastItem.remove(), 310);
+            // Se o usuário já fechou manualmente, o elemento pode não existir mais
+            if (toastItem.parentElement) {
+                toastItem.classList.remove('translate-x-0', 'opacity-100');
+                toastItem.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => {
+                    if (toastItem.parentElement) toastItem.remove();
+                }, 300); // Tempo da transição de saída
+            }
         }, duration);
     },
 

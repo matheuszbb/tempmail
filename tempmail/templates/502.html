@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block conteudo %}
 <div class="min-h-[80vh] flex items-center justify-center px-4 bg-transparent">
@@ -17,33 +18,32 @@
 
         <div
             class="badge badge-outline border-orange-200 text-orange-600 font-black uppercase tracking-widest p-4 mb-6">
-            Gateway Error 502
+            {% trans "Gateway Error 502" %}
         </div>
 
         <h1 class="text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
-            Falha de <span class="text-orange-600">Conexão</span>
+            {% trans "Falha de" %} <span class="text-orange-600">{% trans "Conexão" %}</span>
         </h1>
 
         <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium italic">
-            "Ocorreu um erro interno de gateway."
+            "{% trans "Ocorreu um erro interno de gateway." %}"
         </p>
 
         <p class="mt-2 text-gray-500 dark:text-gray-500 max-w-sm mx-auto leading-relaxed text-sm">
-            Por favor, <span class="font-bold text-orange-600">reporte este erro ao administrador</span> ou tente
-            acessar novamente mais tarde.
+            {% trans "Por favor," %} <span class="font-bold text-orange-600">{% trans "reporte este erro ao administrador" %}</span> {% trans "ou tente acessar novamente mais tarde." %}
         </p>
 
         <div class="mt-10">
             <a href="{% url 'index' %}"
                 class="btn btn-lg bg-orange-600 hover:bg-orange-700 border-none text-white px-12 rounded-2xl shadow-xl shadow-orange-600/20 transition-all duration-300 active:scale-95 group">
                 <i class="fa-solid fa-house-chimney mr-2 group-hover:-translate-y-1 transition-transform"></i>
-                Retornar ao Início
+                {% trans "Retornar ao Início" %}
             </a>
         </div>
 
         <p class="mt-12 text-xs font-bold uppercase tracking-widest">
             <span class="text-orange-600">Email</span><span class="text-gray-900 dark:text-gray-100">Rush</span>
-            <span class="text-gray-500 dark:text-gray-400">Support Service</span>
+            <span class="text-gray-500 dark:text-gray-400">{% trans "Support Service" %}</span>
         </p>
     </div>
 </div>

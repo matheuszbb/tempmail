@@ -1,3 +1,4 @@
+{% load i18n %}
 <div id="sessionInfoModal"
     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
     <div
@@ -6,40 +7,40 @@
             <div class="p-2 bg-orange-100 dark:bg-orange-900/20 rounded-full">
                 <i class="fas fa-clock text-orange-600 dark:text-orange-400 text-lg"></i>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">Sobre o Tempo da Sessão</h3>
+            <h3 class="text-xl font-bold text-gray-800 dark:text-white">{% trans "Sobre o Tempo da Sessão" %}</h3>
         </div>
 
         <div class="space-y-4 text-gray-600 dark:text-gray-300">
             <div class="flex items-start gap-3">
                 <i class="fas fa-clock text-orange-500 mt-0.5 text-sm"></i>
                 <div>
-                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">Tempo Limitado</p>
-                    <p class="text-sm">Seu endereço de e-mail temporário tem duração limitada. Após o tempo expirar, todos os e-mails recebidos serão automaticamente excluídos.</p>
+                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">{% trans "Tempo Limitado" %}</p>
+                    <p class="text-sm">{% trans "Seu endereço de e-mail temporário tem duração limitada. Após o tempo expirar, todos os e-mails recebidos serão automaticamente excluídos." %}</p>
                 </div>
             </div>
 
             <div class="flex items-start gap-3">
                 <i class="fas fa-shield-alt text-green-500 mt-0.5 text-sm"></i>
                 <div>
-                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">Segurança Garantida</p>
-                    <p class="text-sm">Você está protegido contra spam e e-mails indesejados. Este serviço é exclusivamente para uso temporário e verificações seguras.</p>
+                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">{% trans "Segurança Garantida" %}</p>
+                    <p class="text-sm">{% trans "Você está protegido contra spam e e-mails indesejados. Este serviço é exclusivamente para uso temporário e verificações seguras." %}</p>
                 </div>
             </div>
 
             <div class="flex items-start gap-3">
                 <i class="fas fa-edit text-purple-500 mt-0.5 text-sm"></i>
                 <div>
-                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">Editar vs Excluir</p>
-                    <p class="text-sm"><strong>Editar:</strong> Muda o endereço de e-mail mas mantém todas as mensagens até o tempo expirar. Caso retorne ao e-mail anterior, as mensagens estarão disponíveis por mais algum tempo.</p>
-                    <p class="text-sm"><strong>Excluir:</strong> Remove o e-mail atual e todas as mensagens imediatamente.</p>
+                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">{% trans "Editar vs Excluir" %}</p>
+                    <p class="text-sm"><strong>{% trans "Editar:" %}</strong> {% trans "Muda o endereço de e-mail mas mantém todas as mensagens até o tempo expirar. Caso retorne ao e-mail anterior, as mensagens estarão disponíveis por mais algum tempo." %}</p>
+                    <p class="text-sm"><strong>{% trans "Excluir:" %}</strong> {% trans "Remove o e-mail atual e todas as mensagens imediatamente." %}</p>
                 </div>
             </div>
 
             <div class="flex items-start gap-3">
                 <i class="fas fa-sync-alt text-blue-500 mt-0.5 text-sm"></i>
                 <div>
-                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">Renovação</p>
-                    <p class="text-sm">Se precisar de mais tempo, você pode gerar um novo endereço de e-mail temporário a qualquer momento.</p>
+                    <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">{% trans "Renovação" %}</p>
+                    <p class="text-sm">{% trans "Se precisar de mais tempo, você pode gerar um novo endereço de e-mail temporário a qualquer momento." %}</p>
                 </div>
             </div>
         </div>
@@ -47,9 +48,9 @@
         <div class="mt-6 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
             <p class="text-sm text-orange-800 dark:text-orange-200 text-center">
                 <i class="fas fa-lightbulb mr-2"></i>
-                Quer saber mais sobre os benefícios do Email Temporário?
+                {% trans "Quer saber mais sobre os benefícios do Email Temporário?" %}
                 <a href="{% url 'sobre' %}" class="font-semibold underline hover:no-underline ml-1">
-                    Saiba mais aqui
+                    {% trans "Saiba mais aqui" %}
                 </a>
             </p>
         </div>
@@ -57,7 +58,7 @@
         <div class="flex justify-end mt-6">
             <button onclick="closeSessionInfoModal()"
                 class="px-4 py-2 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-semibold shadow-lg shadow-orange-500/30 transition">
-                Entendi
+                {% trans "Entendi" %}
             </button>
         </div>
     </div>

@@ -1,11 +1,11 @@
-{% load static %}
+{% load i18n %}
 <a href="{% url url_voltar %}" 
    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-gray-500 hover:text-orange-600 transition-all duration-300 group">
     
     <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
     
     <span class="relative">
-        Voltar
+        {% trans "Voltar" %}
         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-orange-600 transition-all duration-300 group-hover:w-full"></span>
     </span>
 </a>

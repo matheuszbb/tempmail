@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block conteudo %}
 <div class="relative bg-gradient-to-r from-orange-600 to-orange-500 pt-16 pb-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white relative z-10">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">Seu Email Temporário</h1>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">{% trans "Seu Email Temporário" %}</h1>
         <p class="text-orange-100 text-lg max-w-2xl">
-            Obtenha um endereço de e-mail temporário descartável e seguro instantaneamente.
+            {% trans "Obtenha um endereço de e-mail temporário descartável e seguro instantaneamente." %}
         </p>
     </div>
 
@@ -34,7 +35,6 @@
             <div id="emailCard"
                 class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 dark:border-gray-700 transition-colors w-full overflow-hidden">
                 <div class="flex flex-col gap-3 w-full min-w-0">
-                    <!-- Linha do Email -->
                     <div class="flex items-center gap-3 w-full min-w-0">
                         <div
                             class="flex bg-gradient-to-br from-orange-400 to-orange-600 w-12 h-12 sm:w-14 sm:h-14 rounded-full items-center justify-center text-white text-xl sm:text-2xl shadow-md shrink-0">
@@ -55,10 +55,10 @@
 
                 <p
                     class="text-center text-gray-400 text-sm mt-3 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5">
-                    <span>O seu endereço de e-mail temporário por</span>
+                    <span>{% trans "O seu endereço de e-mail temporário por" %}</span>
                     <span id="session-countdown"
                         class="font-bold text-orange-600 dark:text-orange-400 tracking-tight">...</span>
-                    <button onclick="openSessionInfoModal()" class="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="Sobre o tempo da sessão">
+                    <button onclick="openSessionInfoModal()" class="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors" title="{% trans 'Sobre o tempo da sessão' %}">
                         <i class="fas fa-info-circle text-sm"></i>
                     </button>
                 </p>
@@ -74,7 +74,7 @@
                                 class="flex items-center justify-center w-full py-4 bg-white dark:bg-[#1e293b] rounded-xl border border-gray-200 dark:border-gray-700 hover:text-brand-orange transition-all group shadow-sm">
                                 <i
                                     class="fa-solid fa-qrcode text-lg mr-2 group-hover:scale-110 transition-transform"></i>
-                                <span class="text-sm font-bold text-gray-700 dark:text-gray-200">QR Code</span>
+                                <span class="text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "QR Code" %}</span>
                             </button>
                         </div>
 
@@ -82,28 +82,28 @@
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-regular fa-copy text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
-                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Copiar</span>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Copiar" %}</span>
                         </button>
 
                         <button onclick="syncInbox(this)"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-solid fa-rotate text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
-                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Atualizar</span>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Atualizar" %}</span>
                         </button>
 
                         <button onclick="openEditModal()"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-solid fa-pen text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
-                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Alterar</span>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Alterar" %}</span>
                         </button>
 
                         <button onclick="resetSession()"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-solid fa-trash-can text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-red-500 transition-colors"></i>
-                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">Excluir</span>
+                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Excluir" %}</span>
                         </button>
                     </div>
 
@@ -114,7 +114,7 @@
                             <i
                                 class="fa-solid fa-qrcode text-xl group-hover:text-brand-orange transition-colors duration-300"></i>
                             <span
-                                class="text-[10px] font-bold leading-none mt-1 uppercase text-gray-700 dark:text-gray-200 group-hover:brand-orange transition-colors">QR</span>
+                                class="text-[10px] font-bold leading-none mt-1 uppercase text-gray-700 dark:text-gray-200 group-hover:brand-orange transition-colors">{% trans "QR" %}</span>
                         </button>
                     </div>
                 </div>
@@ -142,18 +142,18 @@
 
                     <div class="space-y-1">
                         <h3 class="text-white font-bold text-sm sm:text-base leading-tight">
-                            Números temporários para SMS
+                            {% trans "Números temporários para SMS" %}
                         </h3>
                         <p class="text-gray-200 text-xs sm:text-sm leading-relaxed px-4 font-medium">
-                            Receba códigos de verificação sem expor seu número real. <br class="hidden sm:block">
-                            Rápido, seguro e prático.
+                            {% trans "Receba códigos de verificação sem expor seu número real." %} <br class="hidden sm:block">
+                            {% trans "Rápido, seguro e prático." %}
                         </p>
                     </div>
 
                     <div class="w-full pt-1">
                         <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer"
                             class="inline-flex items-center justify-center bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_6px_15px_rgba(249,115,22,0.6)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.7)] hover:-translate-y-0.5">
-                            Acessar SMSRush
+                            {% trans "Acessar SMSRush" %}
                         </a>
                     </div>
                 </div>
@@ -165,9 +165,9 @@
                 <div
                     class="px-4 py-6 bg-orange-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">
                     <div class="flex items-center gap-3 w-full">
-                        <div class="flex-none w-[35%]">Remetente</div>
-                        <div class="flex-1 min-w-0">Assunto</div>
-                        <div class="flex-none text-right min-w-[50px] sm:min-w-[70px]">Visualizar</div>
+                        <div class="flex-none w-[35%]">{% trans "Remetente" %}</div>
+                        <div class="flex-1 min-w-0">{% trans "Assunto" %}</div>
+                        <div class="flex-none text-right min-w-[50px] sm:min-w-[70px]">{% trans "Visualizar" %}</div>
                     </div>
                 </div>
 
@@ -182,8 +182,7 @@
                                 class="absolute animate-spin rounded-full h-24 w-24 border-t-2 border-b-2 border-gray-200 dark:border-gray-600 opacity-50">
                             </div>
                         </div>
-                        <h3 class="text-lg font-bold text-gray-700 dark:text-gray-200">Sua caixa de entrada está
-                            vazia</h3>
+                        <h3 class="text-lg font-bold text-gray-700 dark:text-gray-200">{% trans "Sua caixa de entrada está vazia" %}</h3>
                     </div>
 
                     <div id="email-list" class="divide-y divide-gray-100 dark:divide-gray-700">
@@ -201,8 +200,7 @@
                                     class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                             </span>
-                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400">Buscando
-                                novos e-mails</span>
+                            <span class="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400">{% trans "Buscando novos e-mails" %}</span>
                         </div>
                         <div
                             class="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-100 dark:border-gray-700">
@@ -215,7 +213,6 @@
                 </div>
             </div>
 
-            <!-- Botão chamativo para página Sobre -->
             <div class="mt-4">
                 <a href="{% url 'sobre' %}"
                    class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold py-4 px-6 rounded-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md group w-full">
@@ -223,8 +220,8 @@
                         <i class="fas fa-lightbulb text-orange-500 text-xl group-hover:scale-110 transition-transform"></i>
                     </div>
                     <div class="flex-1 text-left min-w-0">
-                        <div class="text-base font-bold text-gray-900 dark:text-white">Por que usar Email Temporário?</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">Saiba os benefícios e proteja sua privacidade</div>
+                        <div class="text-base font-bold text-gray-900 dark:text-white">{% trans "Por que usar Email Temporário?" %}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400">{% trans "Saiba os benefícios e proteja sua privacidade" %}</div>
                     </div>
                     <div class="flex-shrink-0">
                         <i class="fas fa-arrow-right text-gray-400 dark:text-gray-500 text-lg group-hover:text-orange-500 group-hover:translate-x-1 transition-all"></i>
@@ -240,27 +237,25 @@
                     <div class="flex-none">
                         <button onclick="backToList()"
                             class="flex items-center justify-center w-auto px-2 sm:px-3 py-1.5 gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/20 shadow-sm"
-                            title="Voltar para a lista">
+                            title="{% trans 'Voltar para a lista' %}">
                             <i class="fa-solid fa-arrow-left-long text-white"></i>
-                            <span class="text-white">Voltar</span>
+                            <span class="text-white">{% trans "Voltar" %}</span>
                         </button>
                     </div>
 
                     <div class="flex-1 flex justify-center px-1 overflow-hidden">
                         <button id="header-title" onclick="scrollToTop(this)"
                             class="text-[10px] xs:text-xs sm:text-sm font-bold uppercase tracking-tighter whitespace-nowrap transition-all duration-300 flex items-center gap-2 cursor-default pointer-events-none hover:bg-black/40 dark:hover:bg-black/50 px-2 sm:px-3 py-1 rounded-full truncate max-w-full">
-                            <span class="hidden xs:inline">Leitura da Mensagem</span><span
-                                class="xs:hidden">Mensagem</span>
+                            <span class="hidden xs:inline">{% trans "Leitura da Mensagem" %}</span><span
+                                class="xs:hidden">{% trans "Mensagem" %}</span>
                         </button>
                     </div>
 
                     <div class="flex-none flex items-center justify-end gap-2">
-                        <!-- Botão de Anexo no Header (com badge) -->
                         <button id="btn-header-attachments" onclick="tempMailApp.scrollToAttachments()"
                             class="hidden relative flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-white bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/20 shadow-sm"
-                            title="Ver anexos">
+                            title="{% trans 'Ver anexos' %}">
                             <i class="fa-solid fa-paperclip text-sm sm:text-base"></i>
-                            <!-- Badge -->
                             <span id="header-attachments-badge"
                                 class="absolute -top-1.5 -right-1.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-black rounded-full shadow-lg border-2 border-brand-orange animate-bounce">
                                 0
@@ -269,9 +264,9 @@
 
                         <button id="btn-download" onclick="tempMailApp.downloadMessage()"
                             class="flex items-center justify-center w-8 h-8 sm:w-auto sm:px-3 sm:py-1.5 gap-2 text-[10px] sm:text-xs font-bold uppercase tracking-widest bg-white/10 hover:bg-white/20 rounded-lg transition-all border border-white/20 shadow-sm"
-                            title="Baixar arquivo .eml">
+                            title="{% trans 'Baixar arquivo .eml' %}">
                             <i class="fa-solid fa-download text-sm sm:text-base text-white"></i>
-                            <span class="hidden sm:inline text-white">Download</span>
+                            <span class="hidden sm:inline text-white">{% trans "Download" %}</span>
                         </button>
                     </div>
                 </div>
@@ -289,7 +284,7 @@
                                     <div class="flex-1 min-w-0">
                                         <span
                                             class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest block mb-2">
-                                            Remetente:
+                                            {% trans "Remetente:" %}
                                         </span>
 
                                         <div class="flex items-start gap-4">
@@ -316,7 +311,7 @@
                                 <div class="flex flex-col items-start sm:items-end flex-none">
                                     <span
                                         class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-0.5">
-                                        Recebido em:
+                                        {% trans "Recebido em:" %}
                                     </span>
                                     <time id="msg-data"
                                         class="text-xs font-bold text-gray-700 dark:text-white whitespace-nowrap bg-gray-100 dark:bg-gray-800/50 px-2 py-1 rounded sm:bg-transparent sm:p-0">
@@ -328,18 +323,18 @@
                             <div class="flex flex-col gap-1 bg-gray-50/50 dark:bg-gray-800/30 p-3">
                                 <span
                                     class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">
-                                    Assunto:
+                                    {% trans "Assunto:" %}
                                 </span>
                                 <h3 id="msg-assunto"
                                     class="text-md sm:text-lg font-bold text-gray-800 dark:text-gray-100 leading-snug break-words">
-                                    teste de recebimento de e-mail com título extremamente longo para teste
+                                    {% trans "Título da Mensagem" %}
                                 </h3>
                             </div>
                         </div>
 
                         <div class="flex flex-col gap-1">
                             <span
-                                class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">Mensagem:</span>
+                                class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">{% trans "Mensagem:" %}</span>
                         </div>
 
                         <div class="relative pb-4">
@@ -348,19 +343,17 @@
                             </div>
                         </div>
 
-                        <!-- Seção de Anexos -->
                         <div id="attachments-section"
                             class="hidden border-t border-gray-100 dark:border-gray-800 pt-6 mt-2">
                             <div class="flex items-center gap-2 mb-4">
                                 <i class="fa-solid fa-paperclip text-orange-600 dark:text-orange-400"></i>
                                 <span
-                                    class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">Anexos:</span>
+                                    class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest">{% trans "Anexos:" %}</span>
                                 <span id="attachments-count"
                                     class="badge badge-sm bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 border-none font-bold">0</span>
                             </div>
                             <div id="attachments-list" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <!-- Anexos injetados via JS -->
-                            </div>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -372,9 +365,7 @@
             <div
                 class="bg-gradient-to-br from-indigo-900 via-purple-800 to-blue-900 rounded-lg shadow-lg overflow-hidden text-white relative h-auto sticky top-8 flex flex-col items-center justify-center text-center p-6 border border-white/10">
 
-                <!-- Ícone + nome SMSRush -->
                 <div class="flex items-center gap-3 mb-4">
-                    <!-- Ícone -->
                     <div class="w-12 h-12 bg-orange-600 rounded-lg flex items-center justify-center">
                         <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-sms"
                             class="svg-inline--fa fa-comment-sms text-white w-8 h-8" role="img"
@@ -385,22 +376,19 @@
                         </svg>
                     </div>
 
-                    <!-- Nome SMSRush -->
                     <div class="text-2xl font-bold font-inter">
                         <span class="text-[#f97316] [filter:drop-shadow(0_2px_4px_rgba(249,115,22,0.4))]">SMS</span><span class="text-white">Rush</span>
                     </div>
                 </div>
 
-                <!-- Título e descrição -->
-                <h3 class="text-2xl font-bold mb-2">Números temporários para SMS</h3>
+                <h3 class="text-2xl font-bold mb-2">{% trans "Números temporários para SMS" %}</h3>
                 <p class="text-sm text-gray-300 mb-6 px-4">
-                    Receba códigos de verificação sem expor seu número real. Rápido, seguro e prático.
+                    {% trans "Receba códigos de verificação sem expor seu número real. Rápido, seguro e prático." %}
                 </p>
 
-                <!-- Botão -->
                 <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer"
                     class="inline-flex items-center justify-center bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_6px_15px_rgba(249,115,22,0.6)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.7)] hover:-translate-y-0.5">
-                    Acessar SMSRush
+                    {% trans "Acessar SMSRush" %}
                 </a>
             </div>
         </div>

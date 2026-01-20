@@ -11,7 +11,8 @@ COPY ./tempmail ./tempmail
 
 WORKDIR /tempmail
 
-RUN pip install --upgrade pip && \
+RUN apk add --no-cache gettext && \
+    pip install --upgrade pip && \
     pip install uv && \
     uv venv /venv && \
     . /venv/bin/activate && \

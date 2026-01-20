@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block conteudo %}
 <div class="min-h-[80vh] flex items-center justify-center px-4">
@@ -11,29 +12,28 @@
 
         <span
             class="px-4 py-1.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-widest">
-            Acesso Restrito
+            {% trans "Acesso Restrito" %}
         </span>
 
         <h1 class="mt-6 text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
-            Erro <span class="text-orange-600">403</span>
+            {% trans "Erro" %} <span class="text-orange-600">403</span>
         </h1>
 
         <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
-            Você não tem as credenciais necessárias para visualizar este recurso. Esta área é restrita a administradores
-            ou níveis específicos de acesso.
+            {% trans "Você não tem as credenciais necessárias para visualizar este recurso. Esta área é restrita a administradores ou níveis específicos de acesso." %}
         </p>
 
         <div class="mt-10">
             <a href="{% url 'index' %}"
                 class="btn btn-lg bg-orange-600 hover:bg-orange-700 border-none text-white px-8 rounded-2xl shadow-xl shadow-orange-600/20 group transition-all duration-300">
                 <i class="fa-solid fa-house-chimney mr-2 group-hover:-translate-x-1 transition-transform"></i>
-                Retornar ao Início
+                {% trans "Retornar ao Início" %}
             </a>
         </div>
 
         <p class="mt-12 text-xs font-bold uppercase tracking-widest">
             <span class="text-orange-600">Email</span><span class="text-gray-900 dark:text-gray-100">Rush</span>
-            <span class="text-gray-500 dark:text-gray-400">Firewall</span>
+            <span class="text-gray-500 dark:text-gray-400">{% trans "Firewall" %}</span>
         </p>
     </div>
 </div>

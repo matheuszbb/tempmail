@@ -3,13 +3,32 @@
 set -e
 
 if [ ! -f "core/__init__.py" ]; then
-    echo "Projeto Django não encontrado. Criando projeto 'core'..."
     django-admin startproject core .
 fi
 
 python manage.py collectstatic --noinput
 python manage.py makemigrations --noinput 
 python manage.py migrate --noinput
+
+if [ "$DEBUG" = "1" ]; then
+python - <<'EOF'
+import os
+from core import settings
+
+for code, _ in settings.LANGUAGES:
+    parts = code.split('-')
+    if len(parts) == 2:
+        folder = f"{parts[0]}_{parts[1].upper()}"
+    else:
+        folder = code
+
+    path = os.path.join(settings.BASE_DIR, 'locale', folder, 'LC_MESSAGES')
+    os.makedirs(path, exist_ok=True)
+EOF
+
+python manage.py makemessages -a -v 0
+python manage.py compilemessages -v 0
+fi
 
 if [ -n "$SUPER_USER_NAME" ]; then
   python manage.py shell <<EOF

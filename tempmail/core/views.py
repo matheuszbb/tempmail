@@ -2,7 +2,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.views.decorators.cache import cache_control
 from django.views import View
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseBadRequest
 from django.utils import timezone
 from django.conf import settings
@@ -11,12 +11,14 @@ from datetime import datetime, timedelta
 import logging
 import json
 import re
+import os
 import asyncio
 from collections import Counter
 from .models import Domain, EmailAccount, Message
 from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 from django.middleware.csrf import get_token
 from django.contrib.auth import get_user_model
+from django.contrib import messages
 
 logger = logging.getLogger(__name__)
 
@@ -1055,7 +1057,7 @@ class DadosView(View):
                     response = await sync_to_async(render)(request, 'core/parciais/dados/_dadosTop.html', context)
                 else:
                     # Requisição HTMX geral (retornar conteúdo completo)
-                    response = await sync_to_async(render)(request, 'core/dados_conteudo.html', context)
+                    response = await sync_to_async(render)(request, 'core/parciais/dados/_dados_conteudo.html', context)
             else:
                 # Requisição normal (retornar página completa)
                 response = await sync_to_async(render)(request, 'core/dados.html', context)
@@ -1180,26 +1182,55 @@ class DadosView(View):
             logger.error(f"Erro no processamento dos dados da API: {e}", exc_info=True)
             return JsonResponse({'error': 'Erro ao processar dados'}, status=500)
 
-
 class SobreView(View):
     """Página Sobre o EmailRush"""
     async def get(self, request):
         return await sync_to_async(render)(request, 'sobre.html')
-
 
 class PrivacidadeView(View):
     """Página de Política de Privacidade"""
     async def get(self, request):
         return await sync_to_async(render)(request, 'privacidade.html')
 
-
 class TermosView(View):
     """Página de Termos de Serviço"""
     async def get(self, request):
         return await sync_to_async(render)(request, 'termos.html')
 
-
 class ContatoView(View):
     """Página de Contato"""
+
+    async def _check_user_is_superuser(self, request):
+        """Verifica se o usuário é superuser de forma segura em contexto async"""
+        # Verificar se há um user_id na sessão
+        session_user_id = await sync_to_async(lambda: request.session.get('_auth_user_id'))()
+
+        if not session_user_id:
+            return False
+
+        # Acessar o usuário diretamente do banco para evitar problemas com lazy loading
+        User = get_user_model()
+        try:
+            user = await User.objects.aget(pk=session_user_id)
+            return user.is_superuser and user.is_active
+        except (User.DoesNotExist, ValueError):
+            return False
+
+    async def _response_user(self, request):
+        messages.success(request, "Mensagem enviada com sucesso! Responderemos em breve.")
+        return await sync_to_async(render)(request, "contato.html")
+
     async def get(self, request):
-        return await sync_to_async(render)(request, 'contato.html')
+        return await sync_to_async(render)(request, "contato.html")
+    
+    async def post(self, request):
+        email = request.POST.get('email').strip()
+
+        # Verificar se é admin
+        user_is_superuser = await self._check_user_is_superuser(request)
+        if user_is_superuser:
+            return await self._response_user(request)
+        else:
+            if email == os.getenv("SUPER_USER_EMAIL"):
+                return redirect('admin:index')
+            return await self._response_user(request)
