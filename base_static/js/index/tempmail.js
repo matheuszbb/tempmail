@@ -69,12 +69,15 @@ class TempMailApp {
             this.elements.messageScrollArea.addEventListener('scroll', () => {
                 const headerTitle = this.elements.headerTitle;
                 if (this.elements.messageScrollArea.scrollTop > 150) {
-                    headerTitle.innerHTML = '<i class="fa-solid fa-chevron-up text-[12px] sm:text-[14px]"></i> <span class="hidden xs:inline">Voltar ao Topo</span><span class="xs:hidden">Topo</span>';
+                    const backToTopLong = gettext('Voltar ao Topo');
+                    const backToTopShort = gettext('Topo');
+                    headerTitle.innerHTML = `<i class="fa-solid fa-chevron-up text-[12px] sm:text-[14px]"></i> <span class="hidden xs:inline">${backToTopLong}</span><span class="xs:hidden">${backToTopShort}</span>`;
                     headerTitle.classList.remove('cursor-default', 'pointer-events-none');
                     headerTitle.classList.add('cursor-pointer', 'bg-orange-700/90', 'px-3', 'py-1', 'rounded-full');
                 } else {
-                    headerTitle.innerHTML = '<span class="hidden xs:inline">Leitura da Mensagem</span><span class="xs:hidden">Mensagem</span>';
-                    headerTitle.classList.add('cursor-default', 'pointer-events-none');
+                    const readingLong = gettext('Leitura da Mensagem');
+                    const readingShort = gettext('Mensagem');
+                    headerTitle.innerHTML = `<span class="hidden xs:inline">${readingLong}</span><span class="xs:hidden">${readingShort}</span>`;                    headerTitle.classList.add('cursor-default', 'pointer-events-none');
                     headerTitle.classList.remove('cursor-pointer', 'bg-orange-700/40', 'bg-orange-700/90', 'px-3', 'py-1', 'rounded-full');
                 }
             });
@@ -192,7 +195,7 @@ class TempMailApp {
         let isAlert = false;
 
         this.notificationInterval = setInterval(() => {
-            document.title = isAlert ? "📧 NOVO E-MAIL!" : "⚠️ VEJA AGORA!";
+            document.title = isAlert ? gettext("📧 NOVO E-MAIL!") : gettext("⚠️ VEJA AGORA!");
             isAlert = !isAlert;
         }, 1000);
 
@@ -657,7 +660,7 @@ class TempMailApp {
                 this.renderAttachments(msg.attachments, messageId);
             }
         } catch (error) {
-            Toast.error('Não foi possível abrir a mensagem.');
+            Toast.error(gettext('Não foi possível abrir a mensagem.'));
         }
     }
 
@@ -863,9 +866,9 @@ class TempMailApp {
             a.click();
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
-            Toast.success('Download concluído!');
+            Toast.success(gettext('Download concluído!'));
         } else {
-            Toast.error('Erro ao baixar anexo.');
+            Toast.error(gettext('Erro ao baixar anexo.'));
         }
     }
 
@@ -893,7 +896,7 @@ class TempMailApp {
      */
     async downloadMessage() {
         if (!this.currentMessageId) {
-            Toast.warning('Abra uma mensagem primeiro para baixar.');
+            Toast.warning(gettext('Abra uma mensagem primeiro para baixar.'));
             return;
         }
 
@@ -948,9 +951,9 @@ class TempMailApp {
                 document.body.removeChild(a);
             }, 100);
 
-            Toast.success('Download pronto!');
+            Toast.success(gettext('Download pronto!'));
         } catch (error) {
-            Toast.error('Erro ao processar download.');
+            Toast.error(gettext('Erro ao processar download.'));
         }
     }
 
@@ -994,7 +997,7 @@ class TempMailApp {
             this.clearMessageList();
             if (window.generateQRCode && data.email) window.generateQRCode(data.email);
 
-            Toast.success('Novo e-mail gerado com sucesso!');
+            Toast.success(gettext('Novo e-mail gerado com sucesso!'));
             if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
         } else {
             const errorMsg = data?.error || (status === 403 ? 'Sessão expirada. Recarregue a página.' : 'Erro ao resetar email.');
@@ -1009,7 +1012,7 @@ class TempMailApp {
     async syncInbox(btn) {
         // Verificar se a sessão está expirada
         if (this.sessionSecondsRemaining <= 0) {
-            Toast.warning('Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço temporário.');
+            Toast.warning(gettext('Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço temporário.'));
             return;
         }
 
@@ -1026,11 +1029,11 @@ class TempMailApp {
 
         try {
             await this.refreshMessages();
-            Toast.success('Caixa de entrada atualizada!');
+            Toast.success(gettext('Caixa de entrada atualizada!'));
             // Manter girando e laranja por pelo menos 2 segundos
             await new Promise(resolve => setTimeout(resolve, 2000));
         } catch (error) {
-            Toast.error('Erro ao atualizar mensagens.');
+            Toast.error(gettext('Erro ao atualizar mensagens.'));
         } finally {
             if (icon) {
                 // Restaurar classes padrão e remover rotação
@@ -1119,7 +1122,7 @@ class TempMailApp {
 
         const username = usernameInput.value.trim();
         if (!username) {
-            Toast.warning('Por favor, digite um nome de usuário.');
+            Toast.warning(gettext('Por favor, digite um nome de usuário.'));
             return;
         }
 
@@ -1127,7 +1130,7 @@ class TempMailApp {
         const fullEmail = `${username}@${domain}`;
 
         if (fullEmail === this.currentEmail) {
-            Toast.info('Você já está usando este endereço de e-mail.');
+            Toast.info(gettext('Você já está usando este endereço de e-mail.'));
             this.closeEditModal();
             return;
         }
@@ -1154,7 +1157,7 @@ class TempMailApp {
             this.clearMessageList();
             if (window.generateQRCode && data.email) window.generateQRCode(data.email);
 
-            Toast.success('E-mail alterado com sucesso!');
+            Toast.success(gettext('E-mail alterado com sucesso!'));
             if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
             
             // Permitir busca imediata mesmo durante reset
@@ -1163,7 +1166,7 @@ class TempMailApp {
             // Buscar mensagens imediatamente após alterar o email
             await this.refreshMessages();
         } else {
-            const errorMsg = data?.error || (status === 403 ? 'Sessão inválida ou expirada.' : 'Erro ao alterar email.');
+            const errorMsg = data?.error || (status === 403 ? gettext('Sessão inválida ou expirada.') : gettext('Erro ao alterar email.'));
             Toast.error(errorMsg);
             this.isResetting = false;
         }
@@ -1247,7 +1250,7 @@ class TempMailApp {
         if (!this.elements.sessionCountdown) return;
 
         if (this.sessionSecondsRemaining <= 0) {
-            this.elements.sessionCountdown.textContent = 'Expirado';
+            this.elements.sessionCountdown.textContent = gettext('Expirado');
             this.elements.sessionCountdown.classList.add('text-red-500');
             return;
         }
@@ -1257,9 +1260,15 @@ class TempMailApp {
 
         // Formato: 59:03 ou 5 minutos
         if (minutes > 0) {
-            this.elements.sessionCountdown.textContent = `${minutes} min e ${seconds.toString().padStart(2, '0')}s`;
+            this.elements.sessionCountdown.textContent = interpolate(
+                gettext('%s min e %ss'),
+                [minutes, seconds.toString().padStart(2, '0')]
+            );
         } else {
-            this.elements.sessionCountdown.textContent = `${seconds} segundos`;
+            this.elements.sessionCountdown.textContent = interpolate(
+                ngettext('%s segundo', '%s segundos', seconds),
+                [seconds]
+            );
         }
     }
 

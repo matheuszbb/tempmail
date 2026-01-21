@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-20 22:51-0300\n"
+"POT-Creation-Date: 2026-01-21 09:38-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -759,11 +759,15 @@ msgstr "Otros"
 msgid "Digite sua mensagem aqui..."
 msgstr "Escribe tu mensaje aquí..."
 
-#: templates/contato.html:126
+#: templates/contato.html:118
+msgid "Preciso de ajuda."
+msgstr "Necesito ayuda."
+
+#: templates/contato.html:127
 msgid "Enviar Mensagem"
 msgstr "Enviar Mensaje"
 
-#: templates/contato.html:133
+#: templates/contato.html:134
 msgid ""
 "Responderemos o mais breve possível. Para questões urgentes, considere usar "
 "outros canais de comunicação."

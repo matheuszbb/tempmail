@@ -1,0 +1,121 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-01-21 09:18-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: base_static/js/index/tempmail.js:72
+msgid "Voltar ao Topo"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:73
+msgid "Topo"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:78
+msgid "Leitura da Mensagem"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:79
+msgid "Mensagem"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:198
+msgid "📧 NOVO E-MAIL!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:198
+msgid "⚠️ VEJA AGORA!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:663
+msgid "Não foi possível abrir a mensagem."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:869
+msgid "Download concluído!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:871
+msgid "Erro ao baixar anexo."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:899
+msgid "Abra uma mensagem primeiro para baixar."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:954
+msgid "Download pronto!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:956
+msgid "Erro ao processar download."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1000
+msgid "Novo e-mail gerado com sucesso!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1015
+msgid ""
+"Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço "
+"temporário."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1032
+msgid "Caixa de entrada atualizada!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1036
+msgid "Erro ao atualizar mensagens."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1125
+msgid "Por favor, digite um nome de usuário."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1133
+msgid "Você já está usando este endereço de e-mail."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1160
+msgid "E-mail alterado com sucesso!"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1169
+msgid "Sessão inválida ou expirada."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1169
+msgid "Erro ao alterar email."
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1253
+msgid "Expirado"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1264
+#, javascript-format
+msgid "%s min e %ss"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1269
+#, javascript-format
+msgid "%s segundo"
+msgid_plural "%s segundos"
+msgstr[0] ""
+msgstr[1] ""

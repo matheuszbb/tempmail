@@ -27,6 +27,7 @@ for code, _ in settings.LANGUAGES:
 EOF
 
 python manage.py makemessages -a -v 0
+python manage.py makemessages -d djangojs -a -v 0
 python manage.py compilemessages -v 0
 fi
 
