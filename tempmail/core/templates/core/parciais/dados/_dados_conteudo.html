@@ -225,17 +225,17 @@
         <!-- Filtros/Tabs para diferentes visualizações -->
         <div class="flex w-full gap-1 mb-6 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg" id="sites-tabs">
             <a class="tab-link flex-1 cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-all text-center {% if filter_sites == 'all' or not filter_sites %}!bg-brand-orange !text-white !border-brand-orange{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}"
-            hx-get="{% url 'dados_admin' %}?filter=all"
+            hx-get="{% url 'dados_admin' %}?filter=all{% if data_inicio %}&data_inicio={{ data_inicio|date:'Y-m-d' }}{% endif %}{% if data_fim %}&data_fim={{ data_fim|date:'Y-m-d' }}{% endif %}"
             hx-target="#sites-content"
             data-filter="all">Top 100</a>
             
             <a class="tab-link flex-1 cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-all text-center {% if filter_sites == 'top50' %}!bg-brand-orange !text-white !border-brand-orange{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}"
-            hx-get="{% url 'dados_admin' %}?filter=top50"
+            hx-get="{% url 'dados_admin' %}?filter=top50{% if data_inicio %}&data_inicio={{ data_inicio|date:'Y-m-d' }}{% endif %}{% if data_fim %}&data_fim={{ data_fim|date:'Y-m-d' }}{% endif %}"
             hx-target="#sites-content"
             data-filter="top50">Top 50</a>
             
             <a class="tab-link flex-1 cursor-pointer px-4 py-2 rounded-md text-sm font-medium transition-all text-center {% if filter_sites == 'top10' %}!bg-brand-orange !text-white !border-brand-orange{% else %}text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700{% endif %}"
-            hx-get="{% url 'dados_admin' %}?filter=top10"
+            hx-get="{% url 'dados_admin' %}?filter=top10{% if data_inicio %}&data_inicio={{ data_inicio|date:'Y-m-d' }}{% endif %}{% if data_fim %}&data_fim={{ data_fim|date:'Y-m-d' }}{% endif %}"
             hx-target="#sites-content"
             data-filter="top10">Top 10</a>
         </div>

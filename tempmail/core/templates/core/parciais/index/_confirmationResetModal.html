@@ -12,13 +12,15 @@
             {% trans "Deseja gerar um novo endereço de e-mail?" %} <br>
             <span class="text-orange-600 dark:text-orange-400 font-bold">{% trans "Atenção:" %}</span> {% trans "Todas as mensagens recebidas na sessão atual serão permanentemente perdidas." %}
         </p>
-        <div class="modal-action gap-2">
+        <div class="flex justify-end gap-3 mt-6">
             <form method="dialog" class="flex-1 sm:flex-none">
-                <button
-                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">{% trans "Cancelar" %}</button>
+                <button class="w-full sm:w-auto px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-200 font-semibold transition-all active:scale-95">
+                    {% trans "Cancelar" %}
+                </button>
             </form>
+            
             <button onclick="confirmResetEmail()"
-                class="btn bg-brand-orange hover:bg-brand-dark text-white border-none px-8 font-extrabold uppercase tracking-tight shadow-lg shadow-orange-500/20 flex-1 sm:flex-none">
+                    class="px-5 py-2.5 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition-all active:scale-95 flex-1 sm:flex-none">
                 {% trans "Sim, Gerar Novo" %}
             </button>
         </div>

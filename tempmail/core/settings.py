@@ -203,8 +203,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            #'level': 'WARNING',  # Ajuste conforme necessário
-            'level': 'INFO',  # Ajuste conforme necessário
+            'level': 'INFO' if DEBUG else 'WARNING',  # Ajuste conforme necessário
             'propagate': True,
         },
         'django.request': {
@@ -214,7 +213,7 @@ LOGGING = {
         },
         'core': {
             'handlers': ['console'],
-            'level': 'INFO',
+            'level': 'INFO' if DEBUG else 'WARNING',
             'propagate': True,
         },
     },

@@ -1,9 +1,8 @@
 {% load i18n %}
-<dialog id="linkConfirmModal" class="modal modal-bottom sm:modal-middle">
+<dialog id="linkConfirmModal" class="modal modal-bottom sm:modal-middle transition-all duration-300">
     <div class="modal-box bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-700 shadow-2xl">
         <div class="flex items-center gap-4 mb-4">
-            <div
-                class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+            <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
                 <i class="fa-solid fa-link text-2xl"></i>
             </div>
             <h3 class="font-black text-xl text-gray-900 dark:text-white">{% trans "Aviso de Link Externo" %}</h3>
@@ -33,19 +32,23 @@
             </p>
         </div>
 
-        <div class="modal-action gap-2 mt-6">
+        <div class="flex justify-end gap-3 mt-6">
             <form method="dialog" class="flex-1 sm:flex-none">
-                <button
-                    class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">{% trans "Cancelar" %}</button>
+                <button class="w-full sm:w-auto px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-200 font-semibold transition-all active:scale-95">
+                    {% trans "Cancelar" %}
+                </button>
             </form>
+            
             <a id="confirmLinkBtn" href="#" target="_blank"
                 onclick="document.getElementById('linkConfirmModal').close()"
-                class="btn bg-brand-orange hover:bg-brand-dark text-white border-none px-8 font-extrabold uppercase tracking-tight shadow-lg shadow-orange-500/20 flex-1 sm:flex-none flex items-center gap-2">
-                {% trans "Prosseguir" %} <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                class="px-5 py-2.5 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition-all active:scale-95 flex-1 sm:flex-none flex items-center justify-center gap-2">
+                {% trans "Prosseguir" %} 
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
             </a>
         </div>
     </div>
-    <form method="dialog" class="modal-backdrop bg-black/40 backdrop-blur-sm">
+    
+    <form method="dialog" class="modal-backdrop bg-black/60 backdrop-blur-sm">
         <button>{% trans "fechar" %}</button>
     </form>
 </dialog>

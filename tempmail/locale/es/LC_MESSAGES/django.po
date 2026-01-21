@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 11:16-0300\n"
+"POT-Creation-Date: 2026-01-21 17:10-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -185,9 +185,9 @@ msgstr ""
 "scripts maliciosos. Descárgalos solo si confías en el remitente."
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:32
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:39
 #: core/templates/core/parciais/index/_confirmationResetModal.html:18
-#: core/templates/core/parciais/index/_editModal.html:37
+#: core/templates/core/parciais/index/_editModal.html:35
+#: templates/parciais/_confirmationExternalLinkModal.html:38
 msgid "Cancelar"
 msgstr "Cancelar"
 
@@ -196,39 +196,11 @@ msgid "Sim, baixar arquivo"
 msgstr "Sí, descargar archivo"
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:41
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:49
-#: core/templates/core/parciais/index/_confirmationResetModal.html:27
+#: core/templates/core/parciais/index/_confirmationResetModal.html:29
+#: core/templates/core/parciais/index/_editModal.html:48
+#: templates/parciais/_confirmationExternalLinkModal.html:52
 msgid "fechar"
 msgstr "cerrar"
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:9
-msgid "Aviso de Link Externo"
-msgstr "Aviso de Enlace Externo"
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:14
-msgid "URL de Destino:"
-msgstr "URL de Destino:"
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:23
-msgid "Você está prestes a sair do EmailRush e visitar um site externo."
-msgstr "Estás a punto de salir de EmailRush y visitar un sitio externo."
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:24
-msgid "Certifique-se de que o site é seguro"
-msgstr "Asegúrate de que el sitio sea seguro"
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:25
-msgid "antes de prosseguir."
-msgstr "antes de continuar."
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:32
-msgid "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!"
-msgstr ""
-"⚠️ Cuidado: ¡El enlace visible en el correo era diferente del destino real!"
-
-#: core/templates/core/parciais/index/_confirmationExternalLinkModal.html:44
-msgid "Prosseguir"
-msgstr "Continuar"
 
 #: core/templates/core/parciais/index/_confirmationResetModal.html:9
 msgid "Gerar novo e-mail?"
@@ -248,19 +220,19 @@ msgid ""
 msgstr ""
 "Todos los mensajes recibidos en la sesión actual se perderán permanentemente."
 
-#: core/templates/core/parciais/index/_confirmationResetModal.html:22
+#: core/templates/core/parciais/index/_confirmationResetModal.html:24
 msgid "Sim, Gerar Novo"
 msgstr "Sí, Generar Nuevo"
 
-#: core/templates/core/parciais/index/_editModal.html:11
+#: core/templates/core/parciais/index/_editModal.html:6
 msgid "Alterar Endereço"
 msgstr "Cambiar Dirección"
 
-#: core/templates/core/parciais/index/_editModal.html:16
+#: core/templates/core/parciais/index/_editModal.html:11
 msgid "Novo Nome de Usuário"
 msgstr "Nuevo Nombre de Usuario"
 
-#: core/templates/core/parciais/index/_editModal.html:24
+#: core/templates/core/parciais/index/_editModal.html:23
 msgid "ex: usuario123"
 msgstr "ej: usuario123"
 
@@ -474,11 +446,19 @@ msgstr "Página No Encontrada"
 msgid "Não foi possível processar o download do arquivo."
 msgstr "No se pudo procesar la descarga del archivo."
 
-#: core/views.py:913
-msgid "Erro interno do servidor"
-msgstr "Error interno del servidor"
+#: core/views.py:1228
+#, fuzzy
+#| msgid "Erro interno ao processar requisição"
+msgid "Erro ao processar requisição"
+msgstr "Error interno al procesar la solicitud"
 
-#: core/views.py:1100
+#: core/views.py:1272
+#, fuzzy
+#| msgid "Estatísticas"
+msgid "Erro ao carregar estatísticas"
+msgstr "Estadísticas"
+
+#: core/views.py:1302
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr "¡Mensaje enviado con éxito! Responderemos pronto."
 
@@ -746,6 +726,35 @@ msgid ""
 msgstr ""
 "Responderemos lo antes posible. Para asuntos urgentes, considera usar otros "
 "canales de comunicación."
+
+#: templates/parciais/_confirmationExternalLinkModal.html:8
+msgid "Aviso de Link Externo"
+msgstr "Aviso de Enlace Externo"
+
+#: templates/parciais/_confirmationExternalLinkModal.html:13
+msgid "URL de Destino:"
+msgstr "URL de Destino:"
+
+#: templates/parciais/_confirmationExternalLinkModal.html:22
+msgid "Você está prestes a sair do EmailRush e visitar um site externo."
+msgstr "Estás a punto de salir de EmailRush y visitar un sitio externo."
+
+#: templates/parciais/_confirmationExternalLinkModal.html:23
+msgid "Certifique-se de que o site é seguro"
+msgstr "Asegúrate de que el sitio sea seguro"
+
+#: templates/parciais/_confirmationExternalLinkModal.html:24
+msgid "antes de prosseguir."
+msgstr "antes de continuar."
+
+#: templates/parciais/_confirmationExternalLinkModal.html:31
+msgid "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!"
+msgstr ""
+"⚠️ Cuidado: ¡El enlace visible en el correo era diferente del destino real!"
+
+#: templates/parciais/_confirmationExternalLinkModal.html:45
+msgid "Prosseguir"
+msgstr "Continuar"
 
 #: templates/parciais/_erros_forms.html:12
 #, python-format
@@ -1409,6 +1418,9 @@ msgid ""
 msgstr ""
 "Para dudas sobre estos términos, contáctanos a través de la página de "
 "contacto."
+
+#~ msgid "Erro interno do servidor"
+#~ msgstr "Error interno del servidor"
 
 #~ msgid "Erro ao processar a página"
 #~ msgstr "Error al procesar la página"

@@ -1082,7 +1082,7 @@ class TempMailApp {
     openEditModal() {
         if (!this.elements.editModal) return;
 
-        // Extrair domínio do email atual
+        // Ajusta o domínio no label
         if (this.currentEmail && this.currentEmail.includes('@')) {
             const domain = this.currentEmail.split('@')[1];
             if (this.elements.modalDomainLabel) {
@@ -1090,30 +1090,19 @@ class TempMailApp {
             }
         }
 
-        const modalContent = this.elements.editModal.querySelector('div > div');
-        this.elements.editModal.classList.remove('hidden');
+        // Abre nativamente (isso resolve o problema de interação/foco)
+        this.elements.editModal.showModal();
+
+        // Foca no input após a abertura para facilitar o uso
         setTimeout(() => {
-            this.elements.editModal.classList.add('opacity-100');
-            if (modalContent) {
-                modalContent.classList.remove('scale-95');
-                modalContent.classList.add('scale-100');
-            }
-        }, 10);
+            if (this.elements.modalInputUser) this.elements.modalInputUser.focus();
+        }, 50);
     }
 
     closeEditModal() {
-        if (!this.elements.editModal) return;
-
-        const modalContent = this.elements.editModal.querySelector('div > div');
-        this.elements.editModal.classList.remove('opacity-100');
-        if (modalContent) {
-            modalContent.classList.remove('scale-100');
-            modalContent.classList.add('scale-95');
+        if (this.elements.editModal) {
+            this.elements.editModal.close();
         }
-
-        setTimeout(() => {
-            this.elements.editModal.classList.add('hidden');
-        }, 300);
     }
 
     async saveEditModal() {
@@ -1126,9 +1115,11 @@ class TempMailApp {
             return;
         }
 
-        const domain = this.elements.modalDomainLabel.textContent.replace('@', '');
+        const domainLabel = this.elements.modalDomainLabel.textContent;
+        const domain = domainLabel.replace('@', '').trim();
         const fullEmail = `${username}@${domain}`;
 
+        // Validação de email duplicado
         if (fullEmail === this.currentEmail) {
             Toast.info(gettext('Você já está usando este endereço de e-mail.'));
             this.closeEditModal();
@@ -1137,42 +1128,45 @@ class TempMailApp {
 
         if (this.isResetting) return;
         this.isResetting = true;
+        
         this.stopPolling();
-
         this.showSkeleton();
+        
+        // Fecha o modal imediatamente ao iniciar o processo
         this.closeEditModal();
 
-        const { success, data, status } = await this._apiCall('/api/email/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': this.getCsrfToken()
-            },
-            body: JSON.stringify({ email: fullEmail })
-        });
+        try {
+            const { success, data, status } = await this._apiCall('/api/email/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                },
+                body: JSON.stringify({ email: fullEmail })
+            });
 
-        if (success && data && data.success) {
-            this.currentEmail = data.email;
-            if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
-            this.clearMessageList();
-            if (window.generateQRCode && data.email) window.generateQRCode(data.email);
+            if (success && data && data.success) {
+                this.currentEmail = data.email;
+                if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
+                this.clearMessageList();
+                
+                if (window.generateQRCode && data.email) window.generateQRCode(data.email);
 
-            Toast.success(gettext('E-mail alterado com sucesso!'));
-            if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
-            
-            // Permitir busca imediata mesmo durante reset
+                Toast.success(gettext('E-mail alterado com sucesso!'));
+                if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
+                
+                await this.refreshMessages();
+            } else {
+                const errorMsg = data?.error || (status === 403 ? gettext('Sessão inválida.') : gettext('Erro ao alterar email.'));
+                Toast.error(errorMsg);
+            }
+        } catch (error) {
+            Toast.error(gettext('Erro de conexão ao alterar e-mail.'));
+        } finally {
             this.isResetting = false;
-            
-            // Buscar mensagens imediatamente após alterar o email
-            await this.refreshMessages();
-        } else {
-            const errorMsg = data?.error || (status === 403 ? gettext('Sessão inválida ou expirada.') : gettext('Erro ao alterar email.'));
-            Toast.error(errorMsg);
-            this.isResetting = false;
+            this.hideSkeleton();
+            this.startPolling();
         }
-
-        this.hideSkeleton();
-        this.startPolling();
     }
 
     // Helper para limpar lista

@@ -1,13 +1,8 @@
 {% load i18n %}
-<div id="editModal"
-    role="dialog"
-    aria-labelledby="modalTitle"
-    aria-modal="true"
-    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
-    
-    <div class="bg-white dark:bg-dark-card w-full max-w-md mx-4 rounded-xl shadow-2xl transform transition-all scale-95 p-6 border border-gray-200 dark:border-gray-700">
+<dialog id="editModal" class="modal modal-bottom sm:modal-middle transition-all duration-300">
+    <div class="modal-box bg-white dark:bg-dark-card w-full max-w-md rounded-xl shadow-2xl p-6 border border-gray-200 dark:border-gray-700">
         
-        <h3 id="modalTitle" class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
             {% trans "Alterar Endereço" %}
         </h3>
         
@@ -20,6 +15,10 @@
                 <input type="text" 
                        id="modalInputUser" 
                        name="new_username"
+                       autocomplete="off"
+                       spellcheck="false"
+                       data-lpignore="true" 
+                       data-1p-ignore
                        class="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-white py-3 px-4 leading-tight focus:outline-none"
                        placeholder="{% trans 'ex: usuario123' %}">
                 
@@ -31,16 +30,21 @@
         </div>
 
         <div class="flex justify-end gap-3 mt-6">
+            <form method="dialog">
+                <button class="px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-200 font-semibold transition-all active:scale-95">
+                    {% trans "Cancelar" %}
+                </button>
+            </form>
+            
             <button type="button" 
-                    onclick="closeEditModal()"
-                    class="px-4 py-2 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg text-gray-700 dark:text-gray-200 font-semibold transition">
-                {% trans "Cancelar" %}
-            </button>
-            <button type="button" 
-                    onclick="saveEditModal()"
-                    class="px-4 py-2 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition">
+                    onclick="app.saveEditModal()"
+                    class="px-5 py-2.5 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-bold shadow-lg shadow-orange-500/30 transition-all active:scale-95">
                 {% trans "Salvar Alterações" %}
             </button>
         </div>
     </div>
-</div>
+
+    <form method="dialog" class="modal-backdrop bg-black/60 backdrop-blur-sm">
+        <button>{% trans "fechar" %}</button>
+    </form>
+</dialog>

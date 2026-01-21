@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 09:18-0300\n"
+"POT-Creation-Date: 2026-01-21 17:10-0300\n"
 "PO-Revision-Date: 2026-01-21 09:18-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -75,8 +75,8 @@ msgid ""
 "Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço "
 "temporário."
 msgstr ""
-"¡Sesión expirada! Cambie o elimine el correo para generar una nueva dirección "
-"temporal."
+"¡Sesión expirada! Cambie o elimine el correo para generar una nueva "
+"dirección temporal."
 
 #: base_static/js/index/tempmail.js:1032
 msgid "Caixa de entrada atualizada!"
@@ -86,36 +86,44 @@ msgstr "¡Bandeja de entrada actualizada!"
 msgid "Erro ao atualizar mensagens."
 msgstr "Error al actualizar los mensajes."
 
-#: base_static/js/index/tempmail.js:1125
+#: base_static/js/index/tempmail.js:1114
 msgid "Por favor, digite um nome de usuário."
 msgstr "Por favor, escriba un nombre de usuario."
 
-#: base_static/js/index/tempmail.js:1133
+#: base_static/js/index/tempmail.js:1124
 msgid "Você já está usando este endereço de e-mail."
 msgstr "Ya está utilizando esta dirección de correo electrónico."
 
-#: base_static/js/index/tempmail.js:1160
+#: base_static/js/index/tempmail.js:1155
 msgid "E-mail alterado com sucesso!"
 msgstr "¡Correo electrónico cambiado con éxito!"
 
-#: base_static/js/index/tempmail.js:1169
-msgid "Sessão inválida ou expirada."
+#: base_static/js/index/tempmail.js:1160
+#, fuzzy
+#| msgid "Sessão inválida ou expirada."
+msgid "Sessão inválida."
 msgstr "Sesión inválida o expirada."
 
-#: base_static/js/index/tempmail.js:1169
+#: base_static/js/index/tempmail.js:1160
 msgid "Erro ao alterar email."
 msgstr "Error al cambiar el correo."
 
-#: base_static/js/index/tempmail.js:1253
+#: base_static/js/index/tempmail.js:1164
+#, fuzzy
+#| msgid "Erro ao alterar email."
+msgid "Erro de conexão ao alterar e-mail."
+msgstr "Error al cambiar el correo."
+
+#: base_static/js/index/tempmail.js:1247
 msgid "Expirado"
 msgstr "Expirado"
 
-#: base_static/js/index/tempmail.js:1264
+#: base_static/js/index/tempmail.js:1258
 #, javascript-format
 msgid "%s min e %ss"
 msgstr "%s min y %ss"
 
-#: base_static/js/index/tempmail.js:1269
+#: base_static/js/index/tempmail.js:1263
 #, javascript-format
 msgid "%s segundo"
 msgid_plural "%s segundos"

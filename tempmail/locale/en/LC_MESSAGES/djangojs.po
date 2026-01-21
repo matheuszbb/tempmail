@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 09:18-0300\n"
+"POT-Creation-Date: 2026-01-21 17:10-0300\n"
 "PO-Revision-Date: 2026-01-21 09:18-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -86,36 +86,44 @@ msgstr "Inbox updated!"
 msgid "Erro ao atualizar mensagens."
 msgstr "Error updating messages."
 
-#: base_static/js/index/tempmail.js:1125
+#: base_static/js/index/tempmail.js:1114
 msgid "Por favor, digite um nome de usuário."
 msgstr "Please enter a username."
 
-#: base_static/js/index/tempmail.js:1133
+#: base_static/js/index/tempmail.js:1124
 msgid "Você já está usando este endereço de e-mail."
 msgstr "You are already using this email address."
 
-#: base_static/js/index/tempmail.js:1160
+#: base_static/js/index/tempmail.js:1155
 msgid "E-mail alterado com sucesso!"
 msgstr "Email changed successfully!"
 
-#: base_static/js/index/tempmail.js:1169
-msgid "Sessão inválida ou expirada."
+#: base_static/js/index/tempmail.js:1160
+#, fuzzy
+#| msgid "Sessão inválida ou expirada."
+msgid "Sessão inválida."
 msgstr "Invalid or expired session."
 
-#: base_static/js/index/tempmail.js:1169
+#: base_static/js/index/tempmail.js:1160
 msgid "Erro ao alterar email."
 msgstr "Error changing email."
 
-#: base_static/js/index/tempmail.js:1253
+#: base_static/js/index/tempmail.js:1164
+#, fuzzy
+#| msgid "Erro ao alterar email."
+msgid "Erro de conexão ao alterar e-mail."
+msgstr "Error changing email."
+
+#: base_static/js/index/tempmail.js:1247
 msgid "Expirado"
 msgstr "Expired"
 
-#: base_static/js/index/tempmail.js:1264
+#: base_static/js/index/tempmail.js:1258
 #, javascript-format
 msgid "%s min e %ss"
 msgstr "%s min and %ss"
 
-#: base_static/js/index/tempmail.js:1269
+#: base_static/js/index/tempmail.js:1263
 #, javascript-format
 msgid "%s segundo"
 msgid_plural "%s segundos"
