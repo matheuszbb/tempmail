@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 09:38-0300\n"
+"POT-Creation-Date: 2026-01-21 11:16-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -474,39 +474,11 @@ msgstr "Página No Encontrada"
 msgid "Não foi possível processar o download do arquivo."
 msgstr "No se pudo procesar la descarga del archivo."
 
-#: core/views.py:913 core/views.py:1110
+#: core/views.py:913
 msgid "Erro interno do servidor"
 msgstr "Error interno del servidor"
 
-#: core/views.py:1078
-msgid "Erro ao processar a página"
-msgstr "Error al procesar la página"
-
-#: core/views.py:1088
-#, fuzzy
-#| msgid "Acesso Negado"
-msgid "Acesso negado"
-msgstr "Acceso Denegado"
-
-#: core/views.py:1095
-msgid "Token CSRF inválido"
-msgstr "Token CSRF no válido"
-
-#: core/views.py:1101
-#, fuzzy
-#| msgid "Requisição Inválida"
-msgid "Requisição inválida"
-msgstr "Solicitud Inválida"
-
-#: core/views.py:1128 core/views.py:1145
-msgid "Período muito grande. Reduza o intervalo."
-msgstr "Periodo demasiado largo. Reduzca el intervalo."
-
-#: core/views.py:1199
-msgid "Erro ao processar dados"
-msgstr "Error al procesar los datos"
-
-#: core/views.py:1230
+#: core/views.py:1100
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr "¡Mensaje enviado con éxito! Responderemos pronto."
 
@@ -1437,6 +1409,28 @@ msgid ""
 msgstr ""
 "Para dudas sobre estos términos, contáctanos a través de la página de "
 "contacto."
+
+#~ msgid "Erro ao processar a página"
+#~ msgstr "Error al procesar la página"
+
+#, fuzzy
+#~| msgid "Acesso Negado"
+#~ msgid "Acesso negado"
+#~ msgstr "Acceso Denegado"
+
+#~ msgid "Token CSRF inválido"
+#~ msgstr "Token CSRF no válido"
+
+#, fuzzy
+#~| msgid "Requisição Inválida"
+#~ msgid "Requisição inválida"
+#~ msgstr "Solicitud Inválida"
+
+#~ msgid "Período muito grande. Reduza o intervalo."
+#~ msgstr "Periodo demasiado largo. Reduzca el intervalo."
+
+#~ msgid "Erro ao processar dados"
+#~ msgstr "Error al procesar los datos"
 
 #~ msgid "Fechar"
 #~ msgstr "Cerrar"

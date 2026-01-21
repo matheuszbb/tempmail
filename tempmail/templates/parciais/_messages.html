@@ -1,7 +1,7 @@
 {% load i18n %}
 
 {% if messages %}
-<div class="flex flex-col gap-4 mb-6 w-full animate-in fade-in duration-500">
+<div id="alerts" class="flex flex-col gap-4 mb-6 w-full animate-in fade-in duration-500">
     {% for message in messages %}
     <div id="alert-{{ forloop.counter }}">
         <div class="flex p-4 rounded-lg border relative w-full

@@ -1044,160 +1044,30 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
         }
 
         # Verificar se é uma requisição HTMX para conteúdo parcial
-        try:
-            if request.headers.get('HX-Request'):
-                # Se tem parâmetro filter, é uma requisição das abas (retornar apenas sites)
-                if request.GET.get('filter'):
-                    response = await sync_to_async(render)(
-                        request, 
-                        'core/parciais/dados/_dadosTop.html', 
-                        context
-                    )
-                else:
-                    # Requisição HTMX geral (retornar conteúdo completo)
-                    response = await sync_to_async(render)(
-                        request, 
-                        'core/parciais/dados/_dados_conteudo.html', 
-                        context
-                    )
-            else:
-                # Requisição normal (retornar página completa)
+        if request.headers.get('HX-Request'):
+            # Se tem parâmetro filter, é uma requisição das abas (retornar apenas sites)
+            if request.GET.get('filter'):
                 response = await sync_to_async(render)(
                     request, 
-                    'core/dados.html', 
+                    'core/parciais/dados/_dadosTop.html', 
                     context
                 )
+            else:
+                # Requisição HTMX geral (retornar conteúdo completo)
+                response = await sync_to_async(render)(
+                    request, 
+                    'core/parciais/dados/_dados_conteudo.html', 
+                    context
+                )
+        else:
+            # Requisição normal (retornar página completa)
+            response = await sync_to_async(render)(
+                request, 
+                'core/dados.html', 
+                context
+            )
 
-            # Adicionar headers de segurança usando o mixin
-            response = self.add_security_headers(response)
-
-            return response
-            
-        except Exception as e:
-            logger.error(f"Erro ao renderizar template: {e}", exc_info=True)
-            return HttpResponseServerError(str(_("Erro ao processar a página")))
-
-    @method_decorator(cache_control(no_cache=True, no_store=True, must_revalidate=True))
-    async def post(self, request):
-        """API endpoint para atualização dinâmica dos dados via AJAX"""
-        try:
-            # Verificar se é admin
-            user_is_superuser = await self._check_user_is_superuser(request)
-            if not user_is_superuser:
-                return JsonResponse({
-                    'error': str(_('Acesso negado'))
-                }, status=403)
-
-            # Validar CSRF token
-            csrf_token = request.POST.get('csrfmiddlewaretoken') or request.META.get('HTTP_X_CSRFTOKEN')
-            if not csrf_token:
-                return JsonResponse({
-                    'error': str(_('Token CSRF inválido'))
-                }, status=403)
-
-            # Validar se a requisição é realmente AJAX/HTMX
-            if not request.headers.get('HX-Request') and not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({
-                    'error': str(_('Requisição inválida'))
-                }, status=400)
-
-            # Obter filtros de data com validações de segurança
-            data_inicio, data_fim = await self._get_date_filters(request)
-
-        except Exception as e:
-            logger.error(f"Erro inesperado no processamento da requisição POST: {e}", exc_info=True)
-            return JsonResponse({
-                'error': str(_('Erro interno do servidor'))
-            }, status=500)
-
-        # Processar a requisição POST validada
-        try:
-            # Converter para datetime com timezone para consultas
-            data_inicio_dt = timezone.make_aware(datetime.combine(data_inicio, datetime.min.time()))
-            data_fim_dt = timezone.make_aware(datetime.combine(data_fim, datetime.max.time()))
-
-            # Coletar todos os dados filtrados com validações adicionais
-            total_contas = await EmailAccount.objects.filter(
-                created_at__gte=data_inicio_dt,
-                created_at__lte=data_fim_dt
-            ).acount()
-
-            if total_contas > 50000:  # Limite de segurança aumentado para períodos maiores
-                logger.warning(f"Consulta POST muito grande rejeitada: {total_contas} contas")
-                return JsonResponse({
-                    'error': str(_('Período muito grande. Reduza o intervalo.'))
-                }, status=400)
-
-            contas_ativas = await EmailAccount.objects.filter(
-                is_available=True,
-                created_at__gte=data_inicio_dt,
-                created_at__lte=data_fim_dt
-            ).acount()
-
-            total_mensagens = await Message.objects.filter(
-                received_at__gte=data_inicio_dt,
-                received_at__lte=data_fim_dt
-            ).acount()
-
-            if total_mensagens > 200000:  # Limite de segurança aumentado para períodos maiores
-                logger.warning(f"Consulta POST muito grande rejeitada: {total_mensagens} mensagens")
-                return JsonResponse({
-                    'error': str(_('Período muito grande. Reduza o intervalo.'))
-                }, status=400)
-
-            mensagens_com_anexos = await Message.objects.filter(
-                has_attachments=True,
-                received_at__gte=data_inicio_dt,
-                received_at__lte=data_fim_dt
-            ).acount()
-
-            # Top 100 sites com limite de segurança
-            dominios_remetentes = Counter()
-            async for msg in Message.objects.filter(
-                received_at__gte=data_inicio_dt,
-                received_at__lte=data_fim_dt
-            )[:10000]:  # Limitar para performance
-                if msg.from_address and '@' in msg.from_address:
-                    dominio = msg.from_address.split('@')[1].lower()
-                    # Sanitizar domínio (remover caracteres especiais)
-                    dominio = re.sub(r'[^a-zA-Z0-9.-]', '', dominio)[:100]  # Limitar tamanho
-                    dominios_remetentes[dominio] += 1
-
-            top_100_sites = [
-                {'dominio': dominio, 'quantidade': count}
-                for dominio, count in dominios_remetentes.most_common(100)
-            ]
-
-            # Logging de auditoria para API
-            logger.info(f"API dashboard acessada, período: {data_inicio} até {data_fim}, "
-                       f"resultados: {total_contas} contas, {total_mensagens} mensagens")
-
-            response = JsonResponse({
-                'success': True,
-                'data': {
-                    'total_contas': total_contas,
-                    'contas_ativas': contas_ativas,
-                    'contas_em_uso': total_contas - contas_ativas,
-                    'total_mensagens': total_mensagens,
-                    'mensagens_com_anexos': mensagens_com_anexos,
-                    'top_100_sites': top_100_sites,
-                    'data_inicio': data_inicio.strftime('%Y-%m-%d'),
-                    'data_fim': data_fim.strftime('%Y-%m-%d'),
-                    'dias_periodo': (data_fim - data_inicio).days + 1,
-                }
-            })
-
-            # Adicionar headers de segurança usando o mixin
-            response = self.add_security_headers(response)
-            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-
-            return response
-
-        except Exception as e:
-            logger.error(f"Erro no processamento dos dados da API: {e}", exc_info=True)
-            return JsonResponse({
-                'error': str(_('Erro ao processar dados'))
-            }, status=500)
+        return response
 
 class SobreView(View):
     """Página Sobre o EmailRush"""

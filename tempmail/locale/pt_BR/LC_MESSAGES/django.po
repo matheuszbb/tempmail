@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 09:38-0300\n"
+"POT-Creation-Date: 2026-01-21 11:16-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -441,35 +441,11 @@ msgstr ""
 msgid "Não foi possível processar o download do arquivo."
 msgstr ""
 
-#: core/views.py:913 core/views.py:1110
+#: core/views.py:913
 msgid "Erro interno do servidor"
 msgstr ""
 
-#: core/views.py:1078
-msgid "Erro ao processar a página"
-msgstr ""
-
-#: core/views.py:1088
-msgid "Acesso negado"
-msgstr ""
-
-#: core/views.py:1095
-msgid "Token CSRF inválido"
-msgstr ""
-
-#: core/views.py:1101
-msgid "Requisição inválida"
-msgstr ""
-
-#: core/views.py:1128 core/views.py:1145
-msgid "Período muito grande. Reduza o intervalo."
-msgstr ""
-
-#: core/views.py:1199
-msgid "Erro ao processar dados"
-msgstr ""
-
-#: core/views.py:1230
+#: core/views.py:1100
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr ""
 
