@@ -355,6 +355,7 @@ msgstr "Entendido"
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
+"Servicio temporalmente no disponible. Inténtelo de nuevo en unos minutos."
 
 #: core/views.py:158
 #, fuzzy
@@ -370,11 +371,11 @@ msgstr "¿Deseas generar una nueva dirección de correo electrónico?"
 
 #: core/views.py:199
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
-msgstr ""
+msgstr "Error interno del servidor. Nuestro equipo ha sido notificado."
 
 #: core/views.py:244
 msgid "Sessão resetada com sucesso"
-msgstr ""
+msgstr "Sesión restablecida con éxito"
 
 #: core/views.py:255
 #, fuzzy
@@ -384,27 +385,27 @@ msgstr "Tu dirección de correo temporal por"
 
 #: core/views.py:278
 msgid "Não foi possível acessar este email"
-msgstr ""
+msgstr "No se pudo acceder a este correo electrónico"
 
 #: core/views.py:293
 msgid "Email alterado com sucesso"
-msgstr ""
+msgstr "Correo electrónico cambiado con éxito"
 
 #: core/views.py:421
 msgid "Erro interno ao processar requisição"
-msgstr ""
+msgstr "Error interno al procesar la solicitud"
 
 #: core/views.py:426
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
-msgstr ""
+msgstr "Error temporal en el servidor. Inténtelo de nuevo en unos instantes."
 
 #: core/views.py:428
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
-msgstr ""
+msgstr "Demasiados intentos. Espere unos minutos antes de intentarlo de nuevo."
 
 #: core/views.py:430
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
-msgstr ""
+msgstr "Conexión lenta. Compruebe su conexión a internet e inténtelo de nuevo."
 
 #: core/views.py:450 core/views.py:463 core/views.py:653 core/views.py:741
 #: core/views.py:797
@@ -421,7 +422,7 @@ msgstr "Página No Encontrada"
 
 #: core/views.py:510
 msgid "Erro ao buscar mensagens"
-msgstr ""
+msgstr "Error al buscar mensajes"
 
 #: core/views.py:690
 #, fuzzy
@@ -443,7 +444,7 @@ msgstr "Página No Encontrada"
 
 #: core/views.py:773
 msgid "Conteúdo vazio"
-msgstr ""
+msgstr "Contenido vacío"
 
 #: core/views.py:781
 #, fuzzy
@@ -453,15 +454,15 @@ msgstr "Página No Encontrada"
 
 #: core/views.py:785
 msgid "Não foi possível processar o download da mensagem."
-msgstr ""
+msgstr "No se pudo procesar la descarga del mensaje."
 
 #: core/views.py:818
 msgid "Anexo não encontrado nos metadados da mensagem"
-msgstr ""
+msgstr "Archivo adjunto no encontrado en los metadatos del mensaje"
 
 #: core/views.py:840
 msgid "Conteúdo do anexo vazio ou não disponível"
-msgstr ""
+msgstr "Contenido del archivo adjunto vacío o no disponible"
 
 #: core/views.py:853
 #, fuzzy
@@ -471,15 +472,15 @@ msgstr "Página No Encontrada"
 
 #: core/views.py:857
 msgid "Não foi possível processar o download do arquivo."
-msgstr ""
+msgstr "No se pudo procesar la descarga del archivo."
 
 #: core/views.py:913 core/views.py:1110
 msgid "Erro interno do servidor"
-msgstr ""
+msgstr "Error interno del servidor"
 
 #: core/views.py:1078
 msgid "Erro ao processar a página"
-msgstr ""
+msgstr "Error al procesar la página"
 
 #: core/views.py:1088
 #, fuzzy
@@ -489,7 +490,7 @@ msgstr "Acceso Denegado"
 
 #: core/views.py:1095
 msgid "Token CSRF inválido"
-msgstr ""
+msgstr "Token CSRF no válido"
 
 #: core/views.py:1101
 #, fuzzy
@@ -499,15 +500,15 @@ msgstr "Solicitud Inválida"
 
 #: core/views.py:1128 core/views.py:1145
 msgid "Período muito grande. Reduza o intervalo."
-msgstr ""
+msgstr "Periodo demasiado largo. Reduzca el intervalo."
 
 #: core/views.py:1199
 msgid "Erro ao processar dados"
-msgstr ""
+msgstr "Error al procesar los datos"
 
 #: core/views.py:1230
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
-msgstr ""
+msgstr "¡Mensaje enviado con éxito! Responderemos pronto."
 
 #: templates/400.html:18
 msgid "Erro 400"
@@ -854,11 +855,11 @@ msgstr "Cambiar"
 
 #: templates/parciais/_nav.html:82
 msgid "Estatísticas"
-msgstr ""
+msgstr "Estadísticas"
 
 #: templates/parciais/_nav.html:86
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: templates/parciais/_pagination.html:11
 msgid "Início"

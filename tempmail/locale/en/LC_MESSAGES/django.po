@@ -353,6 +353,7 @@ msgstr "I understand"
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
+"Service temporarily unavailable. Please try again in a few minutes."
 
 #: core/views.py:158
 #, fuzzy
@@ -368,11 +369,11 @@ msgstr "Do you want to generate a new email address?"
 
 #: core/views.py:199
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
-msgstr ""
+msgstr "Internal server error. Our team has been notified."
 
 #: core/views.py:244
 msgid "Sessão resetada com sucesso"
-msgstr ""
+msgstr "Session reset successfully"
 
 #: core/views.py:255
 #, fuzzy
@@ -382,27 +383,27 @@ msgstr "Your temporary email address for"
 
 #: core/views.py:278
 msgid "Não foi possível acessar este email"
-msgstr ""
+msgstr "Could not access this email"
 
 #: core/views.py:293
 msgid "Email alterado com sucesso"
-msgstr ""
+msgstr "Email changed successfully"
 
 #: core/views.py:421
 msgid "Erro interno ao processar requisição"
-msgstr ""
+msgstr "Internal error while processing request"
 
 #: core/views.py:426
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
-msgstr ""
+msgstr "Temporary server error. Please try again in a few moments."
 
 #: core/views.py:428
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
-msgstr ""
+msgstr "Too many attempts. Please wait a few minutes before trying again."
 
 #: core/views.py:430
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
-msgstr ""
+msgstr "Slow connection. Check your internet and try again."
 
 #: core/views.py:450 core/views.py:463 core/views.py:653 core/views.py:741
 #: core/views.py:797
@@ -419,7 +420,7 @@ msgstr "Page Not Found"
 
 #: core/views.py:510
 msgid "Erro ao buscar mensagens"
-msgstr ""
+msgstr "Error fetching messages"
 
 #: core/views.py:690
 #, fuzzy
@@ -441,7 +442,7 @@ msgstr "Page Not Found"
 
 #: core/views.py:773
 msgid "Conteúdo vazio"
-msgstr ""
+msgstr "Empty content"
 
 #: core/views.py:781
 #, fuzzy
@@ -451,15 +452,15 @@ msgstr "Page Not Found"
 
 #: core/views.py:785
 msgid "Não foi possível processar o download da mensagem."
-msgstr ""
+msgstr "Could not process message download."
 
 #: core/views.py:818
 msgid "Anexo não encontrado nos metadados da mensagem"
-msgstr ""
+msgstr "Attachment not found in message metadata"
 
 #: core/views.py:840
 msgid "Conteúdo do anexo vazio ou não disponível"
-msgstr ""
+msgstr "Attachment content empty or unavailable"
 
 #: core/views.py:853
 #, fuzzy
@@ -469,15 +470,15 @@ msgstr "Page Not Found"
 
 #: core/views.py:857
 msgid "Não foi possível processar o download do arquivo."
-msgstr ""
+msgstr "Could not process file download."
 
 #: core/views.py:913 core/views.py:1110
 msgid "Erro interno do servidor"
-msgstr ""
+msgstr "Internal server error"
 
 #: core/views.py:1078
 msgid "Erro ao processar a página"
-msgstr ""
+msgstr "Error processing the page"
 
 #: core/views.py:1088
 #, fuzzy
@@ -487,7 +488,7 @@ msgstr "Access Denied"
 
 #: core/views.py:1095
 msgid "Token CSRF inválido"
-msgstr ""
+msgstr "Invalid CSRF token"
 
 #: core/views.py:1101
 #, fuzzy
@@ -497,15 +498,15 @@ msgstr "Invalid Request"
 
 #: core/views.py:1128 core/views.py:1145
 msgid "Período muito grande. Reduza o intervalo."
-msgstr ""
+msgstr "Period too long. Please reduce the interval."
 
 #: core/views.py:1199
 msgid "Erro ao processar dados"
-msgstr ""
+msgstr "Error processing data"
 
 #: core/views.py:1230
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
-msgstr ""
+msgstr "Message sent successfully! We will respond shortly."
 
 #: templates/400.html:18
 msgid "Erro 400"
@@ -852,11 +853,11 @@ msgstr "Change"
 
 #: templates/parciais/_nav.html:82
 msgid "Estatísticas"
-msgstr ""
+msgstr "Statistics"
 
 #: templates/parciais/_nav.html:86
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: templates/parciais/_pagination.html:11
 msgid "Início"
