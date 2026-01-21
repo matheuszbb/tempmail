@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-20 14:52-0300\n"
+"POT-Creation-Date: 2026-01-20 22:51-0300\n"
 "PO-Revision-Date: 2026-01-19 17:00-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -75,7 +75,7 @@ msgstr "Access SMSRush"
 msgid "Remetente"
 msgstr "Sender"
 
-#: core/templates/core/index.html:169 templates/contato.html:87
+#: core/templates/core/index.html:169 templates/contato.html:90
 msgid "Assunto"
 msgstr "Subject"
 
@@ -112,7 +112,7 @@ msgstr "Back"
 msgid "Leitura da Mensagem"
 msgstr "Message Reading"
 
-#: core/templates/core/index.html:250 templates/contato.html:106
+#: core/templates/core/index.html:250 templates/contato.html:109
 msgid "Mensagem"
 msgstr "Message"
 
@@ -349,6 +349,164 @@ msgstr "Learn more here"
 msgid "Entendi"
 msgstr "I understand"
 
+#: core/views.py:139 core/views.py:220 core/views.py:424
+msgid ""
+"Serviço temporariamente indisponível. Tente novamente em alguns minutos."
+msgstr ""
+
+#: core/views.py:158
+#, fuzzy
+#| msgid "Criar Email Temporário"
+msgid "Erro ao criar email temporário"
+msgstr "Create Temporary Email"
+
+#: core/views.py:182
+#, fuzzy
+#| msgid "Deseja gerar um novo endereço de e-mail?"
+msgid "Você já está usando este endereço de e-mail"
+msgstr "Do you want to generate a new email address?"
+
+#: core/views.py:199
+msgid "Erro interno do servidor. Nossa equipe foi notificada."
+msgstr ""
+
+#: core/views.py:244
+msgid "Sessão resetada com sucesso"
+msgstr ""
+
+#: core/views.py:255
+#, fuzzy
+#| msgid "O seu endereço de e-mail temporário por"
+msgid "Endereço de email inválido"
+msgstr "Your temporary email address for"
+
+#: core/views.py:278
+msgid "Não foi possível acessar este email"
+msgstr ""
+
+#: core/views.py:293
+msgid "Email alterado com sucesso"
+msgstr ""
+
+#: core/views.py:421
+msgid "Erro interno ao processar requisição"
+msgstr ""
+
+#: core/views.py:426
+msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
+msgstr ""
+
+#: core/views.py:428
+msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
+msgstr ""
+
+#: core/views.py:430
+msgid "Conexão lenta. Verifique sua internet e tente novamente."
+msgstr ""
+
+#: core/views.py:450 core/views.py:463 core/views.py:653 core/views.py:741
+#: core/views.py:797
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Sessão não encontrada"
+msgstr "Page Not Found"
+
+#: core/views.py:504
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Conta não encontrada"
+msgstr "Page Not Found"
+
+#: core/views.py:510
+msgid "Erro ao buscar mensagens"
+msgstr ""
+
+#: core/views.py:690
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Não encontrado"
+msgstr "Page Not Found"
+
+#: core/views.py:696
+#, fuzzy
+#| msgid "Erro no"
+msgid "Erro interno"
+msgstr "Error in"
+
+#: core/views.py:758 core/views.py:826
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Mailbox não encontrada"
+msgstr "Page Not Found"
+
+#: core/views.py:773
+msgid "Conteúdo vazio"
+msgstr ""
+
+#: core/views.py:781
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Mensagem não encontrada"
+msgstr "Page Not Found"
+
+#: core/views.py:785
+msgid "Não foi possível processar o download da mensagem."
+msgstr ""
+
+#: core/views.py:818
+msgid "Anexo não encontrado nos metadados da mensagem"
+msgstr ""
+
+#: core/views.py:840
+msgid "Conteúdo do anexo vazio ou não disponível"
+msgstr ""
+
+#: core/views.py:853
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Arquivo não encontrado"
+msgstr "Page Not Found"
+
+#: core/views.py:857
+msgid "Não foi possível processar o download do arquivo."
+msgstr ""
+
+#: core/views.py:913 core/views.py:1110
+msgid "Erro interno do servidor"
+msgstr ""
+
+#: core/views.py:1078
+msgid "Erro ao processar a página"
+msgstr ""
+
+#: core/views.py:1088
+#, fuzzy
+#| msgid "Acesso Negado"
+msgid "Acesso negado"
+msgstr "Access Denied"
+
+#: core/views.py:1095
+msgid "Token CSRF inválido"
+msgstr ""
+
+#: core/views.py:1101
+#, fuzzy
+#| msgid "Requisição Inválida"
+msgid "Requisição inválida"
+msgstr "Invalid Request"
+
+#: core/views.py:1128 core/views.py:1145
+msgid "Período muito grande. Reduza o intervalo."
+msgstr ""
+
+#: core/views.py:1199
+msgid "Erro ao processar dados"
+msgstr ""
+
+#: core/views.py:1230
+msgid "Mensagem enviada com sucesso! Responderemos em breve."
+msgstr ""
+
 #: templates/400.html:18
 msgid "Erro 400"
 msgstr "Error 400"
@@ -515,35 +673,35 @@ msgstr "An internal gateway error occurred."
 msgid "Support Service"
 msgstr "Support Service"
 
-#: templates/contato.html:8
+#: templates/contato.html:9
 msgid "Entre em Contato"
 msgstr "Get in Touch"
 
-#: templates/contato.html:12
+#: templates/contato.html:13
 msgid "Fale Conosco"
 msgstr "Contact Us"
 
-#: templates/contato.html:20
+#: templates/contato.html:21
 msgid "Email"
 msgstr "Email"
 
-#: templates/contato.html:30
+#: templates/contato.html:31
 msgid "Website"
 msgstr "Website"
 
-#: templates/contato.html:40
+#: templates/contato.html:41
 msgid "Horário de Atendimento"
 msgstr "Service Hours"
 
-#: templates/contato.html:41
+#: templates/contato.html:42
 msgid "Segunda a Sexta, 9h às 18h"
 msgstr "Monday to Friday, 9 AM to 6 PM"
 
-#: templates/contato.html:47
+#: templates/contato.html:48
 msgid "Sobre nós"
 msgstr "About us"
 
-#: templates/contato.html:49
+#: templates/contato.html:50
 msgid ""
 "EmailRush é um serviço gratuito de email temporário desenvolvido para "
 "proteger sua privacidade e combater spam. Nosso compromisso é fornecer uma "
@@ -554,55 +712,55 @@ msgstr ""
 "and fight spam. Our commitment is to provide a secure and efficient tool for "
 "your temporary communication needs."
 
-#: templates/contato.html:55
+#: templates/contato.html:56
 msgid "Envie sua Mensagem"
 msgstr "Send your Message"
 
-#: templates/contato.html:60
+#: templates/contato.html:63
 msgid "Nome (opcional)"
 msgstr "Name (optional)"
 
-#: templates/contato.html:67
+#: templates/contato.html:70
 msgid "Seu nome"
 msgstr "Your name"
 
-#: templates/contato.html:73
+#: templates/contato.html:76
 msgid "Email de resposta"
 msgstr "Reply email"
 
-#: templates/contato.html:95
+#: templates/contato.html:98
 msgid "Selecione um assunto"
 msgstr "Select a subject"
 
-#: templates/contato.html:96
+#: templates/contato.html:99
 msgid "Suporte Técnico"
 msgstr "Technical Support"
 
-#: templates/contato.html:97
+#: templates/contato.html:100
 msgid "Questões de Privacidade"
 msgstr "Privacy Issues"
 
-#: templates/contato.html:98
+#: templates/contato.html:101
 msgid "Denúncia de Abuso"
 msgstr "Abuse Report"
 
-#: templates/contato.html:99
+#: templates/contato.html:102
 msgid "Sugestão de Melhoria"
 msgstr "Improvement Suggestion"
 
-#: templates/contato.html:100
+#: templates/contato.html:103
 msgid "Outros"
 msgstr "Others"
 
-#: templates/contato.html:114
+#: templates/contato.html:117
 msgid "Digite sua mensagem aqui..."
 msgstr "Type your message here..."
 
-#: templates/contato.html:123
+#: templates/contato.html:126
 msgid "Enviar Mensagem"
 msgstr "Send Message"
 
-#: templates/contato.html:130
+#: templates/contato.html:133
 msgid ""
 "Responderemos o mais breve possível. Para questões urgentes, considere usar "
 "outros canais de comunicação."
@@ -674,15 +832,31 @@ msgid ""
 msgstr ""
 "Don't use your real email on suspicious sites. Use our temporary email."
 
-#: templates/parciais/_messages.html:32
-msgid "Fechar"
-msgstr "Close"
+#: templates/parciais/_messages.html:45
+#, fuzzy
+#| msgid "Ver anexos"
+msgid "Ver mais"
+msgstr "View attachments"
 
-#: templates/parciais/_nav.html:36
+#: templates/parciais/_messages.html:52
+#, fuzzy
+#| msgid "Ver anexos"
+msgid "Ver menos"
+msgstr "View attachments"
+
+#: templates/parciais/_nav.html:24
 #, fuzzy
 #| msgid "Alterar"
 msgid "Alterar Idioma"
 msgstr "Change"
+
+#: templates/parciais/_nav.html:82
+msgid "Estatísticas"
+msgstr ""
+
+#: templates/parciais/_nav.html:86
+msgid "Admin"
+msgstr ""
 
 #: templates/parciais/_pagination.html:11
 msgid "Início"
@@ -1271,3 +1445,6 @@ msgid ""
 "de contato."
 msgstr ""
 "For questions about these terms, please contact us through the contact page."
+
+#~ msgid "Fechar"
+#~ msgstr "Close"

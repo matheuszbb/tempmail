@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from django.conf import settings
 from .models import Domain, EmailAccount
-from .services.smtplabs_client import SMTPLabsClient
+from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 import logging
 
 logger = logging.getLogger(__name__)
@@ -125,7 +125,7 @@ class EmailAccountService:
     def __init__(self):
         self.client = SMTPLabsClient()
     
-    async def get_or_create_temp_email(self, request) -> tuple[EmailAccount, bool]:
+    async def get_or_create_temp_email(self, request) -> tuple[EmailAccount | None, bool]:
         """
         Obtém ou cria um email temporário para a sessão atual.
         
@@ -133,7 +133,8 @@ class EmailAccountService:
             request: Objeto HttpRequest
             
         Returns:
-            tuple: (EmailAccount, bool) onde bool indica se é uma conta nova/reutilizada
+            tuple: (EmailAccount | None, bool) onde bool indica se é uma conta nova/reutilizada
+                   Retorna (None, False) em caso de erro
         """
         # Verificar se já existe email na sessão
         session_email = await sync_to_async(request.session.get)('email_address')
@@ -162,10 +163,14 @@ class EmailAccountService:
             return available_account, True
         
         # Criar nova conta
-        account = await self._create_new_account()
-        await self._mark_account_as_used(request, account)
-        logger.info(f"Nova conta criada: {account.address}")
-        return account, True
+        try:
+            account = await self._create_new_account()
+            await self._mark_account_as_used(request, account)
+            logger.info(f"Nova conta criada: {account.address}")
+            return account, True
+        except Exception as e:
+            logger.error(f"Erro ao criar nova conta: {str(e)}")
+            return None, False
     
     async def _mark_account_as_used(self, request, account: EmailAccount):
         """Marca uma conta como em uso e registra na sessão."""
@@ -184,7 +189,15 @@ class EmailAccountService:
         await sync_to_async(request.session.save)()
     
     async def _create_new_account(self) -> EmailAccount:
-        """Cria uma nova conta de email."""
+        """
+        Cria uma nova conta de email.
+        
+        Returns:
+            EmailAccount: Conta criada
+            
+        Raises:
+            Exception: Se não houver domínios disponíveis ou erro na API
+        """
         # Garantir que temos domínios
         domains = Domain.objects.filter(is_active=True)
         
@@ -196,19 +209,35 @@ class EmailAccountService:
         if not domain:
             raise Exception("Nenhum domínio disponível")
         
-        # Gerar credenciais via API
-        credentials = await self.client.create_credentials(domain.smtp_id)
+        # Gerar credenciais
+        username = EmailAccount.generate_random_username()
+        password = EmailAccount.generate_random_password()
+        address = f"{username}@{domain.domain}"
         
-        # Criar conta no banco
-        account = await EmailAccount.objects.acreate(
-            address=credentials['address'],
-            password=credentials['password'],
-            username=credentials.get('username', credentials['address']),
-            smtp_id=credentials['id'],
-            domain=domain
-        )
-        
-        return account
+        try:
+            # Criar conta na API
+            logger.info(f"Criando nova conta: {address}")
+            account_response = await self.client.create_account(address, password)
+            
+            # Criar conta no banco
+            account = await EmailAccount.objects.acreate(
+                smtp_id=account_response['id'],
+                address=address,
+                password=password,
+                domain=domain,
+                is_available=False,
+                last_used_at=timezone.now()
+            )
+            
+            logger.info(f"Conta criada com sucesso: {address}")
+            return account
+            
+        except SMTPLabsAPIError as e:
+            logger.error(f"Erro ao criar conta na API: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Erro inesperado ao criar conta: {str(e)}")
+            raise
     
     async def _sync_domains(self):
         """Sincroniza domínios da API."""
@@ -225,25 +254,3 @@ class EmailAccountService:
                     'is_active': domain_data.get('isActive', True)
                 }
             )
-
-
-class SecurityHeadersMixin:
-    """
-    Mixin para adicionar headers de segurança às respostas.
-    """
-    
-    def add_security_headers(self, response):
-        """
-        Adiciona headers de segurança à resposta.
-        
-        Args:
-            response: Objeto HttpResponse
-            
-        Returns:
-            HttpResponse com headers de segurança adicionados
-        """
-        response['X-Content-Type-Options'] = 'nosniff'
-        response['X-Frame-Options'] = 'DENY'
-        response['X-XSS-Protection'] = '1; mode=block'
-        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        return response
