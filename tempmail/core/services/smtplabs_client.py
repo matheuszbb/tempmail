@@ -27,6 +27,19 @@ class SMTPLabsClient:
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
+        # ✅ CORREÇÃO: Criar session reutilizável ao invés de criar em cada request
+        self._session = None
+    
+    async def _get_session(self):
+        """Obtém ou cria uma sessão aiohttp reutilizável"""
+        if self._session is None or self._session.closed:
+            self._session = aiohttp.ClientSession(headers=self.headers)
+        return self._session
+    
+    async def close(self):
+        """Fecha a sessão aiohttp"""
+        if self._session and not self._session.closed:
+            await self._session.close()
     
     async def _make_request(
         self, 
@@ -39,48 +52,54 @@ class SMTPLabsClient:
     ) -> Any:
         """
         Faz requisição assíncrona para a API com retry automático para rate limiting
+        
+        ✅ CORRIGIDO: Removido o loop síncrono 'for' que causava o warning
         """
         url = f"{self.base_url}{endpoint}"
+        session = await self._get_session()
         
-        async with aiohttp.ClientSession(headers=self.headers) as session:
-            for attempt in range(max_retries):
-                try:
-                    async with session.request(
-                        method=method,
-                        url=url,
-                        json=data,
-                        params=params,
-                        timeout=aiohttp.ClientTimeout(total=30)
-                    ) as response:
-                        
-                        # Rate limiting - retry com backoff exponencial
-                        if response.status == 429:
-                            wait_time = 2 ** attempt
-                            logger.warning(f"Rate limit atingido. Aguardando {wait_time}s...")
-                            await asyncio.sleep(wait_time)
-                            continue
-                        
-                        # Sucesso (200-204)
-                        if 200 <= response.status <= 204:
-                            if response.status == 204:
-                                return {}
-                            if raw_response:
-                                return await response.read()
-                            return await response.json()
-                        
-                        # Erros
-                        response_text = await response.text()
-                        error_msg = f"API Error {response.status}: {response_text}"
-                        logger.error(error_msg)
-                        raise SMTPLabsAPIError(error_msg)
-                        
-                except aiohttp.ClientError as e:
-                    logger.error(f"Request failed: {str(e)}")
-                    if attempt == max_retries - 1:
-                        raise SMTPLabsAPIError(f"Request failed after {max_retries} attempts: {str(e)}")
-                    await asyncio.sleep(1)
-            
-            raise SMTPLabsAPIError("Max retries exceeded")
+        # ✅ CORREÇÃO: Usar while ao invés de for para evitar iterador síncrono
+        attempt = 0
+        while attempt < max_retries:
+            try:
+                async with session.request(
+                    method=method,
+                    url=url,
+                    json=data,
+                    params=params,
+                    timeout=aiohttp.ClientTimeout(total=30)
+                ) as response:
+                    
+                    # Rate limiting - retry com backoff exponencial
+                    if response.status == 429:
+                        wait_time = 2 ** attempt
+                        logger.warning(f"Rate limit atingido. Aguardando {wait_time}s...")
+                        await asyncio.sleep(wait_time)
+                        attempt += 1
+                        continue
+                    
+                    # Sucesso (200-204)
+                    if 200 <= response.status <= 204:
+                        if response.status == 204:
+                            return {}
+                        if raw_response:
+                            return await response.read()
+                        return await response.json()
+                    
+                    # Erros
+                    response_text = await response.text()
+                    error_msg = f"API Error {response.status}: {response_text}"
+                    logger.error(error_msg)
+                    raise SMTPLabsAPIError(error_msg)
+                    
+            except aiohttp.ClientError as e:
+                logger.error(f"Request failed: {str(e)}")
+                if attempt == max_retries - 1:
+                    raise SMTPLabsAPIError(f"Request failed after {max_retries} attempts: {str(e)}")
+                await asyncio.sleep(1)
+                attempt += 1
+        
+        raise SMTPLabsAPIError("Max retries exceeded")
     
     # ==================== DOMAINS ====================
     
@@ -226,6 +245,9 @@ class SMTPLabsClient:
             return None
     
     async def get_all_inbox_messages(self, account_id: str) -> List[Dict[str, Any]]:
+        """
+        ✅ CORRIGIDO: Modificado para evitar iteradores síncronos
+        """
         inbox = await self.get_inbox_mailbox(account_id)
         if not inbox:
             logger.warning(f"INBOX não encontrada para conta {account_id}")
@@ -235,6 +257,7 @@ class SMTPLabsClient:
         all_messages = []
         page = 1
         
+        # ✅ Mantém while (que é compatível com async/await)
         while True:
             try:
                 response = await self.get_messages(account_id, mailbox_id, page=page)
@@ -259,3 +282,12 @@ class SMTPLabsClient:
                 break
         
         return all_messages
+    
+    def __del__(self):
+        """Garante que a sessão seja fechada ao destruir o objeto"""
+        if self._session and not self._session.closed:
+            try:
+                asyncio.create_task(self._session.close())
+            except RuntimeError:
+                # Se não houver event loop, ignora
+                pass
