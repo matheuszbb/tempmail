@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 17:10-0300\n"
+"POT-Creation-Date: 2026-01-22 08:59-0300\n"
 "PO-Revision-Date: 2026-01-19 17:00-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -55,7 +55,7 @@ msgstr "Delete"
 msgid "QR"
 msgstr "QR"
 
-#: core/templates/core/index.html:145 core/templates/core/index.html:384
+#: core/templates/core/index.html:145 core/templates/core/index.html:383
 msgid "Números temporários para SMS"
 msgstr "Temporary numbers for SMS"
 
@@ -67,7 +67,7 @@ msgstr "Receive verification codes without exposing your real number."
 msgid "Rápido, seguro e prático."
 msgstr "Fast, secure and practical."
 
-#: core/templates/core/index.html:156 core/templates/core/index.html:391
+#: core/templates/core/index.html:156 core/templates/core/index.html:390
 msgid "Acessar SMSRush"
 msgstr "Access SMSRush"
 
@@ -91,70 +91,70 @@ msgstr "Your inbox is empty"
 msgid "Buscando novos e-mails"
 msgstr "Checking for new emails"
 
-#: core/templates/core/index.html:223
-msgid "Por que usar Email Temporário?"
-msgstr "Why use Temporary Email?"
-
 #: core/templates/core/index.html:224
-msgid "Saiba os benefícios e proteja sua privacidade"
-msgstr "Learn the benefits and protect your privacy"
-
-#: core/templates/core/index.html:240
 msgid "Voltar para a lista"
 msgstr "Back to list"
 
-#: core/templates/core/index.html:242 templates/parciais/_btn_voltar.html:8
+#: core/templates/core/index.html:226 templates/parciais/_btn_voltar.html:8
 #: templates/parciais/_btn_voltar_args.html:7
 msgid "Voltar"
 msgstr "Back"
 
-#: core/templates/core/index.html:249
+#: core/templates/core/index.html:233
 msgid "Leitura da Mensagem"
 msgstr "Message Reading"
 
-#: core/templates/core/index.html:250 templates/contato.html:109
+#: core/templates/core/index.html:234 templates/contato.html:109
 msgid "Mensagem"
 msgstr "Message"
 
-#: core/templates/core/index.html:257
+#: core/templates/core/index.html:241
 msgid "Ver anexos"
 msgstr "View attachments"
 
-#: core/templates/core/index.html:267
+#: core/templates/core/index.html:251
 msgid "Baixar arquivo .eml"
 msgstr "Download .eml file"
 
-#: core/templates/core/index.html:269
+#: core/templates/core/index.html:253
 msgid "Download"
 msgstr "Download"
 
-#: core/templates/core/index.html:287
+#: core/templates/core/index.html:271
 #: core/templates/core/parciais/index/_message_item.html:22
 msgid "Remetente:"
 msgstr "Sender:"
 
-#: core/templates/core/index.html:314
+#: core/templates/core/index.html:298
 msgid "Recebido em:"
 msgstr "Received on:"
 
-#: core/templates/core/index.html:326
+#: core/templates/core/index.html:310
 #: core/templates/core/parciais/index/_message_item.html:32
 msgid "Assunto:"
 msgstr "Subject:"
 
-#: core/templates/core/index.html:330
+#: core/templates/core/index.html:314
 msgid "Título da Mensagem"
 msgstr "Message Title"
 
-#: core/templates/core/index.html:337
+#: core/templates/core/index.html:321
 msgid "Mensagem:"
 msgstr "Message:"
 
-#: core/templates/core/index.html:351
+#: core/templates/core/index.html:335
 msgid "Anexos:"
 msgstr "Attachments:"
 
-#: core/templates/core/index.html:386
+#: core/templates/core/index.html:353
+msgid "Por que usar Email Temporário?"
+msgstr "Why use Temporary Email?"
+
+#: core/templates/core/index.html:354
+msgid "Saiba os benefícios e proteja sua privacidade"
+msgstr "Learn the benefits and protect your privacy"
+
+#: core/templates/core/index.html:385
 msgid ""
 "Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
 "prático."
