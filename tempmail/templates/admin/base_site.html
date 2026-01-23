@@ -1,0 +1,8 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="icon" type="image/x-icon" href="{% static 'img/favicon-light.ico' %}" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/x-icon" href="{% static 'img/favicon-dark.ico' %}" media="(prefers-color-scheme: light)">
+{% endblock %}

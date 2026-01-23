@@ -8,7 +8,7 @@ from django.conf import settings
 from .views import (
     IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
     TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI,
-    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView
+    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView, ChromeDevToolsStubView
 )
 
 # 🌍 Rotas que não precisam de tradução (como arquivos técnicos e APIs)
@@ -16,6 +16,7 @@ urlpatterns = [
     path('robots.txt', Robots_txtView.as_view(), name='robots_txt'),
     path('sitemap.xml', Sitemap_xmlView.as_view(), name='sitemap_xml'),
     path('health/', HeartCheckView.as_view(), name='health_check'),
+    path(".well-known/appspecific/com.chrome.devtools.json", ChromeDevToolsStubView.as_view(), name="chrome-devtools-stub"),
 
     # API endpoints (não precisam de tradução)
     path('api/email/', TempEmailAPI.as_view(), name='temp_email_api'),

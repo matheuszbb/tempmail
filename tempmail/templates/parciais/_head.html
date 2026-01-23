@@ -7,8 +7,9 @@
 
 <title>{% trans "EmailRush - Email Temporário" %}</title>
 
-<link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='white' d='M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54.1 17.1-76.8 0L0 176z'/></svg>">
+<link rel="icon" type="image/x-icon" id="favicon" href="{% static 'img/favicon.ico' %}">
+<link rel="icon" type="image/x-icon" href="{% static 'img/favicon-light.ico' %}" media="(prefers-color-scheme: dark)">
+<link rel="icon" type="image/x-icon" href="{% static 'img/favicon-dark.ico' %}" media="(prefers-color-scheme: light)">
 
 <meta name="description"
     content="{% trans 'Obtenha um endereço de e-mail temporário gratuito e anônimo em segundos. Evite spam e proteja seu e-mail real com nosso serviço de temp mail.' %}">
@@ -19,13 +20,15 @@
 <meta property="og:type" content="website">
 <meta property="og:locale" content="{{ LANGUAGE_CODE }}">
 <meta property="og:title" content="{% trans 'EmailRush - E-mail Temporário Grátis e Instantâneo' %}">
-<meta property="og:description" content="{% trans 'Crie um e-mail descartável agora e mantenha sua caixa de entrada real limpa.' %}">
-<meta property="og:image" content="{% static 'img/preview-social.jpg' %}">
+<meta property="og:description"
+    content="{% trans 'Crie um e-mail descartável agora e mantenha sua caixa de entrada real limpa.' %}">
+<meta property="og:image" content="{% static 'img/favicon-light.ico' %}">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{% trans 'EmailRush - E-mail Descartável' %}">
-<meta name="twitter:description" content="{% trans 'Não use seu e-mail real em sites suspeitos. Use nosso e-mail temporário.' %}">
-<meta name="twitter:image" content="{% static 'img/preview-social.jpg' %}">
+<meta name="twitter:description"
+    content="{% trans 'Não use seu e-mail real em sites suspeitos. Use nosso e-mail temporário.' %}">
+<meta name="twitter:image" content="{% static 'img/favicon-light.ico' %}">
 
 <link rel="alternate" hreflang="pt-br" href="https://emailrush.com/pt-br/">
 <link rel="alternate" hreflang="en" href="https://emailrush.com/en/">

@@ -1,32 +1,34 @@
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-from django.views.decorators.cache import cache_control
-from django.views import View
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseBadRequest
-from django.utils import timezone
-from django.conf import settings
-from asgiref.sync import sync_to_async
-from datetime import datetime, timedelta
-import logging
-import json
 import re
 import os
+import json
+import logging
 import asyncio
+from django.views import View
 from collections import Counter
-from .models import Domain, EmailAccount, Message
-from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
-from django.middleware.csrf import get_token
-from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.utils import timezone
 from django.contrib import messages
-from .mixins import AdminRequiredMixin, DateFilterMixin, EmailAccountService
+from asgiref.sync import sync_to_async
+from datetime import datetime, timedelta
+from django.middleware.csrf import get_token
+from django.shortcuts import render, redirect
+from .models import Domain, EmailAccount, Message
+from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_control
+from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
+from .mixins import AdminRequiredMixin, DateFilterMixin, EmailAccountService
+from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseBadRequest
 
 logger = logging.getLogger(__name__)
 
 class HeartCheckView(View):
     async def get(self, request):
         return JsonResponse({"status": "OK"}, status=200)
+
+class ChromeDevToolsStubView(View):
+    async def get(self, request):
+        return JsonResponse({}, status=200)
 
 class Robots_txtView(View):
     async def get(self, request):
@@ -103,9 +105,10 @@ class IndexView(View):
                         received_at__gte=session_start
                     ).order_by('-received_at')
                     
-                    # Converter em lista para o template
-                    async for msg in messages_qs:
-                        messages.append(msg)
+                    # ✅ CORRIGIDO: Converter QuerySet em lista de forma assíncrona
+                    # ao invés de usar async for em iterador síncrono
+                    messages = await sync_to_async(list)(messages_qs)
+                    
             except EmailAccount.DoesNotExist:
                 pass
                 
@@ -116,7 +119,7 @@ class IndexView(View):
         get_token(request)
         
         return response
-
+    
 class TempEmailAPI(View):
     """
     API para gerenciar emails temporários.
@@ -477,9 +480,12 @@ class MessageListAPI(View):
                 received_at__lte=session_end
             )
             
-            messages_data = []
-            async for msg in messages_qs:
-                messages_data.append({
+            # ✅ CORRIGIDO: Converter QuerySet para lista de forma assíncrona
+            messages_list = await sync_to_async(list)(messages_qs)
+            
+            # Construir lista de dados das mensagens
+            messages_data = [
+                {
                     'id': msg.id,
                     'smtp_id': msg.smtp_id,
                     'from_address': msg.from_address,
@@ -489,7 +495,9 @@ class MessageListAPI(View):
                     'has_attachments': msg.has_attachments,
                     'is_read': msg.is_read,
                     'received_at': msg.received_at.isoformat(),
-                })
+                }
+                for msg in messages_list
+            ]
             
             return JsonResponse({
                 'success': True,
@@ -964,7 +972,7 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
     
     async def _get_statistics_counts(self, data_inicio_dt, data_fim_dt):
         """
-        Coleta estatísticas básicas de contagem em paralelo.
+        Coleta contagens básicas de forma otimizada.
         
         Args:
             data_inicio_dt: Data inicial com timezone
@@ -973,24 +981,29 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
         Returns:
             tuple: (total_contas, contas_ativas, total_mensagens, mensagens_com_anexos)
         """
-        # Executar todas as contagens em paralelo para melhor performance
+        # ✅ Executar todas as queries em paralelo
         results = await asyncio.gather(
+            # Total de contas no período
             EmailAccount.objects.filter(
                 created_at__gte=data_inicio_dt,
                 created_at__lte=data_fim_dt
             ).acount(),
             
+            # ✅ CORRIGIDO: Usar acount() ao invés de async for
+            # Contas ativas (disponíveis para reutilização)
             EmailAccount.objects.filter(
                 is_available=True,
-                created_at__gte=data_inicio_dt,
-                created_at__lte=data_fim_dt
+                last_used_at__gte=data_inicio_dt,
+                last_used_at__lte=data_fim_dt
             ).acount(),
             
+            # Total de mensagens
             Message.objects.filter(
                 received_at__gte=data_inicio_dt,
                 received_at__lte=data_fim_dt
             ).acount(),
             
+            # Mensagens com anexos
             Message.objects.filter(
                 has_attachments=True,
                 received_at__gte=data_inicio_dt,
@@ -1011,12 +1024,17 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
         Returns:
             tuple: (total_dominios, dominios_ativos, contas_por_dominio)
         """
-        # Coletar IDs únicos de domínios usados no período
-        dominios_ativos_ids = set()
-        async for conta in EmailAccount.objects.filter(
+        # ✅ CORRIGIDO: Coletar IDs únicos de domínios usados no período
+        # Converter QuerySet para lista primeiro
+        contas_qs = EmailAccount.objects.filter(
             created_at__gte=data_inicio_dt,
             created_at__lte=data_fim_dt
-        ).only('domain_id')[:self.MAX_ACCOUNTS_QUERY]:
+        ).only('domain_id')[:self.MAX_ACCOUNTS_QUERY]
+        
+        contas_list = await sync_to_async(list)(contas_qs)
+        
+        dominios_ativos_ids = set()
+        for conta in contas_list:
             if conta.domain_id:
                 dominios_ativos_ids.add(conta.domain_id)
 
@@ -1031,9 +1049,13 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
         else:
             dominios_ativos = 0
 
-        # Distribuição de contas por domínio
+        # ✅ CORRIGIDO: Distribuição de contas por domínio
+        # Converter QuerySet para lista primeiro
+        dominios_qs = Domain.objects.filter(is_active=True).only('id', 'domain')
+        dominios_list = await sync_to_async(list)(dominios_qs)
+        
         contas_por_dominio = []
-        async for dominio in Domain.objects.filter(is_active=True).only('id', 'domain'):
+        for dominio in dominios_list:
             count = await dominio.accounts.filter(
                 created_at__gte=data_inicio_dt,
                 created_at__lte=data_fim_dt
@@ -1049,7 +1071,7 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
         contas_por_dominio.sort(key=lambda x: x['quantidade'], reverse=True)
         
         return total_dominios, dominios_ativos, contas_por_dominio
-    
+
     async def _process_messages_statistics(self, data_inicio_dt, data_fim_dt):
         """
         Processa estatísticas de mensagens, anexos e domínios remetentes.
@@ -1071,7 +1093,10 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
             received_at__lte=data_fim_dt
         ).only('from_address', 'attachments', 'has_attachments')[:self.MAX_MESSAGES_QUERY]
 
-        async for msg in query:
+        # ✅ CORRIGIDO: Converter QuerySet para lista de forma assíncrona
+        messages_list = await sync_to_async(list)(query)
+        
+        for msg in messages_list:
             # Processar domínio do remetente com validação robusta
             if msg.from_address:
                 dominio = self.extrair_dominio_seguro(msg.from_address)
@@ -1098,7 +1123,7 @@ class DadosView(AdminRequiredMixin, DateFilterMixin, View):
                         tipos_anexo[tipo_principal] += 1
 
         return total_anexos, tipos_anexo, dominios_remetentes
-    
+
     def _get_top_sites_limit(self, filter_sites, total_sites):
         """
         Determina o limite de sites a retornar baseado no filtro.

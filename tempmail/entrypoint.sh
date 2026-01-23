@@ -48,5 +48,5 @@ if [ "$DEBUG" = "1" ]; then
     python manage.py runserver 0.0.0.0:8000
     #uvicorn core.asgi:application --host 0.0.0.0 --port 8000 --workers 1 --lifespan off --loop uvloop --http httptools --timeout-keep-alive 5 --reload
 else
-    uvicorn core.asgi:application --host 0.0.0.0 --port 8000 --workers 4 --lifespan off --loop uvloop --http httptools --timeout-keep-alive 5
+    uvicorn core.asgi:application --host 0.0.0.0 --port 8000 --workers 1 --log-level warning --lifespan off --loop uvloop --http httptools --timeout-keep-alive 5 --use-colors
 fi

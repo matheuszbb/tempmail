@@ -12,7 +12,8 @@ dependencies = [
     "django-import-export>=4.4.0",
     "aiohttp>=3.13.3",
     "uvloop>=0.22.1",
-    "aiosqlite>=0.22.1",
+    "starlette>=0.52.1",
+    "aiofiles>=25.1.0"
 ]
 requires-python = ">=3.14"
 
