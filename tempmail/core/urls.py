@@ -7,7 +7,7 @@ from django.conf import settings
 
 from .views import (
     IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
-    TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI,
+    TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI, InlineAttachmentAPI,
     AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView, ChromeDevToolsStubView
 )
 
@@ -24,7 +24,7 @@ urlpatterns = [
     path('api/messages/<int:message_id>/', MessageDetailAPI.as_view(), name='api-message-detail'),
     path('api/messages/<int:message_id>/download/', MessageDownloadAPI.as_view(), name='api-message-download'),
     path('api/messages/<int:message_id>/attachments/<str:attachment_id>/download/', AttachmentDownloadAPI.as_view(), name='api-attachment-download'),
-
+    path('api/messages/<int:message_id>/inline/<str:attachment_id>/', InlineAttachmentAPI.as_view(), name='api-inline-attachment'),
     # Rota para troca de idioma
     path('i18n/', include('django.conf.urls.i18n')),
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),

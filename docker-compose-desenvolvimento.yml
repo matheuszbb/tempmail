@@ -2,8 +2,8 @@ services:
   tempmail:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: tempmail
+      dockerfile: docker/Dockerfile.dev
+    image: tempmail:dev
     command: /bin/sh -c "sh ./entrypoint.sh"
     env_file:
       - dotenv_files/.env

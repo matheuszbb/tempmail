@@ -25,4 +25,3 @@ RUN apk add --no-cache gettext && \
 ENV PATH="/venv/bin:$PATH"
 
 USER duser
-

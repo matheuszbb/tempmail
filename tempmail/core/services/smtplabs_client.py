@@ -4,6 +4,7 @@ Cliente Python Assíncrono para interagir com a API SMTP.dev usando aiohttp
 import aiohttp
 import logging
 import asyncio
+import threading
 from typing import Optional, Dict, List, Any
 from django.conf import settings
 
@@ -14,6 +15,77 @@ logger = logging.getLogger(__name__)
 class SMTPLabsAPIError(Exception):
     """Exceção customizada para erros da API SMTP.dev"""
     pass
+
+
+class SMTPLabsSessionManager:
+    """
+    Gerenciador singleton de sessão aiohttp para SMTPLabsClient.
+    Garante que apenas uma sessão seja criada e reutilizada em toda a aplicação.
+    """
+    _instance = None
+    _session: Optional[aiohttp.ClientSession] = None
+    _lock = threading.Lock()  # threading.Lock em vez de asyncio.Lock
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    @classmethod
+    async def get_session(cls, headers: Dict[str, str]) -> aiohttp.ClientSession:
+        """
+        Retorna a sessão aiohttp compartilhada (thread-safe).
+        Cria uma nova sessão se não existir ou se estiver fechada.
+        """
+        with cls._lock:  # threading.Lock é síncrono
+            session_is_valid = False
+            
+            # Verificar se a sessão existe e está aberta
+            if cls._session is not None and not cls._session.closed:
+                # Verificar se o event loop da sessão ainda está vivo
+                try:
+                    loop = cls._session._loop
+                    if loop is not None and not loop.is_closed():
+                        session_is_valid = True
+                    else:
+                        logger.warning("Sessão está com event loop fechado, forçando recriação")
+                        # Tentar fechar a sessão antiga (mesmo que o loop esteja fechado)
+                        try:
+                            cls._session._connector._close()
+                        except:
+                            pass
+                        cls._session = None
+                except Exception as e:
+                    logger.warning(f"Erro ao verificar event loop da sessão: {e}")
+                    cls._session = None
+            
+            # Criar nova sessão se necessário
+            if not session_is_valid:
+                try:
+                    cls._session = aiohttp.ClientSession(headers=headers)
+                    logger.info("Nova sessão aiohttp criada (shared session)")
+                except RuntimeError as e:
+                    logger.error(f"Não foi possível criar sessão aiohttp: {e}")
+                    raise
+            
+            return cls._session
+    
+    @classmethod
+    async def close_session(cls):
+        """
+        Fecha a sessão compartilhada.
+        Nota: Não é necessário chamar explicitamente - a sessão será fechada
+        automaticamente quando o processo Python terminar.
+        """
+        with cls._lock:
+            if cls._session and not cls._session.closed:
+                try:
+                    await cls._session.close()
+                    logger.info("Sessão aiohttp fechada corretamente")
+                except Exception as e:
+                    logger.warning(f"Erro ao fechar sessão aiohttp: {e}")
+                finally:
+                    cls._session = None
 
 
 class SMTPLabsClient:
@@ -27,19 +99,11 @@ class SMTPLabsClient:
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-        # ✅ CORREÇÃO: Criar session reutilizável ao invés de criar em cada request
-        self._session = None
+        # Não criar nada aqui - tudo será lazy initialized quando necessário
     
     async def _get_session(self):
-        """Obtém ou cria uma sessão aiohttp reutilizável"""
-        if self._session is None or self._session.closed:
-            self._session = aiohttp.ClientSession(headers=self.headers)
-        return self._session
-    
-    async def close(self):
-        """Fecha a sessão aiohttp"""
-        if self._session and not self._session.closed:
-            await self._session.close()
+        """Obtém a sessão compartilhada do session manager"""
+        return await SMTPLabsSessionManager.get_session(self.headers)
     
     async def _make_request(
         self, 
@@ -282,12 +346,3 @@ class SMTPLabsClient:
                 break
         
         return all_messages
-    
-    def __del__(self):
-        """Garante que a sessão seja fechada ao destruir o objeto"""
-        if self._session and not self._session.closed:
-            try:
-                asyncio.create_task(self._session.close())
-            except RuntimeError:
-                # Se não houver event loop, ignora
-                pass

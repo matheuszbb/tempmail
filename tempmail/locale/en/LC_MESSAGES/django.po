@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-23 09:51-0300\n"
+"POT-Creation-Date: 2026-01-26 16:34-0300\n"
 "PO-Revision-Date: 2026-01-19 17:00-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -27,134 +27,134 @@ msgstr "Get a secure, disposable temporary email address instantly."
 msgid "O seu endereço de e-mail temporário por"
 msgstr "Your temporary email address for"
 
-#: core/templates/core/index.html:61
+#: core/templates/core/index.html:63
 msgid "Sobre o tempo da sessão"
 msgstr "About session time"
 
-#: core/templates/core/index.html:77
+#: core/templates/core/index.html:79
 msgid "QR Code"
 msgstr "QR Code"
 
-#: core/templates/core/index.html:85
+#: core/templates/core/index.html:87
 msgid "Copiar"
 msgstr "Copy"
 
-#: core/templates/core/index.html:92
+#: core/templates/core/index.html:94
 msgid "Atualizar"
 msgstr "Refresh"
 
-#: core/templates/core/index.html:99
+#: core/templates/core/index.html:101
 msgid "Alterar"
 msgstr "Change"
 
-#: core/templates/core/index.html:106
+#: core/templates/core/index.html:108
 msgid "Excluir"
 msgstr "Delete"
 
-#: core/templates/core/index.html:117
+#: core/templates/core/index.html:119
 msgid "QR"
 msgstr "QR"
 
-#: core/templates/core/index.html:145 core/templates/core/index.html:383
+#: core/templates/core/index.html:147 core/templates/core/index.html:391
 msgid "Números temporários para SMS"
 msgstr "Temporary numbers for SMS"
 
-#: core/templates/core/index.html:148
+#: core/templates/core/index.html:150
 msgid "Receba códigos de verificação sem expor seu número real."
 msgstr "Receive verification codes without exposing your real number."
 
-#: core/templates/core/index.html:149
+#: core/templates/core/index.html:152
 msgid "Rápido, seguro e prático."
 msgstr "Fast, secure and practical."
 
-#: core/templates/core/index.html:156 core/templates/core/index.html:390
+#: core/templates/core/index.html:159 core/templates/core/index.html:398
 msgid "Acessar SMSRush"
 msgstr "Access SMSRush"
 
-#: core/templates/core/index.html:168
+#: core/templates/core/index.html:171
 msgid "Remetente"
 msgstr "Sender"
 
-#: core/templates/core/index.html:169 templates/contato.html:90
+#: core/templates/core/index.html:172 templates/contato.html:90
 msgid "Assunto"
 msgstr "Subject"
 
-#: core/templates/core/index.html:170
+#: core/templates/core/index.html:173
 msgid "Visualizar"
 msgstr "View"
 
-#: core/templates/core/index.html:185
+#: core/templates/core/index.html:188
 msgid "Sua caixa de entrada está vazia"
 msgstr "Your inbox is empty"
 
-#: core/templates/core/index.html:203
+#: core/templates/core/index.html:206
 msgid "Buscando novos e-mails"
 msgstr "Checking for new emails"
 
-#: core/templates/core/index.html:224
+#: core/templates/core/index.html:228
 msgid "Voltar para a lista"
 msgstr "Back to list"
 
-#: core/templates/core/index.html:226 templates/parciais/_btn_voltar.html:8
+#: core/templates/core/index.html:230 templates/parciais/_btn_voltar.html:8
 #: templates/parciais/_btn_voltar_args.html:7
 msgid "Voltar"
 msgstr "Back"
 
-#: core/templates/core/index.html:233
+#: core/templates/core/index.html:237
 msgid "Leitura da Mensagem"
 msgstr "Message Reading"
 
-#: core/templates/core/index.html:234 templates/contato.html:109
+#: core/templates/core/index.html:238 templates/contato.html:109
 msgid "Mensagem"
 msgstr "Message"
 
-#: core/templates/core/index.html:241
+#: core/templates/core/index.html:245
 msgid "Ver anexos"
 msgstr "View attachments"
 
-#: core/templates/core/index.html:251
+#: core/templates/core/index.html:255
 msgid "Baixar arquivo .eml"
 msgstr "Download .eml file"
 
-#: core/templates/core/index.html:253
+#: core/templates/core/index.html:257
 msgid "Download"
 msgstr "Download"
 
-#: core/templates/core/index.html:271
+#: core/templates/core/index.html:275
 #: core/templates/core/parciais/index/_message_item.html:22
 msgid "Remetente:"
 msgstr "Sender:"
 
-#: core/templates/core/index.html:298
+#: core/templates/core/index.html:302
 msgid "Recebido em:"
 msgstr "Received on:"
 
-#: core/templates/core/index.html:310
+#: core/templates/core/index.html:314
 #: core/templates/core/parciais/index/_message_item.html:32
 msgid "Assunto:"
 msgstr "Subject:"
 
-#: core/templates/core/index.html:314
+#: core/templates/core/index.html:318
 msgid "Título da Mensagem"
 msgstr "Message Title"
 
-#: core/templates/core/index.html:321
+#: core/templates/core/index.html:325
 msgid "Mensagem:"
 msgstr "Message:"
 
-#: core/templates/core/index.html:335
+#: core/templates/core/index.html:339
 msgid "Anexos:"
 msgstr "Attachments:"
 
-#: core/templates/core/index.html:353
+#: core/templates/core/index.html:358
 msgid "Por que usar Email Temporário?"
 msgstr "Why use Temporary Email?"
 
-#: core/templates/core/index.html:354
+#: core/templates/core/index.html:359
 msgid "Saiba os benefícios e proteja sua privacidade"
 msgstr "Learn the benefits and protect your privacy"
 
-#: core/templates/core/index.html:385
+#: core/templates/core/index.html:393
 msgid ""
 "Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
 "prático."
@@ -320,141 +320,183 @@ msgstr "Learn more here"
 msgid "Entendi"
 msgstr "I understand"
 
-#: core/views.py:142 core/views.py:223 core/views.py:427
+#: core/views.py:148 core/views.py:236 core/views.py:476
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr "Service temporarily unavailable. Please try again in a few minutes."
 
-#: core/views.py:161
+#: core/views.py:167
 #, fuzzy
 #| msgid "Criar Email Temporário"
 msgid "Erro ao criar email temporário"
 msgstr "Create Temporary Email"
 
-#: core/views.py:185
+#: core/views.py:191
 #, fuzzy
 #| msgid "Deseja gerar um novo endereço de e-mail?"
 msgid "Você já está usando este endereço de e-mail"
 msgstr "Do you want to generate a new email address?"
 
-#: core/views.py:202
+#: core/views.py:208
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr "Internal server error. Our team has been notified."
 
-#: core/views.py:247
+#: core/views.py:260
 msgid "Sessão resetada com sucesso"
 msgstr "Session reset successfully"
 
-#: core/views.py:258
+#: core/views.py:271 core/views.py:278
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido"
 msgstr "Your temporary email address for"
 
-#: core/views.py:281
+#: core/views.py:284
+#, fuzzy
+#| msgid "O seu endereço de e-mail temporário por"
+msgid "Endereço de email inválido. Verifique o formato."
+msgstr "Your temporary email address for"
+
+#: core/views.py:293
+msgid "Nome de usuário contém caracteres inválidos"
+msgstr "Username contains invalid characters"
+
+#: core/views.py:300
+msgid "Nome de usuário não pode começar ou terminar com ponto"
+msgstr "Username cannot start or end with a dot"
+
+#: core/views.py:323
+#, fuzzy
+#| msgid "O seu endereço de e-mail temporário por"
+msgid "Este endereço de e-mail já está sendo usado por outro usuário"
+msgstr "Your temporary email address for"
+
+#: core/views.py:329
 msgid "Não foi possível acessar este email"
 msgstr "Could not access this email"
 
-#: core/views.py:296
+#: core/views.py:344
 msgid "Email alterado com sucesso"
 msgstr "Email changed successfully"
 
-#: core/views.py:424
+#: core/views.py:473
 msgid "Erro interno ao processar requisição"
 msgstr "Internal error while processing request"
 
-#: core/views.py:429
+#: core/views.py:478
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr "Temporary server error. Please try again in a few moments."
 
-#: core/views.py:431
+#: core/views.py:480
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr "Too many attempts. Please wait a few minutes before trying again."
 
-#: core/views.py:433
+#: core/views.py:482
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr "Slow connection. Check your internet and try again."
 
-#: core/views.py:453 core/views.py:466 core/views.py:661 core/views.py:749
-#: core/views.py:805
+#: core/views.py:502 core/views.py:515 core/views.py:724 core/views.py:863
+#: core/views.py:1639 core/views.py:1695
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Sessão não encontrada"
 msgstr "Page Not Found"
 
-#: core/views.py:512
+#: core/views.py:561
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Conta não encontrada"
 msgstr "Page Not Found"
 
-#: core/views.py:518
+#: core/views.py:567
 msgid "Erro ao buscar mensagens"
 msgstr "Error fetching messages"
 
-#: core/views.py:698
+#: core/views.py:736
 #, fuzzy
 #| msgid "Página Não Encontrada"
-msgid "Não encontrado"
+msgid "Anexo não encontrado"
 msgstr "Page Not Found"
 
-#: core/views.py:704
-#, fuzzy
-#| msgid "Erro no"
-msgid "Erro interno"
-msgstr "Error in"
-
-#: core/views.py:766 core/views.py:834
+#: core/views.py:743 core/views.py:1656 core/views.py:1724
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Mailbox não encontrada"
 msgstr "Page Not Found"
 
-#: core/views.py:781
-msgid "Conteúdo vazio"
-msgstr "Empty content"
+#: core/views.py:756
+#, fuzzy
+#| msgid "Conteúdo do anexo vazio ou não disponível"
+msgid "Conteúdo não disponível"
+msgstr "Attachment content empty or unavailable"
 
-#: core/views.py:789
+#: core/views.py:780 core/views.py:1679
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Mensagem não encontrada"
 msgstr "Page Not Found"
 
-#: core/views.py:793
+#: core/views.py:783
+#, fuzzy
+#| msgid "Erro ao buscar mensagens"
+msgid "Erro ao buscar anexo"
+msgstr "Error fetching messages"
+
+#: core/views.py:786
+msgid "Erro interno do servidor"
+msgstr "Internal server error"
+
+#: core/views.py:920
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Não encontrado"
+msgstr "Page Not Found"
+
+#: core/views.py:926
+#, fuzzy
+#| msgid "Erro no"
+msgid "Erro interno"
+msgstr "Error in"
+
+#: core/views.py:1671
+msgid "Conteúdo vazio"
+msgstr "Empty content"
+
+#: core/views.py:1683
 msgid "Não foi possível processar o download da mensagem."
 msgstr "Could not process message download."
 
-#: core/views.py:826
+#: core/views.py:1716
 msgid "Anexo não encontrado nos metadados da mensagem"
 msgstr "Attachment not found in message metadata"
 
-#: core/views.py:848
+#: core/views.py:1738
 msgid "Conteúdo do anexo vazio ou não disponível"
 msgstr "Attachment content empty or unavailable"
 
-#: core/views.py:861
+#: core/views.py:1751
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Arquivo não encontrado"
 msgstr "Page Not Found"
 
-#: core/views.py:865
+#: core/views.py:1755
 msgid "Não foi possível processar o download do arquivo."
 msgstr "Could not process file download."
 
-#: core/views.py:1253
+#: core/views.py:2143
 #, fuzzy
 #| msgid "Erro interno ao processar requisição"
 msgid "Erro ao processar requisição"
 msgstr "Internal error while processing request"
 
-#: core/views.py:1297
+#: core/views.py:2187
 #, fuzzy
 #| msgid "Estatísticas"
 msgid "Erro ao carregar estatísticas"
 msgstr "Statistics"
 
-#: core/views.py:1327
+#: core/views.py:2217
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr "Message sent successfully! We will respond shortly."
 
@@ -778,7 +820,7 @@ msgstr "Contact"
 msgid "EmailRush - Email Temporário"
 msgstr "EmailRush - Temporary Email"
 
-#: templates/parciais/_head.html:15
+#: templates/parciais/_head.html:14
 msgid ""
 "Obtenha um endereço de e-mail temporário gratuito e anônimo em segundos. "
 "Evite spam e proteja seu e-mail real com nosso serviço de temp mail."
@@ -786,7 +828,7 @@ msgstr ""
 "Get a free, anonymous temporary email address in seconds. Avoid spam and "
 "protect your real email with our temp mail service."
 
-#: templates/parciais/_head.html:17
+#: templates/parciais/_head.html:16
 msgid ""
 "email temporário, email descartável, temp mail, evitar spam, email anônimo, "
 "EmailRush, serviço de email temporário, criar email temporário, email "
@@ -798,20 +840,20 @@ msgstr ""
 "email protection, Email Rush, free temporary email, instant temporary email, "
 "Rush Email, RushEmail"
 
-#: templates/parciais/_head.html:22
+#: templates/parciais/_head.html:21
 msgid "EmailRush - E-mail Temporário Grátis e Instantâneo"
 msgstr "EmailRush - Free and Instant Temporary Email"
 
-#: templates/parciais/_head.html:24
+#: templates/parciais/_head.html:23
 msgid ""
 "Crie um e-mail descartável agora e mantenha sua caixa de entrada real limpa."
 msgstr "Create a disposable email now and keep your real inbox clean."
 
-#: templates/parciais/_head.html:28
+#: templates/parciais/_head.html:27
 msgid "EmailRush - E-mail Descartável"
 msgstr "EmailRush - Disposable Email"
 
-#: templates/parciais/_head.html:30
+#: templates/parciais/_head.html:29
 msgid ""
 "Não use seu e-mail real em sites suspeitos. Use nosso e-mail temporário."
 msgstr ""
@@ -1430,9 +1472,6 @@ msgid ""
 "de contato."
 msgstr ""
 "For questions about these terms, please contact us through the contact page."
-
-#~ msgid "Erro interno do servidor"
-#~ msgstr "Internal server error"
 
 #~ msgid "Erro ao processar a página"
 #~ msgstr "Error processing the page"

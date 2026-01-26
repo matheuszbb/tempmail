@@ -1,0 +1,26 @@
+FROM python:3.14.2-alpine3.23
+
+ENV PYTHONDONTWRITEBYTECODE 1
+
+ENV PYTHONUNBUFFERED 1
+
+ENV TZ="America/Sao_Paulo"
+
+# Copiar código do projeto
+COPY ./tempmail ./tempmail
+
+WORKDIR /tempmail
+
+RUN pip install --upgrade pip && \
+    pip install uv && \
+    uv venv /venv && \
+    . /venv/bin/activate && \
+    uv pip install -r pyproject.toml && \
+    mkdir -p /tempmail/static && \
+    adduser --disabled-password --no-create-home duser && \
+    chown -R duser:duser /tempmail/static
+
+# Ajustar PATH para usar o venv criado pelo uv
+ENV PATH="/venv/bin:$PATH"
+
+USER duser

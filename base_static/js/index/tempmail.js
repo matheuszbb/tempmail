@@ -58,10 +58,72 @@ class TempMailApp {
     }
 
     async init() {
+        this.setupIframeCommunication();
         this.setupScrollBehavior();
         this.setupVisibilityChange();
         await this.loadEmail();
         this.startPolling();
+    }
+
+    /**
+     * Configura a comunicação global com os iframes de e-mail
+     */
+    setupIframeCommunication() {
+        window.addEventListener('message', (event) => {
+            if (!event.data || typeof event.data !== 'object') return;
+
+            const { type, href, text, dimensions } = event.data;
+
+            if (type === 'link-click' && href) {
+                try {
+                    const isHiddenUrl = this.detectHiddenUrl(text || href, href);
+                    this.showLinkConfirmModal(href, isHiddenUrl);
+                } catch (e) {
+                    console.error('Erro ao processar clique no link', e);
+                    this.showLinkConfirmModal(href, false);
+                }
+            } else if (type === 'resize' && dimensions) {
+                const iframe = this.elements.msgCorpo.querySelector('iframe');
+                if (iframe) {
+                    const parentWidth = iframe.parentElement.clientWidth;
+                    // Usar largura 100% da maioria dos casos, apenas para emails muito grandes
+                    if (dimensions.width > parentWidth + 10) {
+                        iframe.style.width = Math.min(dimensions.width, parentWidth + 50) + 'px';
+                    } else {
+                        iframe.style.width = '100%';
+                    }
+                    // Garantir altura mínima de 40px e máxima de 80vh
+                    const minHeight = 40;
+                    const maxHeight = window.innerHeight * 0.8;
+                    const calculatedHeight = Math.max(minHeight, Math.min(dimensions.height, maxHeight));
+                    iframe.style.height = calculatedHeight + 'px';
+                }
+            }
+        });
+
+        // Observar mudanças de tema e notificar o iframe
+        const themeObserver = new MutationObserver(() => {
+            this.notifyIframeThemeChange();
+        });
+
+        themeObserver.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    }
+
+    /**
+     * Notifica o iframe sobre mudança de tema
+     */
+    notifyIframeThemeChange() {
+        const iframe = this.elements.msgCorpo?.querySelector('iframe');
+        if (!iframe) return;
+
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        iframe.contentWindow.postMessage({
+            type: 'theme-change',
+            isDark: isDarkMode
+        }, '*');
     }
 
     setupScrollBehavior() {
@@ -77,7 +139,7 @@ class TempMailApp {
                 } else {
                     const readingLong = gettext('Leitura da Mensagem');
                     const readingShort = gettext('Mensagem');
-                    headerTitle.innerHTML = `<span class="hidden xs:inline">${readingLong}</span><span class="xs:hidden">${readingShort}</span>`;                    headerTitle.classList.add('cursor-default', 'pointer-events-none');
+                    headerTitle.innerHTML = `<span class="hidden xs:inline">${readingLong}</span><span class="xs:hidden">${readingShort}</span>`; headerTitle.classList.add('cursor-default', 'pointer-events-none');
                     headerTitle.classList.remove('cursor-pointer', 'bg-orange-700/40', 'bg-orange-700/90', 'px-3', 'py-1', 'rounded-full');
                 }
             });
@@ -350,7 +412,7 @@ class TempMailApp {
             this.stopPolling();
             return;
         }
-        
+
         // O timer é controlado pelo countdown, não deve ser reiniciado aqui
 
         this.isRefreshing = true;
@@ -631,11 +693,168 @@ class TempMailApp {
 
                 if (this.elements.msgCorpo) {
                     if (dados.html) {
-                        // SANITIZAÇÃO CRÍTICA (Antra-XSS): 
-                        // Impede execução de JS malicioso dentro do e-mail
-                        this.elements.msgCorpo.innerHTML = DOMPurify.sanitize(dados.html);
+                        // Limpar classes de texto puro que podem ter sobrado
+                        this.elements.msgCorpo.classList.remove('whitespace-pre-wrap', 'break-all', 'pl-2');
+                        // Usar Tailwind para container
+                        this.elements.msgCorpo.classList.add('w-full', 'overflow-hidden');
+
+                        // Criar iframe para isolar o CSS do e-mail
+                        const iframe = document.createElement('iframe');
+                        // Segurança: sandbox sem allow-same-origin evita o aviso e aumenta segurança
+                        iframe.sandbox = 'allow-scripts allow-popups allow-popups-to-escape-sandbox';
+                        iframe.style.width = '100%';
+                        iframe.style.border = 'none';
+                        iframe.style.overflow = 'hidden';
+                        iframe.scrolling = 'no';
+
+                        this.elements.msgCorpo.innerHTML = '';
+                        this.elements.msgCorpo.appendChild(iframe);
+
+                        // IMPORTANTE: NÃO usar linkify no HTML bruto para não quebrar as tags do e-mail
+                        // Hook para remover pointer-events: none que bloqueia cliques
+                        DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+                            if (node.style && node.style.pointerEvents === 'none') {
+                                node.style.pointerEvents = 'auto';
+                            }
+                        });
+
+                        const sanitizedHtml = DOMPurify.sanitize(dados.html, {
+                            ALLOWED_TAGS: ['a', 'p', 'div', 'span', 'b', 'i', 'u', 'strong', 'em', 'br', 'img', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'font', 'center', 'blockquote', 'ul', 'ol', 'li'],
+                            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id']
+                        });
+
+                        // Limpar o hook depois de usar
+                        DOMPurify.removeHook('afterSanitizeAttributes');
+
+                        // Detectar tema atual (dark ou light)
+                        const isDarkMode = document.documentElement.classList.contains('dark');
+                        const bodyBg = isDarkMode ? '#1f2937' : '#ffffff';
+                        const bodyTextColor = isDarkMode ? '#f3f4f6' : '#1f2937';
+
+                        const iframeContent = `
+                            <!DOCTYPE html>
+                            <html>
+                            <head>
+                                <meta charset="utf-8">
+                                <meta name="viewport" content="width=device-width, initial-scale=1">
+                                <style>
+                                    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+                                    
+                                    * { 
+                                        box-sizing: border-box;
+                                        margin: 0;
+                                        padding: 0;
+                                    }
+                                    html, body { 
+                                        overflow: hidden;
+                                    }
+                                    body {
+                                        font-family: 'Poppins', 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                        font-size: 14px;
+                                        line-height: 1.5;
+                                        color: ${bodyTextColor};
+                                        background-color: ${bodyBg};
+                                        word-wrap: break-word;
+                                        padding: 8px;
+                                    }
+                                    img { 
+                                        max-width: 100% !important; 
+                                        height: auto !important;
+                                        display: block;
+                                    }
+                                    table { 
+                                        max-width: 100% !important;
+                                        border-collapse: collapse;
+                                    }
+                                    a:not([style*="color"]) {
+                                        color: #f97316;
+                                        text-decoration: underline;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                ${sanitizedHtml}
+                                <script>
+                                    (function() {
+                                        // Definir cores iniciais baseado no tema atual
+                                        function updateThemeColors(isDark) {
+                                            const bodyBg = isDark ? '#1f2937' : '#ffffff';
+                                            const bodyTextColor = isDark ? '#f3f4f6' : '#1f2937';
+                                            document.body.style.backgroundColor = bodyBg;
+                                            document.body.style.color = bodyTextColor;
+                                        }
+
+                                        // Escutar mudanças de tema do parent
+                                        window.addEventListener('message', (event) => {
+                                            if (event.data && event.data.type === 'theme-change') {
+                                                updateThemeColors(event.data.isDark);
+                                            }
+                                        });
+
+                                        function reportDimensions() {
+                                            const body = document.body;
+                                            const html = document.documentElement;
+                                            
+                                            // Usar scrollHeight/scrollWidth que é mais preciso para conteúdo dinâmico
+                                            // Adicionar padding do body (8px por lado = 16px total)
+                                            const width = body.scrollWidth + 16;
+                                            const height = body.scrollHeight + 16;
+
+                                            window.parent.postMessage({
+                                                type: 'resize',
+                                                dimensions: { width: width, height: height }
+                                            }, '*');
+                                        }
+
+                                        // Interceptar cliques em links EXISTENTES no HTML (não quebra as linhas)
+                                        document.addEventListener('click', function(e) {
+                                            // Procurar o link mais próximo (mesmo se não for o target direto)
+                                            const link = e.target.closest('a');
+                                            if (link && link.href) {
+                                                const href = link.getAttribute('href') || link.href;
+                                                // Ignorar links internos e vazios
+                                                if (href && href.trim() !== '' && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    window.parent.postMessage({
+                                                        type: 'link-click',
+                                                        href: href,
+                                                        text: link.textContent || link.innerText || ''
+                                                    }, '*');
+                                                }
+                                            }
+                                        }, true); // Usar capturing phase para garantir que captura
+
+                                        if (window.ResizeObserver) {
+                                            const ro = new ResizeObserver(reportDimensions);
+                                            ro.observe(document.body);
+                                        }
+                                        
+                                        window.onload = reportDimensions;
+                                        // Múltiplos timeouts para capturar tamanho correto em diferentes cenários
+                                        setTimeout(reportDimensions, 100);  // Early check
+                                        setTimeout(reportDimensions, 300);  // After fonts load
+                                        setTimeout(reportDimensions, 800);  // After images start loading
+                                        setTimeout(reportDimensions, 2000); // Final check
+                                    })();
+                                <\/script>
+                            </body>
+                            </html>
+                        `;
+
+                        iframe.srcdoc = iframeContent;
+
+                        // O iframe agora se comunica via postMessage (capturado pelo listener global no init)
+
                     } else {
-                        this.elements.msgCorpo.textContent = dados.corpo;
+                        // Texto Puro: escapar, linkificar e então sanitizar
+                        const escapedText = this.escapeHtml(dados.corpo);
+                        const linkifiedText = this.linkify(escapedText);
+                        this.elements.msgCorpo.classList.add('whitespace-pre-wrap', 'break-all', 'pl-2');
+                        this.elements.msgCorpo.innerHTML = DOMPurify.sanitize(linkifiedText);
+
+                        // Processar links no texto puro também para segurança (modal de aviso)
+                        this.processLinks();
                     }
                 }
 
@@ -658,6 +877,11 @@ class TempMailApp {
 
                 // EXIBIÇÃO DE ANEXOS
                 this.renderAttachments(msg.attachments, messageId);
+
+                // Se não houver anexos, garantir que o header button está oculto
+                if (!msg.attachments || msg.attachments.length === 0) {
+                    this.showHeaderAttachmentBtn(0);
+                }
             }
         } catch (error) {
             Toast.error(gettext('Não foi possível abrir a mensagem.'));
@@ -1109,9 +1333,35 @@ class TempMailApp {
         const usernameInput = this.elements.modalInputUser;
         if (!usernameInput) return;
 
-        const username = usernameInput.value.trim();
+        let username = usernameInput.value.trim();
         if (!username) {
             Toast.warning(gettext('Por favor, digite um nome de usuário.'));
+            return;
+        }
+
+        // ✅ VALIDAÇÃO: Remover domínio se o usuário colou o email completo
+        if (username.includes('@')) {
+            const parts = username.split('@');
+            username = parts[0]; // Pega apenas a parte antes do @
+            usernameInput.value = username; // Atualiza o campo visualmente
+
+            if (!username) {
+                Toast.warning(gettext('Por favor, digite um nome de usuário válido.'));
+                return;
+            }
+        }
+
+        // ✅ VALIDAÇÃO: Verificar caracteres válidos no username
+        // Permite: letras, números, pontos, hífens e underscores
+        const usernameRegex = /^[a-zA-Z0-9._-]+$/;
+        if (!usernameRegex.test(username)) {
+            Toast.error(gettext('Nome de usuário contém caracteres inválidos. Use apenas letras, números, pontos, hífens e underscores.'));
+            return;
+        }
+
+        // ✅ VALIDAÇÃO: Username não pode começar ou terminar com ponto
+        if (username.startsWith('.') || username.endsWith('.')) {
+            Toast.error(gettext('Nome de usuário não pode começar ou terminar com ponto.'));
             return;
         }
 
@@ -1119,7 +1369,7 @@ class TempMailApp {
         const domain = domainLabel.replace('@', '').trim();
         const fullEmail = `${username}@${domain}`;
 
-        // Validação de email duplicado
+        // ✅ VALIDAÇÃO: Email duplicado
         if (fullEmail === this.currentEmail) {
             Toast.info(gettext('Você já está usando este endereço de e-mail.'));
             this.closeEditModal();
@@ -1128,10 +1378,10 @@ class TempMailApp {
 
         if (this.isResetting) return;
         this.isResetting = true;
-        
+
         this.stopPolling();
         this.showSkeleton();
-        
+
         // Fecha o modal imediatamente ao iniciar o processo
         this.closeEditModal();
 
@@ -1149,12 +1399,12 @@ class TempMailApp {
                 this.currentEmail = data.email;
                 if (this.elements.emailDisplay) this.elements.emailDisplay.value = data.email;
                 this.clearMessageList();
-                
+
                 if (window.generateQRCode && data.email) window.generateQRCode(data.email);
 
                 Toast.success(gettext('E-mail alterado com sucesso!'));
                 if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
-                
+
                 await this.refreshMessages();
             } else {
                 const errorMsg = data?.error || (status === 403 ? gettext('Sessão inválida.') : gettext('Erro ao alterar email.'));
@@ -1178,6 +1428,18 @@ class TempMailApp {
             this.elements.emptyState.classList.remove('hidden');
             this.elements.emptyState.style.display = 'flex';
         }
+    }
+
+    /**
+     * Linkifica URLs em texto puro (deve ser chamado depois de escapar o HTML)
+     */
+    linkify(text) {
+        if (!text) return '';
+        // Regular expression that matches URLs but not when inside an existing tag or already linkified
+        const urlRegex = /(https?:\/\/[^\s<]+[^<.,:;"\'\]\s])/g;
+        return text.replace(urlRegex, (url) => {
+            return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-orange-600 hover:text-orange-700 underline">${url}</a>`;
+        });
     }
 
     escapeHtml(text) {

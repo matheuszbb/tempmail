@@ -1,6 +1,7 @@
 """
 Mixins e utilitários reutilizáveis para views
 """
+from django.db import models
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from asgiref.sync import sync_to_async
@@ -152,12 +153,30 @@ class EmailAccountService:
                 except EmailAccount.DoesNotExist:
                     pass
         
-        # Tentar reutilizar conta disponível
-        available_account = await EmailAccount.objects.filter(
-            is_available=True
-        ).afirst()
+        # Tentar reutilizar conta disponível (excluindo a anterior se houver)
+        previous_email = await sync_to_async(request.session.get)('previous_email')
+        
+        # Filtrar contas que estão marcadas como disponíveis
+        available_accounts = EmailAccount.objects.filter(is_available=True)
+        
+        # Aplicar cooldown de 2 horas na consulta para performance
+        cooldown_threshold = timezone.now() - timedelta(hours=2)
+        available_accounts = available_accounts.filter(
+            models.Q(last_used_at__isnull=True) | models.Q(last_used_at__lte=cooldown_threshold)
+        )
+        
+        # Excluir email anterior da seleção
+        if previous_email:
+            available_accounts = available_accounts.exclude(address=previous_email)
+        
+        # Pegar a conta que não foi usada há mais tempo
+        available_account = await available_accounts.order_by('last_used_at').afirst()
         
         if available_account and available_account.can_be_reused():
+            # Limpar previous_email da sessão após uso
+            if previous_email:
+                await sync_to_async(request.session.pop)('previous_email', None)
+            
             await self._mark_account_as_used(request, available_account)
             logger.info(f"Reutilizando conta: {available_account.address}")
             return available_account, True
