@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-26 16:34-0300\n"
+"POT-Creation-Date: 2026-01-26 21:02-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -36,130 +36,122 @@ msgstr ""
 msgid "Sobre o tempo da sessão"
 msgstr ""
 
-#: core/templates/core/index.html:79
+#: core/templates/core/index.html:77
 msgid "QR Code"
 msgstr ""
 
-#: core/templates/core/index.html:87
+#: core/templates/core/index.html:84
 msgid "Copiar"
 msgstr ""
 
-#: core/templates/core/index.html:94
+#: core/templates/core/index.html:91
 msgid "Atualizar"
 msgstr ""
 
-#: core/templates/core/index.html:101
+#: core/templates/core/index.html:98
 msgid "Alterar"
 msgstr ""
 
-#: core/templates/core/index.html:108
-msgid "Excluir"
-msgstr ""
-
-#: core/templates/core/index.html:119
-msgid "QR"
-msgstr ""
-
-#: core/templates/core/index.html:147 core/templates/core/index.html:391
+#: core/templates/core/index.html:126 core/templates/core/index.html:370
 msgid "Números temporários para SMS"
 msgstr ""
 
-#: core/templates/core/index.html:150
+#: core/templates/core/index.html:129
 msgid "Receba códigos de verificação sem expor seu número real."
 msgstr ""
 
-#: core/templates/core/index.html:152
+#: core/templates/core/index.html:131
 msgid "Rápido, seguro e prático."
 msgstr ""
 
-#: core/templates/core/index.html:159 core/templates/core/index.html:398
+#: core/templates/core/index.html:138 core/templates/core/index.html:377
 msgid "Acessar SMSRush"
 msgstr ""
 
-#: core/templates/core/index.html:171
+#: core/templates/core/index.html:150
 msgid "Remetente"
 msgstr ""
 
-#: core/templates/core/index.html:172 templates/contato.html:90
+#: core/templates/core/index.html:151 templates/contato.html:90
 msgid "Assunto"
 msgstr ""
 
-#: core/templates/core/index.html:173
+#: core/templates/core/index.html:152
 msgid "Visualizar"
 msgstr ""
 
-#: core/templates/core/index.html:188
+#: core/templates/core/index.html:167
 msgid "Sua caixa de entrada está vazia"
 msgstr ""
 
-#: core/templates/core/index.html:206
+#: core/templates/core/index.html:185
 msgid "Buscando novos e-mails"
 msgstr ""
 
-#: core/templates/core/index.html:228
+#: core/templates/core/index.html:207
 msgid "Voltar para a lista"
 msgstr ""
 
-#: core/templates/core/index.html:230 templates/parciais/_btn_voltar.html:8
+#: core/templates/core/index.html:209 templates/parciais/_btn_voltar.html:8
 #: templates/parciais/_btn_voltar_args.html:7
 msgid "Voltar"
 msgstr ""
 
-#: core/templates/core/index.html:237
+#: core/templates/core/index.html:216
 msgid "Leitura da Mensagem"
 msgstr ""
 
-#: core/templates/core/index.html:238 templates/contato.html:109
+#: core/templates/core/index.html:217 templates/contato.html:109
 msgid "Mensagem"
 msgstr ""
 
-#: core/templates/core/index.html:245
+#: core/templates/core/index.html:224
 msgid "Ver anexos"
 msgstr ""
 
-#: core/templates/core/index.html:255
+#: core/templates/core/index.html:234
 msgid "Baixar arquivo .eml"
 msgstr ""
 
-#: core/templates/core/index.html:257
+#: core/templates/core/index.html:236
 msgid "Download"
 msgstr ""
 
-#: core/templates/core/index.html:275
+#: core/templates/core/index.html:254
 #: core/templates/core/parciais/index/_message_item.html:22
 msgid "Remetente:"
 msgstr ""
 
-#: core/templates/core/index.html:302
+#: core/templates/core/index.html:281
 msgid "Recebido em:"
 msgstr ""
 
-#: core/templates/core/index.html:314
+#: core/templates/core/index.html:293
 #: core/templates/core/parciais/index/_message_item.html:32
 msgid "Assunto:"
 msgstr ""
 
-#: core/templates/core/index.html:318
+#: core/templates/core/index.html:297
 msgid "Título da Mensagem"
 msgstr ""
 
-#: core/templates/core/index.html:325
+#: core/templates/core/index.html:304
 msgid "Mensagem:"
 msgstr ""
 
-#: core/templates/core/index.html:339
+#: core/templates/core/index.html:318
 msgid "Anexos:"
 msgstr ""
 
-#: core/templates/core/index.html:358
+#: core/templates/core/index.html:337
 msgid "Por que usar Email Temporário?"
 msgstr ""
 
-#: core/templates/core/index.html:359
+#: core/templates/core/index.html:338
 msgid "Saiba os benefícios e proteja sua privacidade"
 msgstr ""
 
-#: core/templates/core/index.html:393
+#: core/templates/core/index.html:372
 msgid ""
 "Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
 "prático."

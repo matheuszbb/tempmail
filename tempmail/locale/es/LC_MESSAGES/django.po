@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-26 16:34-0300\n"
+"POT-Creation-Date: 2026-01-26 21:02-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -33,130 +33,122 @@ msgstr "Tu dirección de correo temporal por"
 msgid "Sobre o tempo da sessão"
 msgstr "Sobre el tiempo de la sesión"
 
-#: core/templates/core/index.html:79
+#: core/templates/core/index.html:77
 msgid "QR Code"
 msgstr "Código QR"
 
-#: core/templates/core/index.html:87
+#: core/templates/core/index.html:84
 msgid "Copiar"
 msgstr "Copiar"
 
-#: core/templates/core/index.html:94
+#: core/templates/core/index.html:91
 msgid "Atualizar"
 msgstr "Actualizar"
 
-#: core/templates/core/index.html:101
+#: core/templates/core/index.html:98
 msgid "Alterar"
 msgstr "Cambiar"
 
-#: core/templates/core/index.html:108
-msgid "Excluir"
-msgstr "Eliminar"
-
-#: core/templates/core/index.html:119
-msgid "QR"
-msgstr "QR"
-
-#: core/templates/core/index.html:147 core/templates/core/index.html:391
+#: core/templates/core/index.html:126 core/templates/core/index.html:370
 msgid "Números temporários para SMS"
 msgstr "Números temporales para SMS"
 
-#: core/templates/core/index.html:150
+#: core/templates/core/index.html:129
 msgid "Receba códigos de verificação sem expor seu número real."
 msgstr "Recibe códigos de verificación sin exponer tu número real."
 
-#: core/templates/core/index.html:152
+#: core/templates/core/index.html:131
 msgid "Rápido, seguro e prático."
 msgstr "Rápido, seguro y práctico."
 
-#: core/templates/core/index.html:159 core/templates/core/index.html:398
+#: core/templates/core/index.html:138 core/templates/core/index.html:377
 msgid "Acessar SMSRush"
 msgstr "Acceder a SMSRush"
 
-#: core/templates/core/index.html:171
+#: core/templates/core/index.html:150
 msgid "Remetente"
 msgstr "Remitente"
 
-#: core/templates/core/index.html:172 templates/contato.html:90
+#: core/templates/core/index.html:151 templates/contato.html:90
 msgid "Assunto"
 msgstr "Asunto"
 
-#: core/templates/core/index.html:173
+#: core/templates/core/index.html:152
 msgid "Visualizar"
 msgstr "Ver"
 
-#: core/templates/core/index.html:188
+#: core/templates/core/index.html:167
 msgid "Sua caixa de entrada está vazia"
 msgstr "Tu bandeja de entrada está vacía"
 
-#: core/templates/core/index.html:206
+#: core/templates/core/index.html:185
 msgid "Buscando novos e-mails"
 msgstr "Buscando nuevos correos"
 
-#: core/templates/core/index.html:228
+#: core/templates/core/index.html:207
 msgid "Voltar para a lista"
 msgstr "Volver a la lista"
 
-#: core/templates/core/index.html:230 templates/parciais/_btn_voltar.html:8
+#: core/templates/core/index.html:209 templates/parciais/_btn_voltar.html:8
 #: templates/parciais/_btn_voltar_args.html:7
 msgid "Voltar"
 msgstr "Volver"
 
-#: core/templates/core/index.html:237
+#: core/templates/core/index.html:216
 msgid "Leitura da Mensagem"
 msgstr "Lectura del Mensaje"
 
-#: core/templates/core/index.html:238 templates/contato.html:109
+#: core/templates/core/index.html:217 templates/contato.html:109
 msgid "Mensagem"
 msgstr "Mensaje"
 
-#: core/templates/core/index.html:245
+#: core/templates/core/index.html:224
 msgid "Ver anexos"
 msgstr "Ver archivos adjuntos"
 
-#: core/templates/core/index.html:255
+#: core/templates/core/index.html:234
 msgid "Baixar arquivo .eml"
 msgstr "Descargar archivo .eml"
 
-#: core/templates/core/index.html:257
+#: core/templates/core/index.html:236
 msgid "Download"
 msgstr "Descargar"
 
-#: core/templates/core/index.html:275
+#: core/templates/core/index.html:254
 #: core/templates/core/parciais/index/_message_item.html:22
 msgid "Remetente:"
 msgstr "Remitente:"
 
-#: core/templates/core/index.html:302
+#: core/templates/core/index.html:281
 msgid "Recebido em:"
 msgstr "Recibido el:"
 
-#: core/templates/core/index.html:314
+#: core/templates/core/index.html:293
 #: core/templates/core/parciais/index/_message_item.html:32
 msgid "Assunto:"
 msgstr "Asunto:"
 
-#: core/templates/core/index.html:318
+#: core/templates/core/index.html:297
 msgid "Título da Mensagem"
 msgstr "Título del Mensaje"
 
-#: core/templates/core/index.html:325
+#: core/templates/core/index.html:304
 msgid "Mensagem:"
 msgstr "Mensaje:"
 
-#: core/templates/core/index.html:339
+#: core/templates/core/index.html:318
 msgid "Anexos:"
 msgstr "Adjuntos:"
 
-#: core/templates/core/index.html:358
+#: core/templates/core/index.html:337
 msgid "Por que usar Email Temporário?"
 msgstr "¿Por qué usar un correo temporal?"
 
-#: core/templates/core/index.html:359
+#: core/templates/core/index.html:338
 msgid "Saiba os benefícios e proteja sua privacidade"
 msgstr "Conoce los beneficios y protege tu privacidad"
 
-#: core/templates/core/index.html:393
+#: core/templates/core/index.html:372
 msgid ""
 "Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
 "prático."
@@ -1460,6 +1452,12 @@ msgid ""
 msgstr ""
 "Para dudas sobre estos términos, contáctanos a través de la página de "
 "contacto."
+
+#~ msgid "QR"
+#~ msgstr "QR"
+
+#~ msgid "Excluir"
+#~ msgstr "Eliminar"
 
 #~ msgid "Erro ao processar a página"
 #~ msgstr "Error al procesar la página"

@@ -7,8 +7,6 @@ class TempMailApp {
         this.sessionTimer = null; // Timer da sessão
         this.sessionSecondsRemaining = 0;
         this.popoverActiveMobile = false; // Estado para controle de toque no mobile
-        this.pollingTimer = null; // Timer do polling (contador de 10s)
-        this.pollingSecondsRemaining = 10; // Segundos restantes até próxima busca
         this.backgroundPollingTimer = null; // Timer para polling em background (5min)
         this.originalTitle = document.title; // Título original da página
         this.unreadCount = 0; // Contagem de mensagens não lidas
@@ -51,7 +49,7 @@ class TempMailApp {
             btnHeaderAttachments: document.getElementById('btn-header-attachments'),
             headerAttachmentsBadge: document.getElementById('header-attachments-badge'),
             sessionCountdown: document.getElementById('session-countdown'),
-            pollingTimer: document.querySelector('.js-polling-timer') // Timer do polling
+            pollingLed: document.getElementById('polling-led')
         };
 
         this.init();
@@ -324,73 +322,13 @@ class TempMailApp {
         }
 
         this.stopPolling();
-        // Resetar timer do polling
-        this.pollingSecondsRemaining = 10;
-        this.updatePollingTimer();
-        // Iniciar timer do polling (contador)
-        this.startPollingTimer();
+        // Iniciar polling a cada 2 segundos
+        this.pollingInterval = setInterval(() => this.refreshMessages(), 2000);
     }
 
     stopPolling() {
         if (this.pollingInterval) clearInterval(this.pollingInterval);
-        this.stopPollingTimer();
         this.stopBackgroundPolling();
-    }
-
-    /**
-     * Inicia o timer do polling com intervalo adaptativo
-     */
-    startPollingTimer(customInterval = null) {
-        this.stopPollingTimer();
-
-        const updateTimer = () => {
-            this.pollingSecondsRemaining--;
-            this.updatePollingTimer();
-
-            if (this.pollingSecondsRemaining <= 0) {
-                // Sempre faz refreshMessages quando chega a 0, mas ela decide se faz GET ou não
-                this.refreshMessages();
-
-                // Só reseta o contador se a sessão ainda não expirou
-                if (this.sessionSecondsRemaining > 0) {
-                    this.pollingSecondsRemaining = 10;
-                    this.updatePollingTimer();
-                } else {
-                    // Sessão expirou - mantém em 0 e para o timer
-                    this.pollingSecondsRemaining = 0;
-                    this.updatePollingTimer();
-                    this.stopPollingTimer();
-                    return;
-                }
-            }
-
-            // Intervalo sempre de 1 segundo para manter o countdown funcionando
-            const nextInterval = 1000;
-
-            this.pollingTimer = setTimeout(updateTimer, nextInterval);
-        };
-
-        // Iniciar timer
-        this.pollingTimer = setTimeout(updateTimer, 1000);
-    }
-
-    /**
-     * Para o timer do polling
-     */
-    stopPollingTimer() {
-        if (this.pollingTimer) {
-            clearTimeout(this.pollingTimer);
-            this.pollingTimer = null;
-        }
-    }
-
-    /**
-     * Atualiza a UI do timer do polling
-     */
-    updatePollingTimer() {
-        if (this.elements.pollingTimer) {
-            this.elements.pollingTimer.textContent = `${this.pollingSecondsRemaining}s`;
-        }
     }
 
     /**
@@ -413,9 +351,10 @@ class TempMailApp {
             return;
         }
 
-        // O timer é controlado pelo countdown, não deve ser reiniciado aqui
-
         this.isRefreshing = true;
+        
+        // Mostrar LED de polling
+        this.showPollingLed();
 
         try {
             const response = await fetch('/api/messages/', {
@@ -452,6 +391,7 @@ class TempMailApp {
                 console.warn(`Erro ${response.status}, tentando novamente com backoff`);
                 this.scheduleRetryWithBackoff();
                 this.isRefreshing = false;
+                this.hidePollingLed();
                 return; // Não continua o fluxo normal
             }
         } catch (e) {
@@ -459,16 +399,14 @@ class TempMailApp {
             console.error("Erro de conexão, tentando novamente com backoff", e);
             this.scheduleRetryWithBackoff();
             this.isRefreshing = false;
+            this.hidePollingLed();
             return; // Não continua o fluxo normal
         }
 
         this.isRefreshing = false;
-
-        // Re-agendar polling normal apenas se sessão não expirou
-        if (this.sessionSecondsRemaining > 0) {
-            this.stopPollingTimer();
-            this.startPollingTimer();
-        }
+        
+        // Esconder LED de polling
+        this.hidePollingLed();
     }
 
     /**
@@ -1236,36 +1174,12 @@ class TempMailApp {
     async syncInbox(btn) {
         // Verificar se a sessão está expirada
         if (this.sessionSecondsRemaining <= 0) {
-            Toast.warning(gettext('Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço temporário.'));
+            Toast.warning(gettext('Sessão expirada! Atualize o e-mail para gerar um novo endereço temporário.'));
             return;
         }
 
-        if (this.isSyncing) return;
-        this.isSyncing = true;
-
-        // Encontrar o ícone dentro do botão
-        const icon = btn.querySelector('i');
-        if (icon) {
-            // Remover classes de cor padrão e adicionar classes de rotação e cor laranja
-            icon.classList.remove('text-gray-600', 'dark:text-gray-300', 'group-hover:text-brand-orange');
-            icon.classList.add('fa-spin', 'text-brand-orange', 'dark:text-orange-400');
-        }
-
-        try {
-            await this.refreshMessages();
-            Toast.success(gettext('Caixa de entrada atualizada!'));
-            // Manter girando e laranja por pelo menos 2 segundos
-            await new Promise(resolve => setTimeout(resolve, 2000));
-        } catch (error) {
-            Toast.error(gettext('Erro ao atualizar mensagens.'));
-        } finally {
-            if (icon) {
-                // Restaurar classes padrão e remover rotação
-                icon.classList.remove('fa-spin', 'text-brand-orange', 'dark:text-orange-400');
-                icon.classList.add('text-gray-600', 'dark:text-gray-300', 'group-hover:text-brand-orange');
-            }
-            this.isSyncing = false;
-        }
+        // Mostrar modal de confirmação para gerar novo email
+        this.resetSession();
     }
 
     // ==================== SESSION INFO MODAL ====================
@@ -1554,7 +1468,42 @@ class TempMailApp {
             return { success: false, error: 'connection_error' };
         }
     }
+
+    /**
+     * Mostra o LED de polling
+     */
+    showPollingLed() {
+        if (this.elements.pollingLed) {
+            this.elements.pollingLed.classList.remove('opacity-0');
+            this.elements.pollingLed.classList.add('opacity-100');
+        }
+    }
+
+    /**
+     * Esconde o LED de polling
+     */
+    hidePollingLed() {
+        if (this.elements.pollingLed) {
+            this.elements.pollingLed.classList.remove('opacity-100');
+            this.elements.pollingLed.classList.add('opacity-0');
+        }
+    }
 }
+
+// Funções globais chamadas pelo HTML - definidas ANTES da inicialização
+window.syncInbox = (btn) => window.app?.syncInbox(btn);
+window.resetSession = () => window.app?.resetSession();
+window.confirmResetEmail = () => window.app?.confirmResetEmail();
+window.backToList = () => window.app?.backToList();
+window.openEditModal = () => window.app?.openEditModal();
+window.closeEditModal = () => window.app?.closeEditModal();
+window.saveEditModal = () => window.app?.saveEditModal();
+window.openSessionInfoModal = () => window.app?.openSessionInfoModal();
+window.closeSessionInfoModal = () => window.app?.closeSessionInfoModal();
+window.scrollToTop = () => window.app?.scrollToTop();
+window.scrollToAttachments = () => window.app?.scrollToAttachments();
+window.downloadMessage = () => window.app?.downloadMessage();
+window.downloadAttachment = (mId, aId, fn) => window.app?.downloadAttachment(mId, aId, fn);
 
 // Inicialização Global
 document.addEventListener('DOMContentLoaded', () => {
@@ -1562,18 +1511,3 @@ document.addEventListener('DOMContentLoaded', () => {
     // Alias para compatibilidade se necessário
     window.tempMailApp = window.app;
 });
-
-// Funções globais chamadas pelo HTML
-window.syncInbox = (btn) => window.app.syncInbox(btn);
-window.resetSession = () => window.app.resetSession();
-window.confirmResetEmail = () => window.app.confirmResetEmail();
-window.backToList = () => window.app.backToList();
-window.openEditModal = () => window.app.openEditModal();
-window.closeEditModal = () => window.app.closeEditModal();
-window.saveEditModal = () => window.app.saveEditModal();
-window.openSessionInfoModal = () => window.app.openSessionInfoModal();
-window.closeSessionInfoModal = () => window.app.closeSessionInfoModal();
-window.scrollToTop = () => window.app.scrollToTop();
-window.scrollToAttachments = () => window.app.scrollToAttachments();
-window.downloadMessage = () => window.app.downloadMessage();
-window.downloadAttachment = (mId, aId, fn) => window.app.downloadAttachment(mId, aId, fn);

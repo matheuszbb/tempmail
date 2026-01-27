@@ -3,6 +3,11 @@
 {% load i18n %}
 
 {% block conteudo %}
+<div id="polling-led" class="fixed top-0 left-0 right-0 h-1 z-50 opacity-0 transition-opacity duration-400">
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500 to-transparent animate-pulse"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-orange-600 to-transparent"></div>
+</div>
+
 <div class="relative bg-gradient-to-r from-orange-600 to-orange-500 pt-16 pb-40">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white relative z-10">
         <h1 class="text-4xl md:text-5xl font-extrabold mb-4">{% trans "Seu Email Temporário" %}</h1>
@@ -68,17 +73,14 @@
 
             <div class="w-full my-8">
                 <div class="relative">
-                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 w-full">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 w-full">
 
-                        <div class="hidden lg:block">
-                            <button id="btn-qr-desktop" data-qr-trigger data-qr-source="emailDisplay"
-                                onclick="toggleQR(event)"
-                                class="flex items-center justify-center w-full py-4 bg-white dark:bg-[#1e293b] rounded-xl border border-gray-200 dark:border-gray-700 hover:text-brand-orange transition-all group shadow-sm">
-                                <i
-                                    class="fa-solid fa-qrcode text-lg mr-2 group-hover:scale-110 transition-transform"></i>
+                        <button onclick="toggleQR(event)" data-qr-trigger data-qr-source="emailDisplay"
+                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                              <i
+                                    class="fa-solid fa-qrcode text-lg mr-2 group-hover:scale-110 transition-transform group-hover:text-brand-orange transition-colors"></i>
                                 <span class="text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "QR Code" %}</span>
-                            </button>
-                        </div>
+                        </button>
 
                         <button onclick="copyToClipboard(this)" data-copy-target="emailDisplay"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
@@ -99,24 +101,6 @@
                             <i
                                 class="fa-solid fa-pen text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
                             <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Alterar" %}</span>
-                        </button>
-
-                        <button onclick="resetSession()"
-                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
-                            <i
-                                class="fa-solid fa-trash-can text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-red-500 transition-colors"></i>
-                            <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Excluir" %}</span>
-                        </button>
-                    </div>
-
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none lg:hidden">
-                        <button id="btn-qr-mobile" data-qr-trigger data-qr-source="emailDisplay"
-                            onclick="toggleQR(event)"
-                            class="pointer-events-auto z-10 w-16 h-16 bg-white dark:bg-[#1e293b] text-gray-700 dark:text-white rounded-full border-4 border-gray-50 dark:border-[#0f172a] shadow-2xl flex flex-col items-center justify-center transform transition-all active:scale-95 group cursor-pointer">
-                            <i
-                                class="fa-solid fa-qrcode text-xl group-hover:text-brand-orange transition-colors duration-300"></i>
-                            <span
-                                class="text-[10px] font-bold leading-none mt-1 uppercase text-gray-700 dark:text-gray-200 group-hover:brand-orange transition-colors">{% trans "QR" %}</span>
                         </button>
                     </div>
                 </div>
@@ -204,14 +188,6 @@
                                 <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
                             </span>
                             <span class="text-[10px] sm:text-xs font-semibold text-gray-500 dark:text-gray-400">{% trans "Buscando novos e-mails" %}</span>
-                        </div>
-                        <div
-                            class="flex items-center gap-2 bg-gray-50 dark:bg-gray-800 px-3 py-1.5 rounded-md border border-gray-100 dark:border-gray-700">
-                            <span
-                                class="js-polling-timer font-mono font-bold text-orange-600 dark:text-orange-400 w-[35px] text-center inline-block">
-                                10s
-                            </span>
-                            <i class="fa-solid fa-circle-notch animate-spin text-orange-600 text-[15px]"></i>
                         </div>
                     </div>
                 </div>

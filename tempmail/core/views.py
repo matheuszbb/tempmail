@@ -15,6 +15,8 @@ from datetime import datetime, timedelta
 from django.middleware.csrf import get_token
 from django.shortcuts import render, redirect
 from .models import Domain, EmailAccount, Message
+from django.core.validators import EmailValidator
+from django.core.exceptions import ValidationError
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_control
@@ -271,10 +273,7 @@ class TempEmailAPI(View):
                 'error': str(_('Endereço de email inválido'))
             }, status=200)
         
-        # ✅ VALIDAÇÃO: Usar validador do Django
-        from django.core.validators import EmailValidator
-        from django.core.exceptions import ValidationError
-        
+        # ✅ VALIDAÇÃO: Usar validador do Django        
         email_validator = EmailValidator(message=_('Endereço de email inválido'))
         try:
             email_validator(custom_email)
@@ -569,13 +568,13 @@ class MessageListAPI(View):
 
     async def _sync_messages_if_needed(self, account):
         """
-        Sincroniza mensagens com a API se necessário (throttle de 10s).
+        Sincroniza mensagens com a API se necessário (throttle de 8s).
         
         Args:
             account: Instância de EmailAccount
         """
         now = timezone.now()
-        sync_threshold = timedelta(seconds=10)
+        sync_threshold = timedelta(seconds=8)
         
         should_sync = False
         if not account.last_synced_at:
