@@ -294,6 +294,16 @@ class SMTPLabsClient:
     
     # ==================== HELPER METHODS ====================
     
+    async def account_exists(self, account_id: str) -> bool:
+        """Verifica se a conta existe na API remota"""
+        try:
+            await self.get_account(account_id)
+            return True
+        except SMTPLabsAPIError as e:
+            if "404" in str(e):
+                return False
+            raise
+    
     async def get_inbox_mailbox(self, account_id: str) -> Optional[Dict[str, Any]]:
         try:
             mailboxes_response = await self.get_mailboxes(account_id)
@@ -306,6 +316,9 @@ class SMTPLabsClient:
             return None
         except SMTPLabsAPIError as e:
             logger.error(f"Erro ao buscar INBOX: {str(e)}")
+            # Re-raise para permitir tratamento upstream
+            if "404" in str(e):
+                raise
             return None
     
     async def get_all_inbox_messages(self, account_id: str) -> List[Dict[str, Any]]:

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-26 20:54-0300\n"
+"POT-Creation-Date: 2026-01-27 09:20-0300\n"
 "PO-Revision-Date: 2026-01-21 09:18-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -18,86 +18,89 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: base_static/js/index/tempmail.js:134
+#: base_static/js/index/tempmail.js:132
 msgid "Voltar ao Topo"
 msgstr "Back to Top"
 
-#: base_static/js/index/tempmail.js:135
+#: base_static/js/index/tempmail.js:133
 msgid "Topo"
 msgstr "Top"
 
-#: base_static/js/index/tempmail.js:140
+#: base_static/js/index/tempmail.js:138
 msgid "Leitura da Mensagem"
 msgstr "Message Reading"
 
-#: base_static/js/index/tempmail.js:141
+#: base_static/js/index/tempmail.js:139
 msgid "Mensagem"
 msgstr "Message"
 
-#: base_static/js/index/tempmail.js:260
+#: base_static/js/index/tempmail.js:258
 msgid "📧 NOVO E-MAIL!"
 msgstr "📧 NEW EMAIL!"
 
-#: base_static/js/index/tempmail.js:260
+#: base_static/js/index/tempmail.js:258
 msgid "⚠️ VEJA AGORA!"
 msgstr "⚠️ CHECK NOW!"
 
-#: base_static/js/index/tempmail.js:887
+#: base_static/js/index/tempmail.js:825
 msgid "Não foi possível abrir a mensagem."
 msgstr "Could not open the message."
 
-#: base_static/js/index/tempmail.js:1093
+#: base_static/js/index/tempmail.js:1031
 #, fuzzy
 #| msgid "Download concluído!"
 msgid "Download concluído!"
 msgstr "Download complete!"
 
-#: base_static/js/index/tempmail.js:1095
+#: base_static/js/index/tempmail.js:1033
 #, fuzzy
 #| msgid "Erro ao baixar anexo."
 msgid "Erro ao baixar anexo."
 msgstr "Error downloading attachment."
 
-#: base_static/js/index/tempmail.js:1123
+#: base_static/js/index/tempmail.js:1061
 msgid "Abra uma mensagem primeiro para baixar."
 msgstr "Open a message first to download."
 
-#: base_static/js/index/tempmail.js:1178
+#: base_static/js/index/tempmail.js:1116
 msgid "Download pronto!"
 msgstr "Download ready!"
 
-#: base_static/js/index/tempmail.js:1180
+#: base_static/js/index/tempmail.js:1118
 msgid "Erro ao processar download."
 msgstr "Error processing download."
 
-#: base_static/js/index/tempmail.js:1224
+#: base_static/js/index/tempmail.js:1129
+msgid "Deletando e-mail atual, por favor aguarde..."
+msgstr "Deleting current email, please wait..."
+
+#: base_static/js/index/tempmail.js:1147
 msgid "Novo e-mail gerado com sucesso!"
 msgstr "New email successfully generated!"
 
-#: base_static/js/index/tempmail.js:1239
-#, fuzzy
-#| msgid ""
-#| "Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço "
-#| "temporário."
-msgid ""
-"Sessão expirada! Atualize o e-mail para gerar um novo endereço temporário."
-msgstr ""
-"Session expired! Change or delete the email to generate a new temporary "
-"address."
+#: base_static/js/index/tempmail.js:1150
+msgid "Sessão expirada. Recarregue a página."
+msgstr "Session expired. Please reload the page."
 
-#: base_static/js/index/tempmail.js:1314
+#: base_static/js/index/tempmail.js:1150
+#, fuzzy
+#| msgid "Erro ao alterar email."
+msgid "Erro ao resetar email."
+msgstr "Error changing email."
+
+#: base_static/js/index/tempmail.js:1226
 #, fuzzy
 #| msgid "Por favor, digite um nome de usuário."
 msgid "Por favor, digite um nome de usuário."
 msgstr "Please enter a username."
 
-#: base_static/js/index/tempmail.js:1325
+#: base_static/js/index/tempmail.js:1237
 #, fuzzy
 #| msgid "Por favor, digite um nome de usuário."
 msgid "Por favor, digite um nome de usuário válido."
 msgstr "Please enter a username."
 
-#: base_static/js/index/tempmail.js:1334
+#: base_static/js/index/tempmail.js:1246
 msgid ""
 "Nome de usuário contém caracteres inválidos. Use apenas letras, números, "
 "pontos, hífens e underscores."
@@ -105,49 +108,59 @@ msgstr ""
 "Username contains invalid characters. Use only letters, numbers, dots, "
 "hyphens, and underscores."
 
-#: base_static/js/index/tempmail.js:1340
+#: base_static/js/index/tempmail.js:1252
 msgid "Nome de usuário não pode começar ou terminar com ponto."
 msgstr "Username cannot start or end with a period."
 
-#: base_static/js/index/tempmail.js:1350
+#: base_static/js/index/tempmail.js:1262
 msgid "Você já está usando este endereço de e-mail."
 msgstr "You are already using this email address."
 
-#: base_static/js/index/tempmail.js:1381
+#: base_static/js/index/tempmail.js:1293
 msgid "E-mail alterado com sucesso!"
 msgstr "Email changed successfully!"
 
-#: base_static/js/index/tempmail.js:1386
+#: base_static/js/index/tempmail.js:1298
 #, fuzzy
 #| msgid "Sessão inválida ou expirada."
 msgid "Sessão inválida."
 msgstr "Invalid or expired session."
 
-#: base_static/js/index/tempmail.js:1386
+#: base_static/js/index/tempmail.js:1298
 msgid "Erro ao alterar email."
 msgstr "Error changing email."
 
-#: base_static/js/index/tempmail.js:1390
+#: base_static/js/index/tempmail.js:1302
 #, fuzzy
 #| msgid "Erro ao alterar email."
 msgid "Erro de conexão ao alterar e-mail."
 msgstr "Error changing email."
 
-#: base_static/js/index/tempmail.js:1485
+#: base_static/js/index/tempmail.js:1397
 msgid "Expirado"
 msgstr "Expired"
 
-#: base_static/js/index/tempmail.js:1496
+#: base_static/js/index/tempmail.js:1408
 #, javascript-format
 msgid "%s min e %ss"
 msgstr "%s min and %ss"
 
-#: base_static/js/index/tempmail.js:1501
+#: base_static/js/index/tempmail.js:1413
 #, javascript-format
 msgid "%s segundo"
 msgid_plural "%s segundos"
 msgstr[0] "%s second"
 msgstr[1] "%s seconds"
+
+#, fuzzy
+#~| msgid ""
+#~| "Sessão expirada! Altere ou exclua o e-mail para gerar um novo endereço "
+#~| "temporário."
+#~ msgid ""
+#~ "Sessão expirada! Atualize o e-mail para gerar um novo endereço temporário."
+#~ msgstr ""
+#~ "Session expired! Change or delete the email to generate a new temporary "
+#~ "address."
 
 #~ msgid "Caixa de entrada atualizada!"
 #~ msgstr "Inbox updated!"

@@ -137,6 +137,9 @@ class EmailAccountService:
             tuple: (EmailAccount | None, bool) onde bool indica se é uma conta nova/reutilizada
                    Retorna (None, False) em caso de erro
         """
+        # Limpar sessões expiradas periodicamente
+        await self._cleanup_expired_sessions()
+        
         # Verificar se já existe email na sessão
         session_email = await sync_to_async(request.session.get)('email_address')
         session_start = await sync_to_async(request.session.get)('session_start')
@@ -149,20 +152,30 @@ class EmailAccountService:
             if timezone.now() < session_start_dt + session_duration:
                 try:
                     account = await EmailAccount.objects.aget(address=session_email)
-                    return account, False
+                    # Verificar se a conta ainda existe na API remota
+                    try:
+                        exists_remotely = await self.client.account_exists(account.smtp_id)
+                        if not exists_remotely:
+                            logger.warning(f"Conta em sessão {account.address} não existe mais remotamente")
+                            await self._handle_orphaned_account(account)
+                            # Forçar criação de nova conta
+                            pass  
+                        else:
+                            return account, False
+                    except Exception as e:
+                        logger.warning(f"Erro ao verificar existência remota da conta {account.address}: {e}")
+                        # Em caso de erro de conectividade, continuar com a conta local
+                        return account, False
                 except EmailAccount.DoesNotExist:
                     pass
         
         # Tentar reutilizar conta disponível (excluindo a anterior se houver)
         previous_email = await sync_to_async(request.session.get)('previous_email')
         
-        # Filtrar contas que estão marcadas como disponíveis
-        available_accounts = EmailAccount.objects.filter(is_available=True)
-        
-        # Aplicar cooldown de 2 horas na consulta para performance
-        cooldown_threshold = timezone.now() - timedelta(hours=2)
-        available_accounts = available_accounts.filter(
-            models.Q(last_used_at__isnull=True) | models.Q(last_used_at__lte=cooldown_threshold)
+        # Filtrar contas que estão marcadas como disponíveis OU que tenham sessão expirada
+        now = timezone.now()
+        available_accounts = EmailAccount.objects.filter(
+            models.Q(is_available=True) | models.Q(session_expires_at__lt=now)
         )
         
         # Excluir email anterior da seleção
@@ -173,13 +186,30 @@ class EmailAccountService:
         available_account = await available_accounts.order_by('last_used_at').afirst()
         
         if available_account and available_account.can_be_reused():
-            # Limpar previous_email da sessão após uso
-            if previous_email:
-                await sync_to_async(request.session.pop)('previous_email', None)
-            
-            await self._mark_account_as_used(request, available_account)
-            logger.info(f"Reutilizando conta: {available_account.address}")
-            return available_account, True
+            # Verificar se a conta ainda existe na API remota antes de reutilizar
+            try:
+                exists_remotely = await self.client.account_exists(available_account.smtp_id)
+                if not exists_remotely:
+                    logger.warning(f"Conta disponível {available_account.address} não existe mais remotamente")
+                    await self._handle_orphaned_account(available_account)
+                    # Continuar para criar nova conta
+                else:
+                    # Limpar previous_email da sessão após uso
+                    if previous_email:
+                        await sync_to_async(request.session.pop)('previous_email', None)
+                    
+                    await self._mark_account_as_used(request, available_account)
+                    logger.info(f"Reutilizando conta: {available_account.address}")
+                    return available_account, True
+            except Exception as e:
+                logger.warning(f"Erro ao verificar existência remota da conta {available_account.address}: {e}")
+                # Em caso de erro de conectividade, tentar reutilizar mesmo assim
+                if previous_email:
+                    await sync_to_async(request.session.pop)('previous_email', None)
+                
+                await self._mark_account_as_used(request, available_account)
+                logger.info(f"Reutilizando conta: {available_account.address} (sem verificação remota)")
+                return available_account, True
         
         # Criar nova conta
         try:
@@ -193,7 +223,7 @@ class EmailAccountService:
     
     async def _mark_account_as_used(self, request, account: EmailAccount):
         """Marca uma conta como em uso e registra na sessão."""
-        await sync_to_async(account.mark_as_used)()
+        await sync_to_async(account.mark_as_used)(settings.TEMPMAIL_SESSION_DURATION)
         
         # Registrar no histórico de emails
         email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
@@ -273,3 +303,32 @@ class EmailAccountService:
                     'is_active': domain_data.get('isActive', True)
                 }
             )
+    
+    async def _handle_orphaned_account(self, account: 'EmailAccount'):
+        """Remove conta local que não existe mais na API remota"""
+        from .models import EmailAccount
+        logger.warning(f"Conta {account.address} não existe mais na API remota. Removendo do banco local...")
+        await sync_to_async(account.delete)()
+        logger.info(f"Conta órfã {account.address} removida do banco local")
+    
+    async def _cleanup_expired_sessions(self):
+        """Limpa contas com sessões expiradas"""
+        from .models import EmailAccount
+        now = timezone.now()
+        
+        expired_accounts = EmailAccount.objects.filter(
+            session_expires_at__lt=now,
+            is_available=False
+        )
+        
+        count = 0
+        async for account in expired_accounts:
+            account.is_available = True
+            account.session_expires_at = None
+            await sync_to_async(account.save)(
+                update_fields=['is_available', 'session_expires_at', 'updated_at']
+            )
+            count += 1
+        
+        if count > 0:
+            logger.info(f"Limpeza: {count} sessões expiradas liberadas")

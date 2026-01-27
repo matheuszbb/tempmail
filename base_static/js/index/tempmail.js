@@ -322,8 +322,8 @@ class TempMailApp {
         }
 
         this.stopPolling();
-        // Iniciar polling a cada 2 segundos
-        this.pollingInterval = setInterval(() => this.refreshMessages(), 2000);
+        // Iniciar polling a cada 4 segundos
+        this.pollingInterval = setInterval(() => this.refreshMessages(), 4000);
     }
 
     stopPolling() {
@@ -1120,28 +1120,13 @@ class TempMailApp {
     }
 
 
-    async resetSession() {
-        const modal = document.getElementById('confirmResetModal');
-        if (modal) {
-            modal.showModal();
-        } else {
-            // Fallback se o modal não existir por algum motivo
-            if (confirm('Deseja gerar um novo e-mail? Todas as mensagens atuais serão perdidas.')) {
-                this.confirmResetEmail();
-            }
-        }
-    }
-
     async confirmResetEmail() {
-        const modal = document.getElementById('confirmResetModal');
-        if (modal) modal.close();
-
         if (this.isResetting) return;
         this.isResetting = true;
         this.stopPolling(); // <--- CRITICAL: Stop polling explicitly
 
         // Bloqueio visual e Feedback (User Request)
-        Toast.warning('Deletando e-mail atual, por favor aguarde...', 3000);
+        Toast.warning(gettext('Deletando e-mail atual, por favor aguarde...'), 3000);
 
         // Limpar display IMEDIATAMENTE antes do fetch
         if (this.elements.emailDisplay) this.elements.emailDisplay.value = '';
@@ -1162,24 +1147,13 @@ class TempMailApp {
             Toast.success(gettext('Novo e-mail gerado com sucesso!'));
             if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
         } else {
-            const errorMsg = data?.error || (status === 403 ? 'Sessão expirada. Recarregue a página.' : 'Erro ao resetar email.');
+            const errorMsg = data?.error || (status === 403 ? gettext('Sessão expirada. Recarregue a página.') : gettext('Erro ao resetar email.'));
             Toast.error(errorMsg);
         }
 
         this.hideSkeleton();
         this.isResetting = false;
         this.startPolling();
-    }
-
-    async syncInbox(btn) {
-        // Verificar se a sessão está expirada
-        if (this.sessionSecondsRemaining <= 0) {
-            Toast.warning(gettext('Sessão expirada! Atualize o e-mail para gerar um novo endereço temporário.'));
-            return;
-        }
-
-        // Mostrar modal de confirmação para gerar novo email
-        this.resetSession();
     }
 
     // ==================== SESSION INFO MODAL ====================
@@ -1491,8 +1465,6 @@ class TempMailApp {
 }
 
 // Funções globais chamadas pelo HTML - definidas ANTES da inicialização
-window.syncInbox = (btn) => window.app?.syncInbox(btn);
-window.resetSession = () => window.app?.resetSession();
 window.confirmResetEmail = () => window.app?.confirmResetEmail();
 window.backToList = () => window.app?.backToList();
 window.openEditModal = () => window.app?.openEditModal();

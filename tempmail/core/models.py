@@ -32,6 +32,7 @@ class EmailAccount(models.Model):
     # Controle de reutilização
     last_used_at = models.DateTimeField(null=True, blank=True, help_text="Último uso da conta")
     is_available = models.BooleanField(default=True, help_text="Conta disponível para uso?")
+    session_expires_at = models.DateTimeField(null=True, blank=True, help_text="Quando a sessão atual expira")
     
     # Metadados
     created_at = models.DateTimeField(auto_now_add=True)
@@ -51,17 +52,31 @@ class EmailAccount(models.Model):
         return self.address
 
     def can_be_reused(self):
-        """Verifica se a conta pode ser reutilizada (2h de cooldown)"""
-        if not self.last_used_at:
-            return True
-        cooldown_period = timedelta(hours=2)
-        return timezone.now() >= self.last_used_at + cooldown_period
+        """Verifica se a conta pode ser reutilizada (sessão expirou)"""
+        if not self.session_expires_at:
+            return True  # Nunca foi usada ou sessão não foi registrada
+        
+        # A conta só pode ser reutilizada se a sessão atual tiver expirado
+        return timezone.now() >= self.session_expires_at
+    
+    def is_session_active(self):
+        """Verifica se a sessão atual ainda está ativa"""
+        if not self.session_expires_at:
+            return False
+        return timezone.now() < self.session_expires_at
 
-    def mark_as_used(self):
-        """Marca a conta como em uso"""
+    def mark_as_used(self, session_duration_seconds=None):
+        """Marca a conta como em uso e define expiração da sessão"""
+        from django.conf import settings
+        
         self.is_available = False
         self.last_used_at = timezone.now()
-        self.save(update_fields=['is_available', 'last_used_at', 'updated_at'])
+        
+        # Definir quando a sessão expira
+        duration = session_duration_seconds or settings.TEMPMAIL_SESSION_DURATION
+        self.session_expires_at = timezone.now() + timedelta(seconds=duration)
+        
+        self.save(update_fields=['is_available', 'last_used_at', 'session_expires_at', 'updated_at'])
 
     def release(self):
         """Libera a conta para reutilização (após cooldown)"""

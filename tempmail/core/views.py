@@ -348,12 +348,12 @@ class TempEmailAPI(View):
         try:
             previous_account = await EmailAccount.objects.aget(address=session_email)
             previous_account.is_available = True
-            # NÃO definir last_used_at como None - manter o timestamp atual 
-            # para respeitar o cooldown de 2h definido no modelo
+            previous_account.session_expires_at = None  # Limpar expiração da sessão
+            # Manter last_used_at para auditoria
             await sync_to_async(previous_account.save)(
-                update_fields=['is_available', 'updated_at']
+                update_fields=['is_available', 'session_expires_at', 'updated_at']
             )
-            logger.info(f"Email anterior liberado para cooldown: {session_email}")
+            logger.info(f"Email anterior liberado: {session_email}")
         except EmailAccount.DoesNotExist:
             pass
 
@@ -365,7 +365,12 @@ class TempEmailAPI(View):
             # Verificar se este email foi usado pelo mesmo usuário nesta sessão
             email_was_used_in_session = custom_email in session_used_emails
             
-            # Trava de segurança
+            # SECURITY: Verificar se há sessão ativa de outro usuário
+            if not email_was_used_in_session and account.is_session_active():
+                logger.warning(f"Email {custom_email} possui sessão ativa de outro usuário")
+                raise EmailInUseError()
+            
+            # Trava de segurança adicional para contas não disponíveis
             if not account.is_available and not account.can_be_reused() and not email_was_used_in_session:
                 logger.warning(f"Email {custom_email} está em uso por outro usuário")
                 raise EmailInUseError()
@@ -627,7 +632,16 @@ class MessageListAPI(View):
             await sync_to_async(account.save)(update_fields=['last_synced_at', 'updated_at'])
             
         except Exception as e:
-            logger.error(f"Erro na sincronização automática: {str(e)}")
+            # Se a conta não existir mais na API (404), remover do banco local
+            if "404" in str(e):
+                logger.warning(f"Conta {account.address} (ID: {account.smtp_id}) não existe mais na API remota durante sync")
+                try:
+                    await sync_to_async(account.delete)()
+                    logger.info(f"Conta órfã {account.address} removida durante sync de mensagens")
+                except Exception as delete_error:
+                    logger.error(f"Erro ao deletar conta órfã: {delete_error}")
+            else:
+                logger.error(f"Erro na sincronização automática: {str(e)}")
 
     async def _fetch_and_save_message(self, client, account, msg_data, existing_msg, now):
         """

@@ -61,13 +61,15 @@
                 <p
                     class="text-center text-gray-400 text-sm mt-3 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5">
                     <span>{% trans "O seu endereço de e-mail temporário por" %}</span>
-                    <span id="session-countdown"
-                        class="font-bold text-orange-600 dark:text-orange-400 tracking-tight">...</span>
-                    <button onclick="openSessionInfoModal()"
-                        class="ml-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                        title="{% trans 'Sobre o tempo da sessão' %}">
-                        <i class="fas fa-info-circle text-sm"></i>
-                    </button>
+
+                    <span class="flex items-center gap-1">
+                        <span id="session-countdown" class="font-bold text-orange-600 dark:text-orange-400 tracking-tight">...</span>
+                        <button onclick="openSessionInfoModal()"
+                            class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                            title="{% trans 'Sobre o tempo da sessão' %}" aria-label="{% trans 'Sobre o tempo da sessão' %}">
+                            <i class="fas fa-info-circle text-sm"></i>
+                        </button>
+                    </span>
                 </p>
             </div>
 
@@ -89,7 +91,7 @@
                             <span class="text-xs lg:text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "Copiar" %}</span>
                         </button>
 
-                        <button onclick="syncInbox(this)"
+                        <button onclick="confirmResetEmail()"
                             class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                             <i
                                 class="fa-solid fa-rotate text-xl lg:text-lg mb-1 lg:mb-0 lg:mr-2 text-gray-600 dark:text-gray-300 group-hover:text-brand-orange transition-colors"></i>
@@ -383,7 +385,6 @@
 {% block extra_content %}
 {% include 'parciais/_qrPopover.html' %}
 {% include './parciais/index/_editModal.html' %}
-{% include './parciais/index/_confirmationResetModal.html' %}
 {% include './parciais/index/_confirmationDownloadModal.html' %}
 {% include './parciais/index/_sessionInfoModal.html' %}
 {% endblock %}

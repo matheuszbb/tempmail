@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-26 21:02-0300\n"
+"POT-Creation-Date: 2026-01-27 10:36-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,140 +18,140 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: core/templates/core/index.html:8
+#: core/templates/core/index.html:13
 msgid "Seu Email Temporário"
 msgstr ""
 
-#: core/templates/core/index.html:10
+#: core/templates/core/index.html:15
 msgid ""
 "Obtenha um endereço de e-mail temporário descartável e seguro "
 "instantaneamente."
 msgstr ""
 
-#: core/templates/core/index.html:58
+#: core/templates/core/index.html:63
 msgid "O seu endereço de e-mail temporário por"
 msgstr ""
 
-#: core/templates/core/index.html:63
+#: core/templates/core/index.html:69
 msgid "Sobre o tempo da sessão"
 msgstr ""
 
-#: core/templates/core/index.html:77
+#: core/templates/core/index.html:84
 msgid "QR Code"
 msgstr ""
 
-#: core/templates/core/index.html:84
+#: core/templates/core/index.html:91
 msgid "Copiar"
 msgstr ""
 
-#: core/templates/core/index.html:91
+#: core/templates/core/index.html:98
 msgid "Atualizar"
 msgstr ""
 
-#: core/templates/core/index.html:98
+#: core/templates/core/index.html:105
 msgid "Alterar"
 msgstr ""
 
-#: core/templates/core/index.html:126 core/templates/core/index.html:370
+#: core/templates/core/index.html:133 core/templates/core/index.html:369
 msgid "Números temporários para SMS"
 msgstr ""
 
-#: core/templates/core/index.html:129
+#: core/templates/core/index.html:136
 msgid "Receba códigos de verificação sem expor seu número real."
 msgstr ""
 
-#: core/templates/core/index.html:131
+#: core/templates/core/index.html:138
 msgid "Rápido, seguro e prático."
 msgstr ""
 
-#: core/templates/core/index.html:138 core/templates/core/index.html:377
+#: core/templates/core/index.html:145 core/templates/core/index.html:376
 msgid "Acessar SMSRush"
 msgstr ""
 
-#: core/templates/core/index.html:150
+#: core/templates/core/index.html:157
 msgid "Remetente"
 msgstr ""
 
-#: core/templates/core/index.html:151 templates/contato.html:90
+#: core/templates/core/index.html:158 templates/contato.html:90
 msgid "Assunto"
 msgstr ""
 
-#: core/templates/core/index.html:152
+#: core/templates/core/index.html:159
 msgid "Visualizar"
 msgstr ""
 
-#: core/templates/core/index.html:167
+#: core/templates/core/index.html:174
 msgid "Sua caixa de entrada está vazia"
 msgstr ""
 
-#: core/templates/core/index.html:185
+#: core/templates/core/index.html:192
 msgid "Buscando novos e-mails"
 msgstr ""
 
-#: core/templates/core/index.html:207
+#: core/templates/core/index.html:206
 msgid "Voltar para a lista"
 msgstr ""
 
-#: core/templates/core/index.html:209 templates/parciais/_btn_voltar.html:8
+#: core/templates/core/index.html:208 templates/parciais/_btn_voltar.html:8
 #: templates/parciais/_btn_voltar_args.html:7
 msgid "Voltar"
 msgstr ""
 
-#: core/templates/core/index.html:216
+#: core/templates/core/index.html:215
 msgid "Leitura da Mensagem"
 msgstr ""
 
-#: core/templates/core/index.html:217 templates/contato.html:109
+#: core/templates/core/index.html:216 templates/contato.html:109
 msgid "Mensagem"
 msgstr ""
 
-#: core/templates/core/index.html:224
+#: core/templates/core/index.html:223
 msgid "Ver anexos"
 msgstr ""
 
-#: core/templates/core/index.html:234
+#: core/templates/core/index.html:233
 msgid "Baixar arquivo .eml"
 msgstr ""
 
-#: core/templates/core/index.html:236
+#: core/templates/core/index.html:235
 msgid "Download"
 msgstr ""
 
-#: core/templates/core/index.html:254
+#: core/templates/core/index.html:253
 #: core/templates/core/parciais/index/_message_item.html:22
 msgid "Remetente:"
 msgstr ""
 
-#: core/templates/core/index.html:281
+#: core/templates/core/index.html:280
 msgid "Recebido em:"
 msgstr ""
 
-#: core/templates/core/index.html:293
+#: core/templates/core/index.html:292
 #: core/templates/core/parciais/index/_message_item.html:32
 msgid "Assunto:"
 msgstr ""
 
-#: core/templates/core/index.html:297
+#: core/templates/core/index.html:296
 msgid "Título da Mensagem"
 msgstr ""
 
-#: core/templates/core/index.html:304
+#: core/templates/core/index.html:303
 msgid "Mensagem:"
 msgstr ""
 
-#: core/templates/core/index.html:318
+#: core/templates/core/index.html:317
 msgid "Anexos:"
 msgstr ""
 
-#: core/templates/core/index.html:337
+#: core/templates/core/index.html:336
 msgid "Por que usar Email Temporário?"
 msgstr ""
 
-#: core/templates/core/index.html:338
+#: core/templates/core/index.html:337
 msgid "Saiba os benefícios e proteja sua privacidade"
 msgstr ""
 
-#: core/templates/core/index.html:372
+#: core/templates/core/index.html:371
 msgid ""
 "Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
 "prático."
@@ -304,149 +304,149 @@ msgstr ""
 msgid "Entendi"
 msgstr ""
 
-#: core/views.py:148 core/views.py:236 core/views.py:476
+#: core/views.py:150 core/views.py:238 core/views.py:480
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
 
-#: core/views.py:167
+#: core/views.py:169
 msgid "Erro ao criar email temporário"
 msgstr ""
 
-#: core/views.py:191
+#: core/views.py:193
 msgid "Você já está usando este endereço de e-mail"
 msgstr ""
 
-#: core/views.py:208
+#: core/views.py:210
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr ""
 
-#: core/views.py:260
+#: core/views.py:262
 msgid "Sessão resetada com sucesso"
 msgstr ""
 
-#: core/views.py:271 core/views.py:278
+#: core/views.py:273 core/views.py:277
 msgid "Endereço de email inválido"
 msgstr ""
 
-#: core/views.py:284
+#: core/views.py:283
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr ""
 
-#: core/views.py:293
+#: core/views.py:292
 msgid "Nome de usuário contém caracteres inválidos"
 msgstr ""
 
-#: core/views.py:300
+#: core/views.py:299
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr ""
 
-#: core/views.py:323
+#: core/views.py:322
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr ""
 
-#: core/views.py:329
+#: core/views.py:328
 msgid "Não foi possível acessar este email"
 msgstr ""
 
-#: core/views.py:344
+#: core/views.py:343
 msgid "Email alterado com sucesso"
 msgstr ""
 
-#: core/views.py:473
+#: core/views.py:477
 msgid "Erro interno ao processar requisição"
 msgstr ""
 
-#: core/views.py:478
+#: core/views.py:482
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr ""
 
-#: core/views.py:480
+#: core/views.py:484
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr ""
 
-#: core/views.py:482
+#: core/views.py:486
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr ""
 
-#: core/views.py:502 core/views.py:515 core/views.py:724 core/views.py:863
-#: core/views.py:1639 core/views.py:1695
+#: core/views.py:506 core/views.py:519 core/views.py:737 core/views.py:876
+#: core/views.py:1652 core/views.py:1708
 msgid "Sessão não encontrada"
 msgstr ""
 
-#: core/views.py:561
+#: core/views.py:565
 msgid "Conta não encontrada"
 msgstr ""
 
-#: core/views.py:567
+#: core/views.py:571
 msgid "Erro ao buscar mensagens"
 msgstr ""
 
-#: core/views.py:736
+#: core/views.py:749
 msgid "Anexo não encontrado"
 msgstr ""
 
-#: core/views.py:743 core/views.py:1656 core/views.py:1724
+#: core/views.py:756 core/views.py:1669 core/views.py:1737
 msgid "Mailbox não encontrada"
 msgstr ""
 
-#: core/views.py:756
+#: core/views.py:769
 msgid "Conteúdo não disponível"
 msgstr ""
 
-#: core/views.py:780 core/views.py:1679
+#: core/views.py:793 core/views.py:1692
 msgid "Mensagem não encontrada"
 msgstr ""
 
-#: core/views.py:783
+#: core/views.py:796
 msgid "Erro ao buscar anexo"
 msgstr ""
 
-#: core/views.py:786
+#: core/views.py:799
 msgid "Erro interno do servidor"
 msgstr ""
 
-#: core/views.py:920
+#: core/views.py:933
 msgid "Não encontrado"
 msgstr ""
 
-#: core/views.py:926
+#: core/views.py:939
 msgid "Erro interno"
 msgstr ""
 
-#: core/views.py:1671
+#: core/views.py:1684
 msgid "Conteúdo vazio"
 msgstr ""
 
-#: core/views.py:1683
+#: core/views.py:1696
 msgid "Não foi possível processar o download da mensagem."
 msgstr ""
 
-#: core/views.py:1716
+#: core/views.py:1729
 msgid "Anexo não encontrado nos metadados da mensagem"
 msgstr ""
 
-#: core/views.py:1738
+#: core/views.py:1751
 msgid "Conteúdo do anexo vazio ou não disponível"
 msgstr ""
 
-#: core/views.py:1751
+#: core/views.py:1764
 msgid "Arquivo não encontrado"
 msgstr ""
 
-#: core/views.py:1755
+#: core/views.py:1768
 msgid "Não foi possível processar o download do arquivo."
 msgstr ""
 
-#: core/views.py:2143
+#: core/views.py:2156
 msgid "Erro ao processar requisição"
 msgstr ""
 
-#: core/views.py:2187
+#: core/views.py:2200
 msgid "Erro ao carregar estatísticas"
 msgstr ""
 
-#: core/views.py:2217
+#: core/views.py:2230
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr ""
 
