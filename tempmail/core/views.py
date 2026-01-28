@@ -468,7 +468,7 @@ class TempEmailAPI(View):
                         logger.warning(f"Email {custom_email!r} em cooldown por mais {minutes} minutos")
                         raise EmailInCooldownError(f"Este email está em cooldown. Disponível em {minutes} minutos.")
                     else:
-                        logger.warning(f"Email {custom_email!r} possui sessão ativa de outro usuário (fingerprint diferente)")
+                        logger.warning(f"❌ Email {custom_email!r} em uso por outro navegador (fingerprints diferentes)")
                         raise EmailInUseError()
             
             # Se o email foi usado nesta sessão, liberar antes de reutilizar
@@ -721,7 +721,17 @@ class TempEmailAPI(View):
     
     def _save_fingerprint_to_cookie(self, response, request, email_address, browser_fingerprint):
         """Salva o fingerprint de um email em um cookie para persistir entre sessões"""
-        # Buscar fingerprints existentes
+        
+        # 1. Salvar fingerprint do NAVEGADOR (persiste por 1 ano)
+        response.set_cookie(
+            'browser_fp',
+            browser_fingerprint,
+            max_age=365*24*60*60,  # 1 ano
+            httponly=True,
+            samesite='Lax'
+        )
+        
+        # 2. Salvar mapeamento email -> fingerprint
         email_fingerprints_cookie = request.COOKIES.get('email_fps', '{}')
         try:
             email_fingerprints = json.loads(email_fingerprints_cookie)
@@ -745,7 +755,7 @@ class TempEmailAPI(View):
             httponly=True,
             samesite='Lax'
         )
-        logger.debug(f"Fingerprint salvo no cookie para {email_address}")
+        logger.debug(f"Fingerprints salvos no cookie para {email_address}")
 
 class EmailHistoryAPI(View):
     """API para buscar histórico de emails usados"""
@@ -948,13 +958,13 @@ class MessageListAPI(View):
 
     async def _sync_messages_if_needed(self, account):
         """
-        Sincroniza mensagens com a API se necessário (throttle de 8s).
+        Sincroniza mensagens com a API se necessário (throttle de 4s).
         
         Args:
             account: Instância de EmailAccount
         """
         now = timezone.now()
-        sync_threshold = timedelta(seconds=8)
+        sync_threshold = timedelta(seconds=4)
         
         should_sync = False
         if not account.last_synced_at:

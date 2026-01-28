@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 20:00-0300\n"
+"POT-Creation-Date: 2026-01-28 20:27-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -395,114 +395,114 @@ msgstr "Demasiados intentos. Espere unos minutos antes de intentarlo de nuevo."
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr "Conexión lenta. Compruebe su conexión a internet e inténtelo de nuevo."
 
-#: core/views.py:770
+#: core/views.py:780
 #, fuzzy
 #| msgid "Erro ao buscar mensagens"
 msgid "Erro ao buscar histórico"
 msgstr "Error al buscar mensajes"
 
-#: core/views.py:881 core/views.py:894 core/views.py:1112 core/views.py:1251
-#: core/views.py:2019 core/views.py:2075
+#: core/views.py:891 core/views.py:904 core/views.py:1122 core/views.py:1261
+#: core/views.py:2029 core/views.py:2085
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Sessão não encontrada"
 msgstr "Página No Encontrada"
 
-#: core/views.py:940
+#: core/views.py:950
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Conta não encontrada"
 msgstr "Página No Encontrada"
 
-#: core/views.py:946
+#: core/views.py:956
 msgid "Erro ao buscar mensagens"
 msgstr "Error al buscar mensajes"
 
-#: core/views.py:1124
+#: core/views.py:1134
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Anexo não encontrado"
 msgstr "Página No Encontrada"
 
-#: core/views.py:1131 core/views.py:2036 core/views.py:2104
+#: core/views.py:1141 core/views.py:2046 core/views.py:2114
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Mailbox não encontrada"
 msgstr "Página No Encontrada"
 
-#: core/views.py:1144
+#: core/views.py:1154
 #, fuzzy
 #| msgid "Conteúdo do anexo vazio ou não disponível"
 msgid "Conteúdo não disponível"
 msgstr "Contenido del archivo adjunto vacío o no disponible"
 
-#: core/views.py:1168 core/views.py:2059
+#: core/views.py:1178 core/views.py:2069
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Mensagem não encontrada"
 msgstr "Página No Encontrada"
 
-#: core/views.py:1171
+#: core/views.py:1181
 #, fuzzy
 #| msgid "Erro ao buscar mensagens"
 msgid "Erro ao buscar anexo"
 msgstr "Error al buscar mensajes"
 
-#: core/views.py:1174
+#: core/views.py:1184
 msgid "Erro interno do servidor"
 msgstr "Error interno del servidor"
 
-#: core/views.py:1308
+#: core/views.py:1318
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Não encontrado"
 msgstr "Página No Encontrada"
 
-#: core/views.py:1314
+#: core/views.py:1324
 #, fuzzy
 #| msgid "Erro no"
 msgid "Erro interno"
 msgstr "Error en el"
 
-#: core/views.py:2051
+#: core/views.py:2061
 msgid "Conteúdo vazio"
 msgstr "Contenido vacío"
 
-#: core/views.py:2063
+#: core/views.py:2073
 msgid "Não foi possível processar o download da mensagem."
 msgstr "No se pudo procesar la descarga del mensaje."
 
-#: core/views.py:2096
+#: core/views.py:2106
 msgid "Anexo não encontrado nos metadados da mensagem"
 msgstr "Archivo adjunto no encontrado en los metadatos del mensaje"
 
-#: core/views.py:2118
+#: core/views.py:2128
 msgid "Conteúdo do anexo vazio ou não disponível"
 msgstr "Contenido del archivo adjunto vacío o no disponible"
 
-#: core/views.py:2131
+#: core/views.py:2141
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Arquivo não encontrado"
 msgstr "Página No Encontrada"
 
-#: core/views.py:2135
+#: core/views.py:2145
 msgid "Não foi possível processar o download do arquivo."
 msgstr "No se pudo procesar la descarga del archivo."
 
-#: core/views.py:2523
+#: core/views.py:2533
 #, fuzzy
 #| msgid "Erro interno ao processar requisição"
 msgid "Erro ao processar requisição"
 msgstr "Error interno al procesar la solicitud"
 
-#: core/views.py:2567
+#: core/views.py:2577
 #, fuzzy
 #| msgid "Estatísticas"
 msgid "Erro ao carregar estatísticas"
 msgstr "Estadísticas"
 
-#: core/views.py:2597
+#: core/views.py:2607
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr "¡Mensaje enviado con éxito! Responderemos pronto."
 

@@ -995,6 +995,7 @@ class TempMailApp {
         if (!resetButton) return;
 
         const icon = resetButton.querySelector('.fa-rotate');
+        const textSpan = resetButton.querySelector('span');
         if (!icon) return;
 
         if (isLoading) {
@@ -1002,12 +1003,24 @@ class TempMailApp {
             icon.classList.add('fa-spin', 'text-brand-orange');
             icon.classList.remove('text-gray-600', 'dark:text-gray-300');
             
+            // Alterar texto para "Atualizando..."
+            if (textSpan) {
+                textSpan.dataset.originalText = textSpan.textContent;
+                textSpan.textContent = gettext('Atualizando');
+            }
+            
             // Desabilitar botão visualmente
             resetButton.classList.add('cursor-not-allowed', 'pointer-events-none');
         } else {
             // Remover animação e restaurar estado original
             icon.classList.remove('fa-spin', 'text-brand-orange');
             icon.classList.add('text-gray-600', 'dark:text-gray-300');
+            
+            // Restaurar texto original
+            if (textSpan && textSpan.dataset.originalText) {
+                textSpan.textContent = textSpan.dataset.originalText;
+                delete textSpan.dataset.originalText;
+            }
             
             // Reabilitar botão
             resetButton.classList.remove('cursor-not-allowed', 'pointer-events-none');
@@ -1044,12 +1057,12 @@ class TempMailApp {
             
             this.hideSkeleton();
             
-            // Cooldown de 2s apenas em caso de sucesso
+            // Cooldown de 1.5s apenas em caso de sucesso
             setTimeout(() => {
                 this._setResetButtonLoading(false);
                 this.isResetting = false;
                 this.startPolling();
-            }, 2000);
+            }, 1500);
         } else {
             const errorMsg = data?.error || (status === 403 ? gettext('Sessão expirada. Recarregue a página.') : gettext('Erro ao resetar email.'));
             Toast.error(errorMsg);
@@ -1236,9 +1249,9 @@ class TempMailApp {
                 historyContainer.innerHTML = `
                     <div class="mt-4">
                         <div class="mb-2">
-                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300">📜 Emails recentes:</span>
+                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300">📜 ${gettext('Emails recentes:')}</span>
                         </div>
-                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                        <div class="space-y-2 max-h-96 overflow-y-auto">
                             ${data.history.map(item => this.renderHistoryItem(item)).join('')}
                         </div>
                     </div>
@@ -1252,14 +1265,41 @@ class TempMailApp {
     }
 
     renderHistoryItem(item) {
+        // ✅ Verificar se é o email atual em uso
+        const isCurrentEmail = item.address === this.currentEmail;
+        
+        if (isCurrentEmail) {
+            // Email atualmente em uso
+            return `
+                <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border-2 border-blue-500 dark:border-blue-400">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">🔵</span>
+                        <div>
+                            <div class="font-mono text-sm font-semibold text-blue-700 dark:text-blue-300">${item.address}</div>
+                            <div class="text-xs text-blue-600 dark:text-blue-400 font-semibold">${gettext('Em uso (atual)')}</div>
+                        </div>
+                    </div>
+                    <button 
+                        class="px-4 py-2 bg-blue-100 dark:bg-blue-800 text-blue-600 dark:text-blue-300 rounded-lg font-semibold cursor-not-allowed text-sm"
+                        disabled
+                    >
+                        ${gettext('Atual')}
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Emails não atuais
         const canUse = item.available || item.can_reuse;
         const statusIcon = canUse ? '✅' : (item.in_cooldown ? '⏳' : '🔒');
-        const statusText = canUse ? 'Disponível' : 
-                          (item.in_cooldown ? 'Em cooldown' : 'Em uso');
+        const statusText = canUse ? gettext('Disponível') : 
+                          (item.in_cooldown ? gettext('Em cooldown') : gettext('Em uso'));
         
         const buttonClass = canUse ? 
             'px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all active:scale-95 text-sm' : 
             'px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 rounded-lg font-semibold cursor-not-allowed text-sm';
+        
+        const buttonText = canUse ? gettext('Usar') : gettext('Indisponível');
         
         return `
             <div class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
@@ -1274,7 +1314,7 @@ class TempMailApp {
                     class="${buttonClass}"
                     ${canUse ? `onclick="window.app.useHistoryEmail('${item.address}')"` : 'disabled'}
                 >
-                    ${canUse ? 'Usar' : 'Indisponível'}
+                    ${buttonText}
                 </button>
             </div>
         `;

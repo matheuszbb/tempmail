@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 20:00-0300\n"
+"POT-Creation-Date: 2026-01-28 20:39-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,66 +66,102 @@ msgstr ""
 msgid "Erro ao processar download."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1042
+#: base_static/js/index/tempmail.js:1009
+msgid "Atualizando"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1055
 msgid "Novo e-mail gerado com sucesso!"
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1054
+#: base_static/js/index/tempmail.js:1067
 msgid "Sessão expirada. Recarregue a página."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1054
+#: base_static/js/index/tempmail.js:1067
 msgid "Erro ao resetar email."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1134
+#: base_static/js/index/tempmail.js:1147
 msgid "Por favor, digite um nome de usuário."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1145
+#: base_static/js/index/tempmail.js:1158
 msgid "Por favor, digite um nome de usuário válido."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1160
+#: base_static/js/index/tempmail.js:1173
 msgid "Nome de usuário não pode começar ou terminar com ponto."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1167
+#: base_static/js/index/tempmail.js:1180
 msgid ""
 "Nome de usuário contém caracteres inválidos. Use apenas letras, números, "
 "pontos, hífens e underscores."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1177
+#: base_static/js/index/tempmail.js:1190
 msgid "Você já está usando este endereço de e-mail."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1208
+#: base_static/js/index/tempmail.js:1221
 msgid "E-mail alterado com sucesso!"
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1213
+#: base_static/js/index/tempmail.js:1226
 msgid "Sessão inválida."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1213
+#: base_static/js/index/tempmail.js:1226
 msgid "Erro ao alterar email."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1217
+#: base_static/js/index/tempmail.js:1230
 msgid "Erro de conexão ao alterar e-mail."
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1387
+#: base_static/js/index/tempmail.js:1252
+msgid "Emails recentes:"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1279
+msgid "Em uso (atual)"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1286
+msgid "Atual"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1295
+msgid "Disponível"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1296
+msgid "Em cooldown"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1296
+msgid "Em uso"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1302
+msgid "Usar"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1302
+msgid "Indisponível"
+msgstr ""
+
+#: base_static/js/index/tempmail.js:1427
 msgid "Expirado"
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1398
+#: base_static/js/index/tempmail.js:1438
 #, javascript-format
 msgid "%s min e %ss"
 msgstr ""
 
-#: base_static/js/index/tempmail.js:1403
+#: base_static/js/index/tempmail.js:1443
 #, javascript-format
 msgid "%s segundo"
 msgid_plural "%s segundos"
