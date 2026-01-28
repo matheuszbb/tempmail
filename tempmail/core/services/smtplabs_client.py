@@ -1,10 +1,9 @@
 """
-Cliente Python Assíncrono para interagir com a API SMTP.dev usando aiohttp
+Cliente Python Assíncrono para interagir com a API SMTP.dev usando httpx
 """
-import aiohttp
+import httpx
 import logging
 import asyncio
-import threading
 from typing import Optional, Dict, List, Any
 from django.conf import settings
 
@@ -17,79 +16,8 @@ class SMTPLabsAPIError(Exception):
     pass
 
 
-class SMTPLabsSessionManager:
-    """
-    Gerenciador singleton de sessão aiohttp para SMTPLabsClient.
-    Garante que apenas uma sessão seja criada e reutilizada em toda a aplicação.
-    """
-    _instance = None
-    _session: Optional[aiohttp.ClientSession] = None
-    _lock = threading.Lock()  # threading.Lock em vez de asyncio.Lock
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-    
-    @classmethod
-    async def get_session(cls, headers: Dict[str, str]) -> aiohttp.ClientSession:
-        """
-        Retorna a sessão aiohttp compartilhada (thread-safe).
-        Cria uma nova sessão se não existir ou se estiver fechada.
-        """
-        with cls._lock:  # threading.Lock é síncrono
-            session_is_valid = False
-            
-            # Verificar se a sessão existe e está aberta
-            if cls._session is not None and not cls._session.closed:
-                # Verificar se o event loop da sessão ainda está vivo
-                try:
-                    loop = cls._session._loop
-                    if loop is not None and not loop.is_closed():
-                        session_is_valid = True
-                    else:
-                        logger.warning("Sessão está com event loop fechado, forçando recriação")
-                        # Tentar fechar a sessão antiga (mesmo que o loop esteja fechado)
-                        try:
-                            cls._session._connector._close()
-                        except:
-                            pass
-                        cls._session = None
-                except Exception as e:
-                    logger.warning(f"Erro ao verificar event loop da sessão: {e}")
-                    cls._session = None
-            
-            # Criar nova sessão se necessário
-            if not session_is_valid:
-                try:
-                    cls._session = aiohttp.ClientSession(headers=headers)
-                    logger.info("Nova sessão aiohttp criada (shared session)")
-                except RuntimeError as e:
-                    logger.error(f"Não foi possível criar sessão aiohttp: {e}")
-                    raise
-            
-            return cls._session
-    
-    @classmethod
-    async def close_session(cls):
-        """
-        Fecha a sessão compartilhada.
-        Nota: Não é necessário chamar explicitamente - a sessão será fechada
-        automaticamente quando o processo Python terminar.
-        """
-        with cls._lock:
-            if cls._session and not cls._session.closed:
-                try:
-                    await cls._session.close()
-                    logger.info("Sessão aiohttp fechada corretamente")
-                except Exception as e:
-                    logger.warning(f"Erro ao fechar sessão aiohttp: {e}")
-                finally:
-                    cls._session = None
-
-
 class SMTPLabsClient:
-    """Cliente assíncrono para interagir com a API SMTP.dev usando aiohttp"""
+    """Cliente assíncrono para interagir com a API SMTP.dev usando httpx"""
     
     def __init__(self, api_key: Optional[str] = None, base_url: Optional[str] = None):
         self.api_key = api_key or settings.SMTPLABS_API_KEY
@@ -99,11 +27,29 @@ class SMTPLabsClient:
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-        # Não criar nada aqui - tudo será lazy initialized quando necessário
+        # httpx AsyncClient com HTTP/2, timeout e connection pooling otimizado
+        self._client: Optional[httpx.AsyncClient] = None
     
-    async def _get_session(self):
-        """Obtém a sessão compartilhada do session manager"""
-        return await SMTPLabsSessionManager.get_session(self.headers)
+    async def _get_client(self) -> httpx.AsyncClient:
+        """Lazy initialization do cliente httpx"""
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(
+                headers=self.headers,
+                timeout=httpx.Timeout(30.0, connect=10.0),
+                http2=True,  # HTTP/2 para melhor performance
+                limits=httpx.Limits(
+                    max_keepalive_connections=20,
+                    max_connections=100
+                )
+            )
+            logger.info("Cliente httpx criado com HTTP/2 e timeout de 30s")
+        return self._client
+    
+    async def close(self):
+        """Fecha o cliente httpx"""
+        if self._client and not self._client.is_closed:
+            await self._client.aclose()
+            logger.info("Cliente httpx fechado")
     
     async def _make_request(
         self, 
@@ -116,48 +62,42 @@ class SMTPLabsClient:
     ) -> Any:
         """
         Faz requisição assíncrona para a API com retry automático para rate limiting
-        
-        ✅ CORRIGIDO: Removido o loop síncrono 'for' que causava o warning
         """
         url = f"{self.base_url}{endpoint}"
-        session = await self._get_session()
-        timeout = aiohttp.ClientTimeout(total=30)
+        client = await self._get_client()
         
-        # ✅ CORREÇÃO: Usar while ao invés de for para evitar iterador síncrono
         attempt = 0
         while attempt < max_retries:
             try:
-                async with session.request(
+                response = await client.request(
                     method=method,
                     url=url,
                     json=data,
-                    params=params,
-                    timeout=timeout
-                ) as response:
+                    params=params
+                )
+                
+                # Rate limiting - retry com backoff exponencial
+                if response.status_code == 429:
+                    wait_time = 2 ** attempt
+                    logger.warning(f"Rate limit atingido. Aguardando {wait_time}s...")
+                    await asyncio.sleep(wait_time)
+                    attempt += 1
+                    continue
+                
+                # Sucesso (200-204)
+                if 200 <= response.status_code <= 204:
+                    if response.status_code == 204:
+                        return {}
+                    if raw_response:
+                        return response.content
+                    return response.json()
+                
+                # Erros
+                error_msg = f"API Error {response.status_code}: {response.text}"
+                logger.error(error_msg)
+                raise SMTPLabsAPIError(error_msg)
                     
-                    # Rate limiting - retry com backoff exponencial
-                    if response.status == 429:
-                        wait_time = 2 ** attempt
-                        logger.warning(f"Rate limit atingido. Aguardando {wait_time}s...")
-                        await asyncio.sleep(wait_time)
-                        attempt += 1
-                        continue
-                    
-                    # Sucesso (200-204)
-                    if 200 <= response.status <= 204:
-                        if response.status == 204:
-                            return {}
-                        if raw_response:
-                            return await response.read()
-                        return await response.json()
-                    
-                    # Erros
-                    response_text = await response.text()
-                    error_msg = f"API Error {response.status}: {response_text}"
-                    logger.error(error_msg)
-                    raise SMTPLabsAPIError(error_msg)
-                    
-            except aiohttp.ClientError as e:
+            except httpx.HTTPError as e:
                 logger.error(f"Request failed: {str(e)}")
                 if attempt == max_retries - 1:
                     raise SMTPLabsAPIError(f"Request failed after {max_retries} attempts: {str(e)}")
@@ -323,9 +263,7 @@ class SMTPLabsClient:
             return None
     
     async def get_all_inbox_messages(self, account_id: str) -> List[Dict[str, Any]]:
-        """
-        ✅ CORRIGIDO: Modificado para evitar iteradores síncronos
-        """
+        """Busca todas mensagens da INBOX com paginação automática"""
         inbox = await self.get_inbox_mailbox(account_id)
         if not inbox:
             logger.warning(f"INBOX não encontrada para conta {account_id}")
@@ -335,7 +273,6 @@ class SMTPLabsClient:
         all_messages = []
         page = 1
         
-        # ✅ Mantém while (que é compatível com async/await)
         while True:
             try:
                 response = await self.get_messages(account_id, mailbox_id, page=page)

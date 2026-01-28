@@ -33,6 +33,8 @@ class EmailAccount(models.Model):
     last_used_at = models.DateTimeField(null=True, blank=True, help_text="Último uso da conta")
     is_available = models.BooleanField(default=True, help_text="Conta disponível para uso?")
     session_expires_at = models.DateTimeField(null=True, blank=True, help_text="Quando a sessão atual expira")
+    cooldown_until = models.DateTimeField(null=True, blank=True, help_text="Conta em cooldown até esta data (2h após expiração)")
+    last_session_key = models.CharField(max_length=255, null=True, blank=True, help_text="Session key do último usuário (para permitir reutilização)")
     
     # Metadados
     created_at = models.DateTimeField(auto_now_add=True)
@@ -65,18 +67,20 @@ class EmailAccount(models.Model):
             return False
         return timezone.now() < self.session_expires_at
 
-    def mark_as_used(self, session_duration_seconds=None):
+    def mark_as_used(self, session_key=None, session_duration_seconds=None):
         """Marca a conta como em uso e define expiração da sessão"""
         from django.conf import settings
         
         self.is_available = False
         self.last_used_at = timezone.now()
+        self.last_session_key = session_key  # Salvar session key do usuário
+        self.cooldown_until = None  # Limpar cooldown ao reutilizar
         
         # Definir quando a sessão expira
         duration = session_duration_seconds or settings.TEMPMAIL_SESSION_DURATION
         self.session_expires_at = timezone.now() + timedelta(seconds=duration)
         
-        self.save(update_fields=['is_available', 'last_used_at', 'session_expires_at', 'updated_at'])
+        self.save(update_fields=['is_available', 'last_used_at', 'last_session_key', 'cooldown_until', 'session_expires_at', 'updated_at'])
 
     def release(self):
         """Libera a conta para reutilização (após cooldown)"""
@@ -85,6 +89,30 @@ class EmailAccount(models.Model):
             self.save(update_fields=['is_available', 'updated_at'])
             return True
         return False
+
+    def start_cooldown(self, cooldown_hours=2):
+        """Inicia cooldown após expiração da sessão"""
+        self.is_available = True  # Disponível, mas em cooldown
+        self.cooldown_until = timezone.now() + timedelta(hours=cooldown_hours)
+        self.save(update_fields=['is_available', 'cooldown_until', 'updated_at'])
+
+    def can_be_used_by(self, session_key):
+        """Verifica se pode ser usada por este usuário"""
+        # Conta em uso por outro usuário
+        if not self.is_available and self.is_session_active():
+            return False
+        
+        # Conta disponível sem cooldown
+        if not self.cooldown_until:
+            return True
+        
+        # Conta em cooldown
+        if timezone.now() < self.cooldown_until:
+            # Permitir se for o último usuário
+            return self.last_session_key == session_key
+        
+        # Cooldown expirado
+        return True
 
     @staticmethod
     def generate_random_username(length=10):

@@ -8,7 +8,8 @@ from django.conf import settings
 from .views import (
     IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
     TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI, InlineAttachmentAPI,
-    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView, ChromeDevToolsStubView
+    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView, ChromeDevToolsStubView,
+    EmailHistoryAPI
 )
 
 # 🌍 Rotas que não precisam de tradução (como arquivos técnicos e APIs)
@@ -20,6 +21,7 @@ urlpatterns = [
 
     # API endpoints (não precisam de tradução)
     path('api/email/', TempEmailAPI.as_view(), name='temp_email_api'),
+    path('api/email/history/', EmailHistoryAPI.as_view(), name='email_history_api'),
     path('api/messages/', MessageListAPI.as_view(), name='message_list_api'),
     path('api/messages/<int:message_id>/', MessageDetailAPI.as_view(), name='api-message-detail'),
     path('api/messages/<int:message_id>/download/', MessageDownloadAPI.as_view(), name='api-message-download'),

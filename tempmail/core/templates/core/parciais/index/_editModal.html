@@ -7,11 +7,11 @@
         </h3>
         
         <div class="mb-4">
-            <label for="modalInputUser" class="block text-gray-500 dark:text-gray-400 text-sm font-bold mb-2">
+            <label for="modalInputUser" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">
                 {% trans "Novo Nome de Usuário" %}
             </label>
             
-            <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-gray-50 dark:bg-dark-input focus-within:ring-2 focus-within:ring-brand-orange transition-all">
+            <div class="flex items-stretch border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-brand-orange focus-within:border-brand-orange transition-all">
                 <input type="text" 
                        id="modalInputUser" 
                        name="new_username"
@@ -19,15 +19,18 @@
                        spellcheck="false"
                        data-lpignore="true" 
                        data-1p-ignore
-                       class="appearance-none bg-transparent border-none w-full text-gray-700 dark:text-white py-3 px-4 leading-tight focus:outline-none"
+                       class="appearance-none bg-transparent border-none w-full text-gray-900 dark:text-white py-3 px-4 text-base leading-relaxed focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
                        placeholder="{% trans 'ex: usuario123' %}">
                 
                 <div id="modalDomainLabel"
-                     class="bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300 px-3 py-3 border-l border-gray-300 dark:border-gray-500 text-sm whitespace-nowrap">
+                     class="flex items-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 text-base font-medium border-l-2 border-gray-200 dark:border-gray-600 whitespace-nowrap">
                     @example.com
                 </div>
             </div>
         </div>
+
+        <!-- ✅ Container para histórico de emails -->
+        <div id="email-history"></div>
 
         <div class="flex justify-end gap-3 mt-6">
             <form method="dialog">

@@ -128,102 +128,62 @@ class EmailAccountService:
     
     async def get_or_create_temp_email(self, request) -> tuple[EmailAccount | None, bool]:
         """
-        Obtém ou cria um email temporário para a sessão atual.
+        Cria nova conta de email temporário (não reutiliza automaticamente).
+        Reutilização só via edição manual pelo usuário.
         
         Args:
             request: Objeto HttpRequest
             
         Returns:
-            tuple: (EmailAccount | None, bool) onde bool indica se é uma conta nova/reutilizada
+            tuple: (EmailAccount | None, bool) onde bool indica se é uma conta nova
                    Retorna (None, False) em caso de erro
         """
         # Limpar sessões expiradas periodicamente
         await self._cleanup_expired_sessions()
         
-        # Verificar se já existe email na sessão
+        # Verificar se já existe email NA SESSÃO ATUAL
         session_email = await sync_to_async(request.session.get)('email_address')
-        session_start = await sync_to_async(request.session.get)('session_start')
         
-        if session_email and session_start:
-            # Verificar se sessão ainda é válida
-            session_start_dt = datetime.fromisoformat(session_start)
-            session_duration = timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
-            
-            if timezone.now() < session_start_dt + session_duration:
-                try:
-                    account = await EmailAccount.objects.aget(address=session_email)
-                    # Verificar se a conta ainda existe na API remota
-                    try:
-                        exists_remotely = await self.client.account_exists(account.smtp_id)
-                        if not exists_remotely:
-                            logger.warning(f"Conta em sessão {account.address} não existe mais remotamente")
-                            await self._handle_orphaned_account(account)
-                            # Forçar criação de nova conta
-                            pass  
-                        else:
-                            return account, False
-                    except Exception as e:
-                        logger.warning(f"Erro ao verificar existência remota da conta {account.address}: {e}")
-                        # Em caso de erro de conectividade, continuar com a conta local
-                        return account, False
-                except EmailAccount.DoesNotExist:
-                    pass
-        
-        # Tentar reutilizar conta disponível (excluindo a anterior se houver)
-        previous_email = await sync_to_async(request.session.get)('previous_email')
-        
-        # Filtrar contas que estão marcadas como disponíveis OU que tenham sessão expirada
-        now = timezone.now()
-        available_accounts = EmailAccount.objects.filter(
-            models.Q(is_available=True) | models.Q(session_expires_at__lt=now)
-        )
-        
-        # Excluir email anterior da seleção
-        if previous_email:
-            available_accounts = available_accounts.exclude(address=previous_email)
-        
-        # Pegar a conta que não foi usada há mais tempo
-        available_account = await available_accounts.order_by('last_used_at').afirst()
-        
-        if available_account and available_account.can_be_reused():
-            # Verificar se a conta ainda existe na API remota antes de reutilizar
+        if session_email:
             try:
-                exists_remotely = await self.client.account_exists(available_account.smtp_id)
-                if not exists_remotely:
-                    logger.warning(f"Conta disponível {available_account.address} não existe mais remotamente")
-                    await self._handle_orphaned_account(available_account)
-                    # Continuar para criar nova conta
-                else:
-                    # Limpar previous_email da sessão após uso
-                    if previous_email:
-                        await sync_to_async(request.session.pop)('previous_email', None)
-                    
-                    await self._mark_account_as_used(request, available_account)
-                    logger.info(f"Reutilizando conta: {available_account.address}")
-                    return available_account, True
-            except Exception as e:
-                logger.warning(f"Erro ao verificar existência remota da conta {available_account.address}: {e}")
-                # Em caso de erro de conectividade, tentar reutilizar mesmo assim
-                if previous_email:
-                    await sync_to_async(request.session.pop)('previous_email', None)
+                account = await EmailAccount.objects.aget(address=session_email)
                 
-                await self._mark_account_as_used(request, available_account)
-                logger.info(f"Reutilizando conta: {available_account.address} (sem verificação remota)")
-                return available_account, True
+                # Verificar se ainda está válida
+                if account.is_session_active():
+                    return account, False
+                else:
+                    # Expirou, iniciar cooldown
+                    await sync_to_async(account.start_cooldown)(cooldown_hours=2)
+                    logger.info(f"Conta {account.address} expirou, iniciando cooldown de 2h")
+                    # Limpar da sessão
+                    await sync_to_async(request.session.pop)('email_address', None)
+                    await sync_to_async(request.session.pop)('session_start', None)
+            except EmailAccount.DoesNotExist:
+                pass
         
-        # Criar nova conta
+        # Sempre criar nova conta
         try:
             account = await self._create_new_account()
-            await self._mark_account_as_used(request, account)
+            
+            # Obter ou criar session key
+            session_key = request.session.session_key
+            if not session_key:
+                await sync_to_async(request.session.create)()
+                session_key = request.session.session_key
+            
+            await self._mark_account_as_used(request, account, session_key)
             logger.info(f"Nova conta criada: {account.address}")
             return account, True
         except Exception as e:
             logger.error(f"Erro ao criar nova conta: {str(e)}")
             return None, False
     
-    async def _mark_account_as_used(self, request, account: EmailAccount):
+    async def _mark_account_as_used(self, request, account: EmailAccount, session_key: str):
         """Marca uma conta como em uso e registra na sessão."""
-        await sync_to_async(account.mark_as_used)(settings.TEMPMAIL_SESSION_DURATION)
+        await sync_to_async(account.mark_as_used)(
+            session_key=session_key,
+            session_duration_seconds=settings.TEMPMAIL_SESSION_DURATION
+        )
         
         # Registrar no histórico de emails
         email_sessions = await sync_to_async(request.session.get)('email_sessions', {})
@@ -312,7 +272,7 @@ class EmailAccountService:
         logger.info(f"Conta órfã {account.address} removida do banco local")
     
     async def _cleanup_expired_sessions(self):
-        """Limpa contas com sessões expiradas"""
+        """Limpa sessões expiradas e inicia cooldown de 2h"""
         from .models import EmailAccount
         now = timezone.now()
         
@@ -323,12 +283,9 @@ class EmailAccountService:
         
         count = 0
         async for account in expired_accounts:
-            account.is_available = True
-            account.session_expires_at = None
-            await sync_to_async(account.save)(
-                update_fields=['is_available', 'session_expires_at', 'updated_at']
-            )
+            # Iniciar cooldown de 2h
+            await sync_to_async(account.start_cooldown)(cooldown_hours=2)
             count += 1
         
         if count > 0:
-            logger.info(f"Limpeza: {count} sessões expiradas liberadas")
+            logger.info(f"Limpeza: {count} sessões expiradas, cooldown de 2h iniciado")

@@ -2,8 +2,11 @@ import re
 import os
 import json
 import base64
+import hashlib
 import logging
 import asyncio
+import unicodedata
+from html import escape as html_escape
 from django.views import View
 from django.urls import reverse
 from collections import Counter
@@ -85,6 +88,14 @@ class EmailInUseError(Exception):
     """Exceção levantada quando um e-mail já está sendo usado por outro usuário."""
     pass
 
+class EmailInCooldownError(Exception):
+    """Exceção levantada quando um e-mail está em cooldown."""
+    pass
+
+class EmailNotFoundError(Exception):
+    """Exceção levantada quando um e-mail não existe."""
+    pass
+
 class IndexView(View):
     async def get(self, request):
         email_address = await sync_to_async(request.session.get)('email_address')
@@ -150,18 +161,36 @@ class TempEmailAPI(View):
                     'error': str(_('Serviço temporariamente indisponível. Tente novamente em alguns minutos.'))
                 }, status=200)
             
+            # ✅ Salvar no histórico se for novo ou se não estiver no histórico ainda
+            if is_new or account.address not in await sync_to_async(request.session.get)('email_history', []):
+                await self._save_to_history(request, account.address)
+            
             session_start_val = await sync_to_async(request.session.get)('session_start')
-            session_start = datetime.fromisoformat(session_start_val)
+            
+            # Se não há session_start (refresh), usar last_used_at da conta
+            if session_start_val:
+                session_start = datetime.fromisoformat(session_start_val)
+            elif account.last_used_at:
+                session_start = account.last_used_at
+            else:
+                session_start = timezone.now()
+            
             expires_at = session_start + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
             expires_in = int((expires_at - timezone.now()).total_seconds())
             
-            return JsonResponse({
+            # Salvar fingerprint no cookie
+            browser_fingerprint = self._get_browser_fingerprint(request)
+            response = JsonResponse({
                 'success': True,
                 'email': account.address,
                 'session_start': session_start.isoformat(),
                 'expires_in': max(0, expires_in),
                 'is_new_session': is_new
             })
+            
+            # Atualizar cookie com fingerprints
+            self._save_fingerprint_to_cookie(response, request, account.address, browser_fingerprint)
+            return response
         except Exception as e:
             logger.exception("Erro ao obter email temporário")
             return JsonResponse({
@@ -247,13 +276,18 @@ class TempEmailAPI(View):
             email_sessions[account.address] = timezone.now().isoformat()
         await sync_to_async(request.session.__setitem__)('email_sessions', email_sessions)
         
+        # ✅ Salvar no histórico
+        await self._save_to_history(request, account.address)
+        
         session_start_val = await sync_to_async(request.session.get)('session_start')
         session_start = datetime.fromisoformat(session_start_val)
         
         expires_at = session_start + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
         expires_in = int((expires_at - timezone.now()).total_seconds())
 
-        return JsonResponse({
+        # Salvar fingerprint no cookie
+        browser_fingerprint = self._get_browser_fingerprint(request)
+        response = JsonResponse({
             'success': True,
             'email': account.address,
             'session_start': session_start.isoformat(),
@@ -261,10 +295,14 @@ class TempEmailAPI(View):
             'is_new_session': True,
             'message': str(_('Sessão resetada com sucesso'))
         })
+        
+        # Atualizar cookie com fingerprints
+        self._save_fingerprint_to_cookie(response, request, account.address, browser_fingerprint)
+        return response
 
     async def _handle_custom_email(self, request, custom_email, session_email):
         """Processa solicitação de email customizado"""
-        logger.info(f"Tentando login/mudança para email customizado: {custom_email}")
+        logger.info(f"Tentando login/mudança para email customizado: {custom_email!r}")
         
         # ✅ VALIDAÇÃO: Formato básico
         if '@' not in custom_email:
@@ -285,12 +323,29 @@ class TempEmailAPI(View):
         
         # ✅ VALIDAÇÃO: Verificar caracteres válidos na parte local (antes do @)
         local_part = custom_email.split('@')[0]
-        # Permite: letras, números, pontos, hífens e underscores
-        if not re.match(r'^[a-zA-Z0-9._-]+$', local_part):
+        domain_part = custom_email.split('@')[1]
+        
+        # Regex para caracteres válidos: letras ASCII, números, pontos, hífens e underscores
+        valid_pattern = r'^[a-zA-Z0-9._-]+$'
+        
+        # Sempre tentar normalizar primeiro (ç→c, á→a, etc)
+        local_part_normalized = unicodedata.normalize('NFKD', local_part)
+        local_part_normalized = ''.join([c for c in local_part_normalized if not unicodedata.combining(c)])
+        
+        # Se houve mudança, logar
+        if local_part != local_part_normalized:
+            logger.info(f"Email normalizado: {local_part!r} → {local_part_normalized!r}")
+        
+        # Verificar se após normalização está válido
+        if not re.match(valid_pattern, local_part_normalized):
             return JsonResponse({
                 'success': False,
-                'error': str(_('Nome de usuário contém caracteres inválidos'))
+                'error': str(_('Nome de usuário contém caracteres inválidos. Use apenas letras, números, pontos, hífens e underscores.'))
             }, status=200)
+        
+        # Usar sempre a versão normalizada
+        local_part = local_part_normalized
+        custom_email = f"{local_part}@{domain_part}"
         
         # ✅ VALIDAÇÃO: Não pode começar ou terminar com ponto
         if local_part.startswith('.') or local_part.endswith('.'):
@@ -315,7 +370,12 @@ class TempEmailAPI(View):
 
         # Verificar se a conta já existe no nosso banco
         try:
-            account = await self._get_or_create_custom_account(custom_email, session_used_emails)
+            account = await self._get_or_create_custom_account(request, custom_email, session_used_emails)
+        except EmailInCooldownError as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=200)
         except EmailInUseError:
             return JsonResponse({
                 'success': False,
@@ -331,17 +391,26 @@ class TempEmailAPI(View):
         # Atualizar sessão
         await self._update_session_with_account(request, account, session_used_emails, email_sessions)
         
+        # ✅ Salvar no histórico
+        await self._save_to_history(request, account.address)
+        
         # Calcular expiração
         first_used_at = datetime.fromisoformat(email_sessions[account.address])
         expires_at = first_used_at + timedelta(seconds=settings.TEMPMAIL_SESSION_DURATION)
         expires_in = int((expires_at - timezone.now()).total_seconds())
 
-        return JsonResponse({
+        # Salvar fingerprint no cookie para persistir entre sessões
+        browser_fingerprint = self._get_browser_fingerprint(request)
+        response = JsonResponse({
             'success': True,
             'email': account.address,
             'expires_in': max(0, expires_in),
             'message': str(_('Email alterado com sucesso'))
         })
+        
+        # Atualizar cookie com fingerprints
+        self._save_fingerprint_to_cookie(response, request, account.address, browser_fingerprint)
+        return response
 
     async def _release_previous_email(self, session_email):
         """Libera o email anterior da sessão"""
@@ -357,23 +426,50 @@ class TempEmailAPI(View):
         except EmailAccount.DoesNotExist:
             pass
 
-    async def _get_or_create_custom_account(self, custom_email, session_used_emails):
-        """Obtém ou cria conta customizada"""
+    async def _get_or_create_custom_account(self, request, custom_email, session_used_emails):
+        """Obtém ou cria conta customizada com validação de cooldown"""
         try:
             account = await EmailAccount.objects.aget(address=custom_email)
+            
+            # Obter session key
+            session_key = request.session.session_key
+            if not session_key:
+                await sync_to_async(request.session.create)()
+                session_key = request.session.session_key
             
             # Verificar se este email foi usado pelo mesmo usuário nesta sessão
             email_was_used_in_session = custom_email in session_used_emails
             
-            # SECURITY: Verificar se há sessão ativa de outro usuário
-            if not email_was_used_in_session and account.is_session_active():
-                logger.warning(f"Email {custom_email} possui sessão ativa de outro usuário")
-                raise EmailInUseError()
+            # Verificar se este usuário pode usar esta conta (cooldown + session_key)
+            can_use = await sync_to_async(account.can_be_used_by)(session_key)
             
-            # Trava de segurança adicional para contas não disponíveis
-            if not account.is_available and not account.can_be_reused() and not email_was_used_in_session:
-                logger.warning(f"Email {custom_email} está em uso por outro usuário")
-                raise EmailInUseError()
+            if not can_use:
+                # ANTES de rejeitar, verificar fingerprint do navegador
+                browser_fingerprint = self._get_browser_fingerprint(request)
+                
+                # Buscar fingerprints salvos no COOKIE (persiste entre sessões)
+                email_fingerprints_cookie = request.COOKIES.get('email_fps', '{}')
+                try:
+                    email_fingerprints = json.loads(email_fingerprints_cookie)
+                except:
+                    email_fingerprints = {}
+                
+                saved_fingerprint = email_fingerprints.get(custom_email)
+                
+                # Se for o mesmo navegador (fingerprint match), permitir reutilização
+                if saved_fingerprint and saved_fingerprint == browser_fingerprint:
+                    logger.info(f"✅ Fingerprint match para {custom_email!r}, permitindo reutilização mesmo com sessão diferente")
+                    can_use = True  # Permitir uso
+                else:
+                    # Verificar se está em cooldown
+                    if account.cooldown_until and timezone.now() < account.cooldown_until:
+                        time_left = account.cooldown_until - timezone.now()
+                        minutes = int(time_left.total_seconds() / 60)
+                        logger.warning(f"Email {custom_email!r} em cooldown por mais {minutes} minutos")
+                        raise EmailInCooldownError(f"Este email está em cooldown. Disponível em {minutes} minutos.")
+                    else:
+                        logger.warning(f"Email {custom_email!r} possui sessão ativa de outro usuário (fingerprint diferente)")
+                        raise EmailInUseError()
             
             # Se o email foi usado nesta sessão, liberar antes de reutilizar
             if email_was_used_in_session and not account.is_available:
@@ -384,8 +480,18 @@ class TempEmailAPI(View):
                 )
                 logger.info(f"Email usado nesta sessão, liberado para reutilização: {custom_email}")
             
-            # Marcar como usada
-            await sync_to_async(account.mark_as_used)()
+            # Marcar como usada (reseta timer para 60min)
+            await sync_to_async(account.mark_as_used)(
+                session_key=session_key,
+                session_duration_seconds=settings.TEMPMAIL_SESSION_DURATION
+            )
+            
+            # Salvar fingerprint na sessão para permitir reutilização
+            browser_fingerprint = self._get_browser_fingerprint(request)
+            email_fingerprints = await sync_to_async(request.session.get)('email_fingerprints', {})
+            email_fingerprints[custom_email] = browser_fingerprint
+            await sync_to_async(request.session.__setitem__)('email_fingerprints', email_fingerprints)
+            
             logger.info(f"Usuário assumiu conta existente: {custom_email}")
             return account
 
@@ -470,6 +576,73 @@ class TempEmailAPI(View):
         
         await sync_to_async(request.session.save)()
 
+    async def _save_to_history(self, request, email_address):
+        """Salva email no histórico da sessão (últimos 5)"""
+        history = await sync_to_async(request.session.get)('email_history', [])
+        
+        # Remover se já existe (evitar duplicatas)
+        if email_address in history:
+            history.remove(email_address)
+        
+        # Adicionar no início
+        history.insert(0, email_address)
+        
+        # Manter apenas últimos 5
+        history = history[:5]
+        
+        await sync_to_async(request.session.__setitem__)('email_history', history)
+        logger.debug(f"Histórico atualizado: {history}")
+
+    async def _get_email_history(self, request):
+        """Retorna histórico de emails com status de disponibilidade"""
+        history = await sync_to_async(request.session.get)('email_history', [])
+        
+        result = []
+        for email in history:
+            try:
+                account = await EmailAccount.objects.aget(address=email)
+                
+                # Verificar disponibilidade
+                is_available = account.is_available
+                is_in_cooldown = (
+                    account.cooldown_until and 
+                    timezone.now() < account.cooldown_until
+                )
+                is_active = account.is_session_active()
+                
+                # Verificar se é o mesmo usuário (session key ou fingerprint salvo na sessão)
+                session_key = request.session.session_key
+                browser_fingerprint = self._get_browser_fingerprint(request)
+                
+                # Buscar fingerprint salvo na sessão para este email
+                email_fingerprints = await sync_to_async(request.session.get)('email_fingerprints', {})
+                saved_fingerprint = email_fingerprints.get(email)
+                
+                can_reuse = (
+                    account.last_session_key == session_key or
+                    (saved_fingerprint and saved_fingerprint == browser_fingerprint)
+                )
+                
+                result.append({
+                    'address': email,
+                    'available': is_available and not is_active,
+                    'in_cooldown': is_in_cooldown,
+                    'can_reuse': can_reuse,  # Mesmo usuário pode reusar
+                    'expires_at': account.session_expires_at.isoformat() if account.session_expires_at else None,
+                    'cooldown_until': account.cooldown_until.isoformat() if account.cooldown_until else None,
+                })
+            except EmailAccount.DoesNotExist:
+                # Email não existe mais
+                result.append({
+                    'address': email,
+                    'available': False,
+                    'in_cooldown': False,
+                    'can_reuse': False,
+                    'error': 'Email não encontrado'
+                })
+        
+        return result
+
     def _handle_smtp_error(self, e):
         """Trata erros da API SMTPLabs"""
         logger.error(f"Erro na API externa SMTPLabs: {str(e)}")
@@ -489,6 +662,208 @@ class TempEmailAPI(View):
             'success': False,
             'error': error_message
         }, status=200)
+    
+    async def _save_to_history(self, request, email_address):
+        """Salva email no histórico da sessão (últimos 5)"""
+        history = await sync_to_async(request.session.get)('email_history', [])
+        
+        # Remover se já existe (evitar duplicatas)
+        if email_address in history:
+            history.remove(email_address)
+        
+        # Adicionar no início
+        history.insert(0, email_address)
+        
+        # Manter apenas últimos 5
+        history = history[:5]
+        
+        await sync_to_async(request.session.__setitem__)('email_history', history)
+        logger.debug(f"Histórico atualizado: {history}")
+    
+    def _get_browser_fingerprint(self, request):
+        """
+        Gera fingerprint único do navegador com fallback para cookie
+        """
+        
+        # 1. Tentar obter fingerprint do cookie (mais confiável)
+        fingerprint_cookie = request.COOKIES.get('browser_fp')
+        if fingerprint_cookie:
+            logger.debug(f"Fingerprint recuperado do cookie: {fingerprint_cookie[:8]}...")
+            return fingerprint_cookie
+        
+        # 2. Gerar novo fingerprint baseado em headers
+        import hashlib
+        
+        # Sanitizar headers - manter caracteres normais mas limitar tamanho
+        # Não remover parênteses/ponto-e-vírgula pois são parte normal do user-agent
+        user_agent = request.META.get('HTTP_USER_AGENT', '')[:500]
+        accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')[:100]
+        accept_encoding = request.META.get('HTTP_ACCEPT_ENCODING', '')[:100]
+        
+        # Adicionar IP (mais estável)
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            ip = request.META.get('REMOTE_ADDR', '')
+        
+        # Validar formato de IP (manter apenas dígitos, pontos e dois-pontos para IPv6)
+        ip = re.sub(r'[^\d.:]', '', ip)[:45]
+        
+        # Combinar headers estáveis (hash já protege contra injection)
+        fingerprint_data = f"{user_agent}|{accept_language}|{accept_encoding}|{ip}"
+        
+        # Hash para não expor dados sensíveis
+        fingerprint = hashlib.sha256(fingerprint_data.encode()).hexdigest()[:32]
+        
+        logger.debug(f"Novo fingerprint gerado: {fingerprint[:8]}...")
+        return fingerprint
+    
+    def _save_fingerprint_to_cookie(self, response, request, email_address, browser_fingerprint):
+        """Salva o fingerprint de um email em um cookie para persistir entre sessões"""
+        # Buscar fingerprints existentes
+        email_fingerprints_cookie = request.COOKIES.get('email_fps', '{}')
+        try:
+            email_fingerprints = json.loads(email_fingerprints_cookie)
+        except:
+            email_fingerprints = {}
+        
+        # Adicionar novo fingerprint
+        email_fingerprints[email_address] = browser_fingerprint
+        
+        # Manter apenas últimos 10 emails para não crescer infinitamente
+        if len(email_fingerprints) > 10:
+            # Remover os mais antigos
+            emails_list = list(email_fingerprints.items())
+            email_fingerprints = dict(emails_list[-10:])
+        
+        # Salvar no cookie (válido por 7 dias)
+        response.set_cookie(
+            'email_fps',
+            json.dumps(email_fingerprints),
+            max_age=7*24*60*60,  # 7 dias
+            httponly=True,
+            samesite='Lax'
+        )
+        logger.debug(f"Fingerprint salvo no cookie para {email_address}")
+
+class EmailHistoryAPI(View):
+    """API para buscar histórico de emails usados"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.email_service = EmailAccountService()
+    
+    async def get(self, request):
+        """Retorna últimos 5 emails usados pelo usuário"""
+        try:
+            history = await self._get_email_history(request)
+            return JsonResponse({
+                'success': True,
+                'history': history,
+                'count': len(history)
+            }, status=200)
+        except Exception as e:
+            logger.error(f"Erro ao buscar histórico: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': str(_('Erro ao buscar histórico'))
+            }, status=500)
+    
+    async def _get_email_history(self, request):
+        """Retorna histórico de emails com status de disponibilidade"""
+        history = await sync_to_async(request.session.get)('email_history', [])
+        
+        result = []
+        for email in history:
+            try:
+                account = await EmailAccount.objects.aget(address=email)
+                
+                # Verificar disponibilidade
+                is_available = account.is_available
+                is_in_cooldown = (
+                    account.cooldown_until and 
+                    timezone.now() < account.cooldown_until
+                )
+                is_active = account.is_session_active()
+                
+                # Verificar se é o mesmo usuário (session key ou fingerprint do cookie)
+                session_key = request.session.session_key
+                browser_fingerprint = self._get_browser_fingerprint(request)
+                
+                # Buscar fingerprint salvo no COOKIE (persiste entre sessões)
+                email_fingerprints_cookie = request.COOKIES.get('email_fps', '{}')
+                try:
+                    email_fingerprints = json.loads(email_fingerprints_cookie)
+                except:
+                    email_fingerprints = {}
+                
+                saved_fingerprint = email_fingerprints.get(email)
+                
+                can_reuse = (
+                    account.last_session_key == session_key or
+                    (saved_fingerprint and saved_fingerprint == browser_fingerprint)
+                )
+                
+                result.append({
+                    'address': email,
+                    'available': is_available and not is_active,
+                    'in_cooldown': is_in_cooldown,
+                    'can_reuse': can_reuse,  # Mesmo usuário pode reusar
+                    'expires_at': account.session_expires_at.isoformat() if account.session_expires_at else None,
+                    'cooldown_until': account.cooldown_until.isoformat() if account.cooldown_until else None,
+                })
+            except EmailAccount.DoesNotExist:
+                # Email não existe mais
+                result.append({
+                    'address': email,
+                    'available': False,
+                    'in_cooldown': False,
+                    'can_reuse': False,
+                    'error': 'Email não encontrado'
+                })
+        
+        return result
+    
+    def _get_browser_fingerprint(self, request):
+        """Gera fingerprint único do navegador com fallback para cookie"""
+        
+        # 1. Tentar obter fingerprint do cookie (mais confiável)
+        fingerprint_cookie = request.COOKIES.get('browser_fp')
+        if fingerprint_cookie:
+            logger.debug(f"Fingerprint recuperado do cookie: {fingerprint_cookie[:8]}...")
+            return fingerprint_cookie
+        
+        # 2. Gerar novo fingerprint baseado em headers
+        # Sanitizar headers - manter caracteres normais mas limitar tamanho
+        # Não remover parênteses/ponto-e-vírgula pois são parte normal do user-agent
+        user_agent = request.META.get('HTTP_USER_AGENT', '')[:500]
+        accept_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')[:100]
+        accept_encoding = request.META.get('HTTP_ACCEPT_ENCODING', '')[:100]
+        
+        # Adicionar IP (mais estável)
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0].strip()
+        else:
+            ip = request.META.get('REMOTE_ADDR', '')
+        
+        # Validar formato de IP (manter apenas dígitos, pontos e dois-pontos para IPv6)
+        ip = re.sub(r'[^\d.:]', '', ip)[:45]
+        
+        # Combinar headers estáveis (hash já protege contra injection)
+        fingerprint_data = f"{user_agent}|{accept_language}|{accept_encoding}|{ip}"
+        
+        # Hash para não expor dados sensíveis
+        fingerprint = hashlib.sha256(fingerprint_data.encode()).hexdigest()[:32]
+        
+        logger.debug(f"Novo fingerprint gerado: {fingerprint[:8]}...")
+        return fingerprint
+    
+    async def _check_browser_fingerprint(self, account, fingerprint):
+        """DEPRECATED: Fingerprint agora é verificado via sessão, não banco"""
+        # Mantido para compatibilidade, mas sempre retorna False
+        return False
 
 class MessageListAPI(View):
     """API para listar e atualizar mensagens"""
@@ -1106,8 +1481,7 @@ class MessageDetailAPI(View):
     
     def _replace_with_lazy_image_skeleton_new(self, html, src_pattern, att, message):
         """
-        Lazy load com skeleton loader elegante
-        MELHORADO: Adiciona placeholder com dimensões estimadas
+        Lazy load com skeleton loader - sem scripts inline (carregamento será feito no parent)
         """
         att_id = att.get('id')
         filename = att.get('filename', 'imagem')
@@ -1119,34 +1493,27 @@ class MessageDetailAPI(View):
             'attachment_id': att_id
         })
         
-        # Container com skeleton loader
+        # Container com skeleton loader animado (estilos inline para evitar problemas com DOMPurify)
         image_html = f'''
-        <div class="inline-image-container" style="position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; background: linear-gradient(110deg, #f0f0f0 8%, #f8f8f8 18%, #f0f0f0 33%); background-size: 200% 100%; animation: shimmer 1.5s linear infinite;">
+        <div class="inline-image-container" data-image-url="{url}" data-filename="{filename}" style="position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; min-height: 300px; background: linear-gradient(110deg, #e0e0e0 8%, #f5f5f5 18%, #e0e0e0 33%); background-size: 200% 100%; animation: shimmer-effect 1.5s ease-in-out infinite;">
+            <style>
+            @keyframes shimmer-effect {{
+                0% {{ background-position: -200% 0; }}
+                100% {{ background-position: 200% 0; }}
+            }}
+            @keyframes spinner-rotate {{
+                0% {{ transform: rotate(0deg); }}
+                100% {{ transform: rotate(360deg); }}
+            }}
+            </style>
             <div style="padding-bottom: 56.25%; position: relative;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #9ca3af;">
-                    <svg style="width: 48px; height: 48px; margin: 0 auto 8px; opacity: 0.5;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p style="font-size: 12px; margin: 0;">Carregando imagem...</p>
-                    <p style="font-size: 10px; margin: 4px 0 0; opacity: 0.7;">{size_mb:.1f} MB</p>
+                <div class="loading-placeholder" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #6b7280; z-index: 10;">
+                    <div style="width: 48px; height: 48px; border: 4px solid #e5e7eb; border-top-color: #f97316; border-radius: 50%; animation: spinner-rotate 0.8s linear infinite; margin: 0 auto 12px;"></div>
+                    <p style="font-size: 13px; font-weight: 600; margin: 0 0 6px; color: #374151;">Carregando imagem...</p>
+                    <p class="progress-info" style="font-size: 11px; margin: 0; opacity: 0.8; color: #6b7280;">{size_mb:.1f} MB</p>
                 </div>
             </div>
-            <img 
-                src="{url}" 
-                alt="{filename}"
-                loading="lazy" 
-                decoding="async"
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.3s ease;"
-                onload="this.style.opacity='1'; this.parentElement.style.background='transparent'; this.parentElement.style.animation='none';"
-                onerror="this.parentElement.innerHTML='<div style=\\'padding: 40px; text-align: center; background: #fee2e2; border-radius: 12px;\\'><svg style=\\'width: 48px; height: 48px; margin: 0 auto 8px; color: #ef4444;\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\\'></path></svg><p style=\\'margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;\\'>Erro ao carregar imagem</p><p style=\\'margin: 4px 0 0; color: #7f1d1d; font-size: 11px;\\'>{filename}</p></div>';"
-            >
         </div>
-        <style>
-        @keyframes shimmer {{
-            0% {{ background-position: -200% 0; }}
-            100% {{ background-position: 200% 0; }}
-        }}
-        </style>
         '''
         
         html = self._replace_lazy_image_src_pattern(html, src_pattern, image_html)
@@ -1156,8 +1523,7 @@ class MessageDetailAPI(View):
     
     def _replace_with_lazy_image_skeleton(self, html, cid, att, message):
         """
-        Lazy load com skeleton loader elegante
-        MELHORADO: Adiciona placeholder com dimensões estimadas
+        Lazy load com skeleton loader - sem scripts inline (carregamento será feito no parent)
         """
         att_id = att.get('id')
         filename = att.get('filename', 'imagem')
@@ -1169,34 +1535,27 @@ class MessageDetailAPI(View):
             'attachment_id': att_id
         })
         
-        # Container com skeleton loader
+        # Container com skeleton loader animado (estilos inline para evitar problemas com DOMPurify)
         image_html = f'''
-        <div class="inline-image-container" style="position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; background: linear-gradient(110deg, #f0f0f0 8%, #f8f8f8 18%, #f0f0f0 33%); background-size: 200% 100%; animation: shimmer 1.5s linear infinite;">
+        <div class="inline-image-container" data-image-url="{url}" data-filename="{filename}" style="position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; min-height: 300px; background: linear-gradient(110deg, #e0e0e0 8%, #f5f5f5 18%, #e0e0e0 33%); background-size: 200% 100%; animation: shimmer-effect 1.5s ease-in-out infinite;">
+            <style>
+            @keyframes shimmer-effect {{
+                0% {{ background-position: -200% 0; }}
+                100% {{ background-position: 200% 0; }}
+            }}
+            @keyframes spinner-rotate {{
+                0% {{ transform: rotate(0deg); }}
+                100% {{ transform: rotate(360deg); }}
+            }}
+            </style>
             <div style="padding-bottom: 56.25%; position: relative;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #9ca3af;">
-                    <svg style="width: 48px; height: 48px; margin: 0 auto 8px; opacity: 0.5;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <p style="font-size: 12px; margin: 0;">Carregando imagem...</p>
-                    <p style="font-size: 10px; margin: 4px 0 0; opacity: 0.7;">{size_mb:.1f} MB</p>
+                <div class="loading-placeholder" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #6b7280; z-index: 10;">
+                    <div style="width: 48px; height: 48px; border: 4px solid #e5e7eb; border-top-color: #f97316; border-radius: 50%; animation: spinner-rotate 0.8s linear infinite; margin: 0 auto 12px;"></div>
+                    <p style="font-size: 13px; font-weight: 600; margin: 0 0 6px; color: #374151;">Carregando imagem...</p>
+                    <p class="progress-info" style="font-size: 11px; margin: 0; opacity: 0.8; color: #6b7280;">{size_mb:.1f} MB</p>
                 </div>
             </div>
-            <img 
-                src="{url}" 
-                alt="{filename}"
-                loading="lazy" 
-                decoding="async"
-                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity 0.3s ease;"
-                onload="this.style.opacity='1'; this.parentElement.style.background='transparent'; this.parentElement.style.animation='none';"
-                onerror="this.parentElement.innerHTML='<div style=\\'padding: 40px; text-align: center; background: #fee2e2; border-radius: 12px;\\'><svg style=\\'width: 48px; height: 48px; margin: 0 auto 8px; color: #ef4444;\\' fill=\\'none\\' stroke=\\'currentColor\\' viewBox=\\'0 0 24 24\\'><path stroke-linecap=\\'round\\' stroke-linejoin=\\'round\\' stroke-width=\\'2\\' d=\\'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\\'></path></svg><p style=\\'margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;\\'>Erro ao carregar imagem</p><p style=\\'margin: 4px 0 0; color: #7f1d1d; font-size: 11px;\\'>{filename}</p></div>';"
-            >
         </div>
-        <style>
-        @keyframes shimmer {{
-            0% {{ background-position: -200% 0; }}
-            100% {{ background-position: 200% 0; }}
-        }}
-        </style>
         '''
         
         html = re.sub(
@@ -1222,12 +1581,14 @@ class MessageDetailAPI(View):
             'attachment_id': att_id
         })
         
+        filename_safe = html_escape(filename)  # Sanitizar para prevenir XSS
+        
         video_html = f'''
         <div class="video-container" style="position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; background: #1f2937;">
             <video 
                 controls 
                 preload="metadata"
-                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Crect fill='%231f2937' width='800' height='450'/%3E%3Cg fill='%23374151'%3E%3Ccircle cx='400' cy='225' r='60'/%3E%3Cpath d='M380 190 L380 260 L440 225 Z' fill='%239ca3af'/%3E%3C/g%3E%3Ctext x='400' y='320' text-anchor='middle' fill='%239ca3af' font-family='sans-serif' font-size='16'%3E{filename}%3C/text%3E%3Ctext x='400' y='345' text-anchor='middle' fill='%236b7280' font-family='sans-serif' font-size='14'%3E{size_mb:.1f} MB%3C/text%3E%3C/svg%3E"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Crect fill='%231f2937' width='800' height='450'/%3E%3Cg fill='%23374151'%3E%3Ccircle cx='400' cy='225' r='60'/%3E%3Cpath d='M380 190 L380 260 L440 225 Z' fill='%239ca3af'/%3E%3C/g%3E%3Ctext x='400' y='320' text-anchor='middle' fill='%239ca3af' font-family='sans-serif' font-size='16'%3E{filename_safe}%3C/text%3E%3Ctext x='400' y='345' text-anchor='middle' fill='%236b7280' font-family='sans-serif' font-size='14'%3E{size_mb:.1f} MB%3C/text%3E%3C/svg%3E"
                 style="width: 100%; max-width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
             >
                 <source src="{url}" type="{content_type}">
@@ -1259,6 +1620,8 @@ class MessageDetailAPI(View):
             'attachment_id': att_id
         })
         
+        filename_safe = html_escape(filename)  # Sanitizar para prevenir XSS
+        
         audio_html = f'''
         <div class="audio-container" style="margin: 16px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
@@ -1268,7 +1631,7 @@ class MessageDetailAPI(View):
                     </svg>
                 </div>
                 <div style="flex: 1; color: white;">
-                    <p style="margin: 0; font-weight: 600; font-size: 14px;">{filename}</p>
+                    <p style="margin: 0; font-weight: 600; font-size: 14px;">{filename_safe}</p>
                     <p style="margin: 4px 0 0; font-size: 12px; opacity: 0.8;">🎵 {size_mb:.1f} MB</p>
                 </div>
             </div>
@@ -1346,12 +1709,14 @@ class MessageDetailAPI(View):
             'attachment_id': att_id
         })
         
+        filename_safe = html_escape(filename)  # Sanitizar para prevenir XSS
+        
         video_html = f'''
         <div class="video-container" style="position: relative; margin: 16px 0; border-radius: 12px; overflow: hidden; background: #1f2937;">
             <video 
                 controls 
                 preload="metadata"
-                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Crect fill='%231f2937' width='800' height='450'/%3E%3Cg fill='%23374151'%3E%3Ccircle cx='400' cy='225' r='60'/%3E%3Cpath d='M380 190 L380 260 L440 225 Z' fill='%239ca3af'/%3E%3C/g%3E%3Ctext x='400' y='320' text-anchor='middle' fill='%239ca3af' font-family='sans-serif' font-size='16'%3E{filename}%3C/text%3E%3Ctext x='400' y='345' text-anchor='middle' fill='%236b7280' font-family='sans-serif' font-size='14'%3E{size_mb:.1f} MB%3C/text%3E%3C/svg%3E"
+                poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 450'%3E%3Crect fill='%231f2937' width='800' height='450'/%3E%3Cg fill='%23374151'%3E%3Ccircle cx='400' cy='225' r='60'/%3E%3Cpath d='M380 190 L380 260 L440 225 Z' fill='%239ca3af'/%3E%3C/g%3E%3Ctext x='400' y='320' text-anchor='middle' fill='%239ca3af' font-family='sans-serif' font-size='16'%3E{filename_safe}%3C/text%3E%3Ctext x='400' y='345' text-anchor='middle' fill='%236b7280' font-family='sans-serif' font-size='14'%3E{size_mb:.1f} MB%3C/text%3E%3C/svg%3E"
                 style="width: 100%; max-width: 100%; height: auto; display: block; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
             >
                 <source src="{url}" type="{content_type}">
@@ -1389,6 +1754,8 @@ class MessageDetailAPI(View):
             'attachment_id': att_id
         })
         
+        filename_safe = html_escape(filename)  # Sanitizar para prevenir XSS
+        
         audio_html = f'''
         <div class="audio-container" style="margin: 16px 0; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
@@ -1398,7 +1765,7 @@ class MessageDetailAPI(View):
                     </svg>
                 </div>
                 <div style="flex: 1; color: white;">
-                    <p style="margin: 0; font-weight: 600; font-size: 14px;">{filename}</p>
+                    <p style="margin: 0; font-weight: 600; font-size: 14px;">{filename_safe}</p>
                     <p style="margin: 4px 0 0; font-size: 12px; opacity: 0.8;">🎵 {size_mb:.1f} MB</p>
                 </div>
             </div>

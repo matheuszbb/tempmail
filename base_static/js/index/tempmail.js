@@ -4,6 +4,7 @@ class TempMailApp {
         this.pollingInterval = null;
         this.isRefreshing = false;
         this.isResetting = false; // Flag para bloquear polling durante reset/edição
+        this.isLoadingMessage = false; // Flag para evitar múltiplas chamadas simultâneas
         this.sessionTimer = null; // Timer da sessão
         this.sessionSecondsRemaining = 0;
         this.popoverActiveMobile = false; // Estado para controle de toque no mobile
@@ -85,9 +86,8 @@ class TempMailApp {
                 if (iframe) {
                     const parentWidth = iframe.parentElement.clientWidth;
                     
-                    // Se o conteúdo é mais largo que o container, ajustar iframe para permitir scroll
+                    // Se o conteúdo é mais largo que o container, ajustar iframe para permitir scroll horizontal
                     if (dimensions.width > parentWidth) {
-                        // Manter 100% de largura do container, o scroll interno do iframe cuidará do resto
                         iframe.style.width = '100%';
                         iframe.style.overflowX = 'auto';
                     } else {
@@ -95,13 +95,12 @@ class TempMailApp {
                         iframe.style.overflowX = 'hidden';
                     }
                     
-                    // Garantir altura mínima de 40px
-                    // Em mobile, permitir altura maior para evitar corte de conteúdo
+                    // Ajustar altura automaticamente ao conteúdo sem limitação
+                    // O scroll vertical será gerenciado pela div principal, não pelo iframe
                     const minHeight = 40;
-                    const isMobile = window.innerWidth < 768;
-                    const maxHeight = isMobile ? window.innerHeight * 0.95 : window.innerHeight * 0.85;
-                    const calculatedHeight = Math.max(minHeight, Math.min(dimensions.height, maxHeight));
+                    const calculatedHeight = Math.max(minHeight, dimensions.height);
                     iframe.style.height = calculatedHeight + 'px';
+                    iframe.style.overflowY = 'hidden';
                 }
             }
         });
@@ -178,10 +177,8 @@ class TempMailApp {
                 const isReadingMessage = this.elements.viewList && this.elements.viewList.classList.contains('hidden');
                 if (!isReadingMessage && !this.isResetting && this.sessionSecondsRemaining > 0) {
                     // Só reinicia se não estiver rodando
-                    if (!this.pollingTimer) {
-                        this.pollingSecondsRemaining = 10;
-                        this.updatePollingTimer();
-                        this.startPollingTimer();
+                    if (!this.pollingInterval) {
+                        this.startPolling();
                     }
 
                     // Faz um refresh imediato das mensagens
@@ -585,6 +582,13 @@ class TempMailApp {
      * Abre uma mensagem específica
      */
     async viewMessage(messageId) {
+        // Evitar múltiplas chamadas simultâneas
+        if (this.isLoadingMessage) {
+            console.log('⏸️ Já está carregando uma mensagem, ignorando clique');
+            return;
+        }
+        
+        this.isLoadingMessage = true;
         this.currentMessageId = messageId;
 
         try {
@@ -638,168 +642,8 @@ class TempMailApp {
 
                 if (this.elements.msgCorpo) {
                     if (dados.html) {
-                        console.log('HTML encontrado. Tamanho:', dados.html.length, 'Primeiro 200 chars:', dados.html.substring(0, 200));
-                        // Limpar classes de texto puro que podem ter sobrado
-                        this.elements.msgCorpo.classList.remove('whitespace-pre-wrap', 'break-all', 'pl-2');
-                        // Usar Tailwind para container
-                        this.elements.msgCorpo.classList.add('w-full', 'overflow-hidden');
-
-                        // Criar iframe para isolar o CSS do e-mail
-                        const iframe = document.createElement('iframe');
-                        // Segurança: sandbox sem allow-same-origin evita o aviso e aumenta segurança
-                        iframe.sandbox = 'allow-scripts allow-popups allow-popups-to-escape-sandbox';
-                        iframe.style.width = '100%';
-                        iframe.style.border = 'none';
-                        iframe.style.overflowX = 'auto';
-                        iframe.style.overflowY = 'auto';
-                        iframe.scrolling = 'auto';
-
-                        this.elements.msgCorpo.innerHTML = '';
-                        this.elements.msgCorpo.appendChild(iframe);
-
-                        // IMPORTANTE: NÃO usar linkify no HTML bruto para não quebrar as tags do e-mail
-                        // Hook para remover pointer-events: none que bloqueia cliques
-                        DOMPurify.addHook('afterSanitizeAttributes', (node) => {
-                            if (node.style && node.style.pointerEvents === 'none') {
-                                node.style.pointerEvents = 'auto';
-                            }
-                        });
-
-                        const sanitizedHtml = DOMPurify.sanitize(dados.html, {
-                            ALLOWED_TAGS: ['a', 'p', 'div', 'span', 'b', 'i', 'u', 'strong', 'em', 'br', 'img', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'font', 'center', 'blockquote', 'ul', 'ol', 'li', 'pre', 'code', 'hr', 'section', 'article', 'nav', 'header', 'footer', 'main'],
-                            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id', 'data-*', 'aria-label', 'aria-hidden', 'role', 'title', 'dir'],
-                            ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|urn):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
-                            FORCE_BODY: false,
-                            WHOLE_DOCUMENT: false
-                        });
-                        console.log('HTML sanitizado. Tamanho:', sanitizedHtml.length, 'Conteúdo:', sanitizedHtml);
-
-                        // Decodificar HTML entities para evitar escape duplo no srcdoc
-                        const htmlDecoded = this.decodeHtmlEntities(sanitizedHtml);
-                        console.log('HTML decodificado:', htmlDecoded);
-
-                        // Limpar o hook depois de usar
-                        DOMPurify.removeHook('afterSanitizeAttributes');
-
-                        // Detectar tema atual (dark ou light)
-                        const isDarkMode = document.documentElement.classList.contains('dark');
-                        const bodyBg = isDarkMode ? '#1f2937' : '#ffffff';
-                        const bodyTextColor = isDarkMode ? '#f3f4f6' : '#1f2937';
-
-                        // Criar conteúdo do iframe de forma segura usando Blob
-                        const iframeHTML = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
-
-html, body { 
-    margin: 0;
-    padding: 0;
-    overflow-x: auto;
-    overflow-y: auto;
-}
-body {
-    font-family: 'Poppins', 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: ${bodyTextColor};
-    background-color: ${bodyBg};
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    padding: 8px;
-    min-width: fit-content;
-}
-img { 
-    max-width: 100%;
-    vertical-align: middle;
-}
-table { 
-    max-width: 100% !important;
-    border-collapse: collapse;
-}
-a:not([style*="color"]) {
-    color: #f97316;
-    text-decoration: underline;
-}
-</style>
-</head>
-<body>
-${htmlDecoded}
-<script>
-(function() {
-    function updateThemeColors(isDark) {
-        const bodyBg = isDark ? '#1f2937' : '#ffffff';
-        const bodyTextColor = isDark ? '#f3f4f6' : '#1f2937';
-        document.body.style.backgroundColor = bodyBg;
-        document.body.style.color = bodyTextColor;
-    }
-
-    window.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'theme-change') {
-            updateThemeColors(event.data.isDark);
-        }
-    });
-
-    function reportDimensions() {
-        const body = document.body;
-        const html = document.documentElement;
-        const width = body.scrollWidth + 16;
-        const height = body.scrollHeight + 16;
-
-        window.parent.postMessage({
-            type: 'resize',
-            dimensions: { width: width, height: height }
-        }, '*');
-    }
-
-    document.addEventListener('click', function(e) {
-        const link = e.target.closest('a');
-        if (link && link.href) {
-            const href = link.getAttribute('href') || link.href;
-            if (href && href.trim() !== '' && !href.startsWith('#') && !href.startsWith('javascript:')) {
-                e.preventDefault();
-                e.stopPropagation();
-                window.parent.postMessage({
-                    type: 'link-click',
-                    href: href,
-                    text: link.textContent || link.innerText || ''
-                }, '*');
-            }
-        }
-    }, true);
-
-    if (window.ResizeObserver) {
-        const ro = new ResizeObserver(reportDimensions);
-        ro.observe(document.body);
-    }
-    
-    window.onload = reportDimensions;
-    setTimeout(reportDimensions, 100);
-    setTimeout(reportDimensions, 300);
-    setTimeout(reportDimensions, 800);
-    setTimeout(reportDimensions, 2000);
-})();
-</script>
-</body>
-</html>`;
-
-                        // Usar Blob para criar o iframe com conteúdo seguro
-                        const blob = new Blob([iframeHTML], { type: 'text/html;charset=utf-8' });
-                        const blobUrl = URL.createObjectURL(blob);
-                        iframe.src = blobUrl;
-
-                        // Limpar blob URL quando o iframe for removido
-                        const observer = new MutationObserver(() => {
-                            if (!document.contains(iframe)) {
-                                URL.revokeObjectURL(blobUrl);
-                                observer.disconnect();
-                            }
-                        });
-                        observer.observe(document.body, { childList: true, subtree: true });
-
+                        // Carregar imagens inline antes de renderizar
+                        this.loadInlineImagesAndRender(dados.html, messageId);
                     } else {
                         // Texto Puro: escapar, linkificar e então sanitizar
                         const escapedText = this.escapeHtml(dados.corpo);
@@ -839,6 +683,9 @@ ${htmlDecoded}
             }
         } catch (error) {
             Toast.error(gettext('Não foi possível abrir a mensagem.'));
+        } finally {
+            // Liberar flag de loading
+            this.isLoadingMessage = false;
         }
     }
 
@@ -1139,14 +986,42 @@ ${htmlDecoded}
         }
     }
 
+    /**
+     * Gerencia o estado de loading do botão Atualizar
+     * @param {boolean} isLoading - Se true, ativa animação; se false, remove
+     */
+    _setResetButtonLoading(isLoading) {
+        const resetButton = document.querySelector('[onclick="confirmResetEmail()"]');
+        if (!resetButton) return;
+
+        const icon = resetButton.querySelector('.fa-rotate');
+        if (!icon) return;
+
+        if (isLoading) {
+            // Ativar animação de rotação e cor laranja
+            icon.classList.add('fa-spin', 'text-brand-orange');
+            icon.classList.remove('text-gray-600', 'dark:text-gray-300');
+            
+            // Desabilitar botão visualmente
+            resetButton.classList.add('cursor-not-allowed', 'pointer-events-none');
+        } else {
+            // Remover animação e restaurar estado original
+            icon.classList.remove('fa-spin', 'text-brand-orange');
+            icon.classList.add('text-gray-600', 'dark:text-gray-300');
+            
+            // Reabilitar botão
+            resetButton.classList.remove('cursor-not-allowed', 'pointer-events-none');
+        }
+    }
 
     async confirmResetEmail() {
         if (this.isResetting) return;
         this.isResetting = true;
+        this._setResetButtonLoading(true); // Ativar animação de loading
         this.stopPolling(); // <--- CRITICAL: Stop polling explicitly
 
         // Bloqueio visual e Feedback (User Request)
-        Toast.warning(gettext('Deletando e-mail atual, por favor aguarde...'), 3000);
+        //Toast.warning(gettext('Deletando e-mail atual, por favor aguarde...'), 3000);
 
         // Limpar display IMEDIATAMENTE antes do fetch
         if (this.elements.emailDisplay) this.elements.emailDisplay.value = '';
@@ -1166,14 +1041,24 @@ ${htmlDecoded}
 
             Toast.success(gettext('Novo e-mail gerado com sucesso!'));
             if (data.expires_in !== undefined) this.startSessionCountdown(data.expires_in);
+            
+            this.hideSkeleton();
+            
+            // Cooldown de 2s apenas em caso de sucesso
+            setTimeout(() => {
+                this._setResetButtonLoading(false);
+                this.isResetting = false;
+                this.startPolling();
+            }, 2000);
         } else {
             const errorMsg = data?.error || (status === 403 ? gettext('Sessão expirada. Recarregue a página.') : gettext('Erro ao resetar email.'));
             Toast.error(errorMsg);
+            
+            this.hideSkeleton();
+            this._setResetButtonLoading(false); // Remover loading imediatamente em caso de erro
+            this.isResetting = false;
+            this.startPolling();
         }
-
-        this.hideSkeleton();
-        this.isResetting = false;
-        this.startPolling();
     }
 
     // ==================== SESSION INFO MODAL ====================
@@ -1211,7 +1096,7 @@ ${htmlDecoded}
 
     // ==================== MODAL EDIT LOGIC ====================
 
-    openEditModal() {
+    async openEditModal() {
         if (!this.elements.editModal) return;
 
         // Ajusta o domínio no label
@@ -1221,6 +1106,9 @@ ${htmlDecoded}
                 this.elements.modalDomainLabel.textContent = `@${domain}`;
             }
         }
+
+        // ✅ Carregar histórico de emails
+        await this.loadEmailHistory();
 
         // Abre nativamente (isso resolve o problema de interação/foco)
         this.elements.editModal.showModal();
@@ -1259,17 +1147,24 @@ ${htmlDecoded}
             }
         }
 
-        // ✅ VALIDAÇÃO: Verificar caracteres válidos no username
-        // Permite: letras, números, pontos, hífens e underscores
-        const usernameRegex = /^[a-zA-Z0-9._-]+$/;
-        if (!usernameRegex.test(username)) {
-            Toast.error(gettext('Nome de usuário contém caracteres inválidos. Use apenas letras, números, pontos, hífens e underscores.'));
-            return;
+        // ✅ NORMALIZAÇÃO: Converter acentos automaticamente (ç→c, á→a, etc)
+        const normalized = username.normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+        if (normalized !== username) {
+            username = normalized;
+            usernameInput.value = username; // Atualizar input com versão normalizada
+            console.log('📝 Username normalizado automaticamente:', username);
         }
 
         // ✅ VALIDAÇÃO: Username não pode começar ou terminar com ponto
         if (username.startsWith('.') || username.endsWith('.')) {
             Toast.error(gettext('Nome de usuário não pode começar ou terminar com ponto.'));
+            return;
+        }
+        
+        // ✅ VALIDAÇÃO: Verificar se após normalização ainda há caracteres inválidos
+        const validPattern = /^[a-zA-Z0-9._-]+$/;
+        if (!validPattern.test(username)) {
+            Toast.error(gettext('Nome de usuário contém caracteres inválidos. Use apenas letras, números, pontos, hífens e underscores.'));
             return;
         }
 
@@ -1327,6 +1222,74 @@ ${htmlDecoded}
         }
     }
 
+    // ==================== EMAIL HISTORY ====================
+
+    async loadEmailHistory() {
+        try {
+            const response = await fetch('/api/email/history/');
+            const data = await response.json();
+            
+            const historyContainer = document.getElementById('email-history');
+            if (!historyContainer) return;
+            
+            if (data.success && data.history && data.history.length > 0) {
+                historyContainer.innerHTML = `
+                    <div class="mt-4">
+                        <div class="mb-2">
+                            <span class="text-sm font-bold text-gray-700 dark:text-gray-300">📜 Emails recentes:</span>
+                        </div>
+                        <div class="space-y-2 max-h-64 overflow-y-auto">
+                            ${data.history.map(item => this.renderHistoryItem(item)).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                historyContainer.innerHTML = '';
+            }
+        } catch (error) {
+            console.error('❌ Erro ao carregar histórico:', error);
+        }
+    }
+
+    renderHistoryItem(item) {
+        const canUse = item.available || item.can_reuse;
+        const statusIcon = canUse ? '✅' : (item.in_cooldown ? '⏳' : '🔒');
+        const statusText = canUse ? 'Disponível' : 
+                          (item.in_cooldown ? 'Em cooldown' : 'Em uso');
+        
+        const buttonClass = canUse ? 
+            'px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-all active:scale-95 text-sm' : 
+            'px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 rounded-lg font-semibold cursor-not-allowed text-sm';
+        
+        return `
+            <div class="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">${statusIcon}</span>
+                    <div>
+                        <div class="font-mono text-sm font-semibold text-gray-900 dark:text-white">${item.address}</div>
+                        <div class="text-xs text-gray-600 dark:text-gray-400">${statusText}</div>
+                    </div>
+                </div>
+                <button 
+                    class="${buttonClass}"
+                    ${canUse ? `onclick="window.app.useHistoryEmail('${item.address}')"` : 'disabled'}
+                >
+                    ${canUse ? 'Usar' : 'Indisponível'}
+                </button>
+            </div>
+        `;
+    }
+
+    async useHistoryEmail(email) {
+        // Preencher input com o username
+        const [username, domain] = email.split('@');
+        const input = this.elements.modalInputUser;
+        if (input) {
+            input.value = username;
+            await this.saveEditModal();
+        }
+    }
+
     // Helper para limpar lista
     clearMessageList() {
         if (this.elements.emailList) {
@@ -1373,8 +1336,8 @@ ${htmlDecoded}
         if (this.elements.viewList) this.elements.viewList.classList.remove('hidden');
 
         // Reiniciar timer quando volta para a lista (se não estiver rodando e sessão não expirou)
-        if (!this.pollingTimer && !this.isResetting && this.sessionSecondsRemaining > 0) {
-            this.startPollingTimer();
+        if (!this.pollingInterval && !this.isResetting && this.sessionSecondsRemaining > 0) {
+            this.startPolling();
         }
     }
 
@@ -1488,6 +1451,388 @@ ${htmlDecoded}
             this.elements.pollingLed.classList.remove('opacity-100');
             this.elements.pollingLed.classList.add('opacity-0');
         }
+    }
+
+    /**
+     * Injeta CSS de animações do skeleton no documento
+     */
+    injectSkeletonCSS() {
+        // Verificar se já foi injetado
+        if (document.getElementById('skeleton-animations-css')) {
+            return;
+        }
+        
+        const style = document.createElement('style');
+        style.id = 'skeleton-animations-css';
+        style.textContent = `
+            @keyframes shimmer-effect {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+            }
+            @keyframes spinner-rotate {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+        console.log('✅ CSS de animações do skeleton injetado');
+    }
+
+    /**
+     * Carrega todas as imagens inline e renderiza o email
+     */
+    async loadInlineImagesAndRender(html, messageId) {
+        console.log('🔍 Procurando imagens inline no HTML');
+        
+        // Extrair URLs de imagens inline
+        const imgRegex = /data-image-url="([^"]+)"/g;
+        const imageUrls = [];
+        let match;
+        
+        while ((match = imgRegex.exec(html)) !== null) {
+            imageUrls.push(match[1]);
+        }
+        
+        console.log(`📸 Encontradas ${imageUrls.length} imagens inline`);
+        
+        if (imageUrls.length === 0) {
+            // Sem imagens inline, renderizar direto
+            this.renderEmailInIframe(html);
+            return;
+        }
+        
+        // Injetar CSS de animações no documento (antes do iframe)
+        this.injectSkeletonCSS();
+        
+        // ✨ RENDERIZAR IMEDIATAMENTE com skeletons (não esperar downloads)
+        console.log('⚡ Renderizando imediatamente com skeletons');
+        this.renderEmailInIframe(html);
+        
+        // Aguardar iframe estar pronto antes de começar a substituir imagens
+        await this.waitForIframeReady();
+        
+        // Carregar imagens progressivamente em background
+        imageUrls.forEach(async (url, index) => {
+            try {
+                // Verificar cache primeiro
+                const cacheKey = `inline_img_${url}`;
+                const cached = sessionStorage.getItem(cacheKey);
+                
+                let dataUrl;
+                let fromCache = false;
+                
+                if (cached) {
+                    console.log(`💾 Imagem ${index + 1} do cache:`, url);
+                    dataUrl = cached;
+                    fromCache = true;
+                    // Delay mínimo para ver a animação do skeleton (300ms)
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                } else {
+                    console.log(`🔄 Baixando imagem ${index + 1}:`, url);
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                    });
+                    
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    
+                    const blob = await response.blob();
+                    dataUrl = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                    });
+                    
+                    // Salvar no cache
+                    try {
+                        sessionStorage.setItem(cacheKey, dataUrl);
+                        console.log(`💾 Imagem ${index + 1} cacheada`);
+                    } catch (e) {
+                        console.warn('⚠️ Não foi possível cachear (quota excedida?):', e);
+                    }
+                }
+                
+                // Substituir skeleton pela imagem real no iframe
+                console.log(`✅ Substituindo skeleton ${index + 1}`);
+                this.updateInlineImageInIframe(url, dataUrl);
+                
+            } catch (error) {
+                console.error(`❌ Erro ao carregar imagem ${index + 1}:`, url, error);
+                // Mostrar erro no skeleton
+                this.updateInlineImageInIframe(url, null, true);
+            }
+        });
+    }
+    
+    /**
+     * Aguarda o iframe estar pronto para acesso ao contentDocument
+     */
+    async waitForIframeReady() {
+        const iframe = this.elements.msgCorpo?.querySelector('iframe');
+        if (!iframe) {
+            console.warn('⚠️ Iframe não encontrado');
+            return;
+        }
+        
+        // Polling para verificar se contentDocument está acessível
+        const checkReady = () => {
+            try {
+                return iframe.contentDocument && 
+                       iframe.contentDocument.readyState === 'complete' &&
+                       iframe.contentDocument.body !== null;
+            } catch (e) {
+                return false;
+            }
+        };
+        
+        // Se já estiver pronto, retornar imediatamente
+        if (checkReady()) {
+            console.log('✅ Iframe já está pronto');
+            return;
+        }
+        
+        // Aguardar até estar pronto (com timeout)
+        return new Promise((resolve) => {
+            let attempts = 0;
+            const maxAttempts = 50; // 50 * 100ms = 5 segundos
+            
+            const interval = setInterval(() => {
+                attempts++;
+                
+                if (checkReady()) {
+                    clearInterval(interval);
+                    console.log(`✅ Iframe pronto após ${attempts * 100}ms`);
+                    // Pequeno delay adicional para garantir
+                    setTimeout(resolve, 50);
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                    console.warn('⚠️ Timeout esperando iframe - continuando mesmo assim');
+                    resolve();
+                }
+            }, 100);
+        });
+    }
+    
+    /**
+     * Atualiza uma imagem inline dentro do iframe já renderizado
+     */
+    updateInlineImageInIframe(imageUrl, dataUrl, isError = false) {
+        const iframe = this.elements.msgCorpo?.querySelector('iframe');
+        if (!iframe) {
+            console.warn('⚠️ Iframe não encontrado');
+            return;
+        }
+        
+        // Usar postMessage ao invés de acessar contentDocument (evita CORS)
+        try {
+            iframe.contentWindow.postMessage({
+                type: 'update-inline-image',
+                imageUrl: imageUrl,
+                dataUrl: dataUrl,
+                isError: isError
+            }, '*');
+            console.log(`📤 Comando enviado para substituir imagem no iframe`);
+        } catch (e) {
+            console.warn('⚠️ Erro ao enviar mensagem para iframe:', e);
+        }
+    }
+
+    /**
+     * Renderiza o email no iframe
+     */
+    renderEmailInIframe(html) {
+        console.log('🖼️ renderEmailInIframe chamado, tamanho do HTML:', html.length);
+        
+        // Limpar classes de texto puro que podem ter sobrado
+        this.elements.msgCorpo.classList.remove('whitespace-pre-wrap', 'break-all', 'pl-2');
+        // Usar Tailwind para container
+        this.elements.msgCorpo.classList.add('w-full', 'overflow-hidden');
+
+        // Criar iframe para isolar o CSS do e-mail
+        const iframe = document.createElement('iframe');
+        // Segurança: sandbox sem allow-same-origin evita o aviso e aumenta segurança
+        iframe.sandbox = 'allow-scripts allow-popups allow-popups-to-escape-sandbox';
+        iframe.style.width = '100%';
+        iframe.style.border = 'none';
+        iframe.style.overflowX = 'auto';
+        iframe.style.overflowY = 'auto';
+        iframe.scrolling = 'auto';
+
+        this.elements.msgCorpo.innerHTML = '';
+        this.elements.msgCorpo.appendChild(iframe);
+
+        // IMPORTANTE: NÃO usar linkify no HTML bruto para não quebrar as tags do e-mail
+        // Hook para remover pointer-events: none que bloqueia cliques
+        DOMPurify.addHook('afterSanitizeAttributes', (node) => {
+            if (node.style && node.style.pointerEvents === 'none') {
+                node.style.pointerEvents = 'auto';
+            }
+        });
+
+        const sanitizedHtml = DOMPurify.sanitize(html, {
+            ALLOWED_TAGS: ['a', 'p', 'div', 'span', 'b', 'i', 'u', 'strong', 'em', 'br', 'img', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'font', 'center', 'blockquote', 'ul', 'ol', 'li', 'pre', 'code', 'hr', 'section', 'article', 'nav', 'header', 'footer', 'main'],
+            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id', 'data-*', 'aria-label', 'aria-hidden', 'role', 'title', 'dir'],
+            ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|urn|data):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
+            FORCE_BODY: false,
+            WHOLE_DOCUMENT: false
+        });
+
+        // Limpar o hook depois de usar
+        DOMPurify.removeHook('afterSanitizeAttributes');
+
+        // Detectar tema atual (dark ou light)
+        const isDarkMode = document.documentElement.classList.contains('dark');
+        const bodyBg = isDarkMode ? '#1f2937' : '#ffffff';
+        const bodyTextColor = isDarkMode ? '#f3f4f6' : '#1f2937';
+
+        // Criar conteúdo do iframe usando srcdoc (evita problemas com blob URLs)
+        const iframeHTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Animações do skeleton */
+@keyframes shimmer-effect {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+@keyframes spinner-rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+html, body { 
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+body {
+    font-family: 'Poppins', 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: ${bodyTextColor};
+    background-color: ${bodyBg};
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 8px;
+    min-width: fit-content;
+}
+img { 
+    max-width: 100%;
+    vertical-align: middle;
+}
+table { 
+    max-width: 100% !important;
+    border-collapse: collapse;
+}
+a:not([style*="color"]) {
+    color: #f97316;
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+${sanitizedHtml}
+<script>
+(function() {
+    function updateThemeColors(isDark) {
+        const bodyBg = isDark ? '#1f2937' : '#ffffff';
+        const bodyTextColor = isDark ? '#f3f4f6' : '#1f2937';
+        document.body.style.backgroundColor = bodyBg;
+        document.body.style.color = bodyTextColor;
+    }
+
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'theme-change') {
+            updateThemeColors(event.data.isDark);
+        }
+        if (event.data && event.data.type === 'recalculate-size') {
+            reportDimensions();
+        }
+        if (event.data && event.data.type === 'update-inline-image') {
+            // Substituir skeleton por imagem real
+            const { imageUrl, dataUrl, isError } = event.data;
+            const containers = document.querySelectorAll('.inline-image-container');
+            
+            containers.forEach(container => {
+                const containerUrl = container.getAttribute('data-image-url');
+                if (containerUrl === imageUrl) {
+                    if (isError) {
+                        container.innerHTML = '<div style="padding: 40px; text-align: center; background: #fee2e2; border-radius: 12px;"><p style="margin: 0; color: #991b1b; font-size: 14px; font-weight: 600;">❌ Erro ao carregar imagem</p></div>';
+                    } else if (dataUrl) {
+                        const img = document.createElement('img');
+                        img.src = dataUrl;
+                        img.alt = 'Imagem inline';
+                        img.style.cssText = 'max-width: 100%; height: auto; border-radius: 8px; opacity: 0; transition: opacity 0.3s ease;';
+                        img.onload = function() { this.style.opacity = '1'; };
+                        
+                        const wrapper = document.createElement('div');
+                        wrapper.style.cssText = 'margin: 16px 0; text-align: center;';
+                        wrapper.appendChild(img);
+                        
+                        container.innerHTML = '';
+                        container.appendChild(wrapper);
+                    }
+                    
+                    setTimeout(reportDimensions, 100);
+                }
+            });
+        }
+    });
+
+    function reportDimensions() {
+        const body = document.body;
+        const html = document.documentElement;
+        const width = body.scrollWidth + 16;
+        const height = body.scrollHeight + 16;
+
+        window.parent.postMessage({
+            type: 'resize',
+            dimensions: { width: width, height: height }
+        }, '*');
+    }
+
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (link && link.href) {
+            const href = link.getAttribute('href') || link.href;
+            if (href && href.trim() !== '' && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.parent.postMessage({
+                    type: 'link-click',
+                    href: href,
+                    text: link.textContent || link.innerText || ''
+                }, '*');
+            }
+        }
+    }, true);
+
+    if (window.ResizeObserver) {
+        const ro = new ResizeObserver(reportDimensions);
+        ro.observe(document.body);
+    }
+    
+    window.onload = reportDimensions;
+    setTimeout(reportDimensions, 100);
+    setTimeout(reportDimensions, 300);
+    setTimeout(reportDimensions, 800);
+    setTimeout(reportDimensions, 2000);
+})();
+</script>
+</body>
+</html>`;
+
+        // Usar srcdoc ao invés de blob URL para evitar problemas de segurança
+        iframe.srcdoc = iframeHTML;
+
+        // Processar links no HTML renderizado
+        setTimeout(() => this.processLinks(), 100);
     }
 }
 

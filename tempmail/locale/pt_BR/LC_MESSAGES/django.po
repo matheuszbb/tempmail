@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-27 10:36-0300\n"
+"POT-Creation-Date: 2026-01-28 20:00-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -177,7 +177,7 @@ msgstr ""
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:32
 #: core/templates/core/parciais/index/_confirmationResetModal.html:18
-#: core/templates/core/parciais/index/_editModal.html:35
+#: core/templates/core/parciais/index/_editModal.html:38
 #: templates/parciais/_confirmationExternalLinkModal.html:38
 msgid "Cancelar"
 msgstr ""
@@ -188,7 +188,7 @@ msgstr ""
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:41
 #: core/templates/core/parciais/index/_confirmationResetModal.html:29
-#: core/templates/core/parciais/index/_editModal.html:48
+#: core/templates/core/parciais/index/_editModal.html:51
 #: templates/parciais/_confirmationExternalLinkModal.html:52
 msgid "fechar"
 msgstr ""
@@ -226,7 +226,7 @@ msgstr ""
 msgid "ex: usuario123"
 msgstr ""
 
-#: core/templates/core/parciais/index/_editModal.html:42
+#: core/templates/core/parciais/index/_editModal.html:45
 msgid "Salvar Alterações"
 msgstr ""
 
@@ -304,149 +304,155 @@ msgstr ""
 msgid "Entendi"
 msgstr ""
 
-#: core/views.py:150 core/views.py:238 core/views.py:480
+#: core/views.py:161 core/views.py:267 core/views.py:653
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
 
-#: core/views.py:169
+#: core/views.py:198
 msgid "Erro ao criar email temporário"
 msgstr ""
 
-#: core/views.py:193
+#: core/views.py:222
 msgid "Você já está usando este endereço de e-mail"
 msgstr ""
 
-#: core/views.py:210
+#: core/views.py:239
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr ""
 
-#: core/views.py:262
+#: core/views.py:296
 msgid "Sessão resetada com sucesso"
 msgstr ""
 
-#: core/views.py:273 core/views.py:277
+#: core/views.py:311 core/views.py:315
 msgid "Endereço de email inválido"
 msgstr ""
 
-#: core/views.py:283
+#: core/views.py:321
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr ""
 
-#: core/views.py:292
-msgid "Nome de usuário contém caracteres inválidos"
+#: core/views.py:343
+msgid ""
+"Nome de usuário contém caracteres inválidos. Use apenas letras, números, "
+"pontos, hífens e underscores."
 msgstr ""
 
-#: core/views.py:299
+#: core/views.py:354
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr ""
 
-#: core/views.py:322
+#: core/views.py:382
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr ""
 
-#: core/views.py:328
+#: core/views.py:388
 msgid "Não foi possível acessar este email"
 msgstr ""
 
-#: core/views.py:343
+#: core/views.py:408
 msgid "Email alterado com sucesso"
 msgstr ""
 
-#: core/views.py:477
+#: core/views.py:650
 msgid "Erro interno ao processar requisição"
 msgstr ""
 
-#: core/views.py:482
+#: core/views.py:655
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr ""
 
-#: core/views.py:484
+#: core/views.py:657
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr ""
 
-#: core/views.py:486
+#: core/views.py:659
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr ""
 
-#: core/views.py:506 core/views.py:519 core/views.py:737 core/views.py:876
-#: core/views.py:1652 core/views.py:1708
+#: core/views.py:770
+msgid "Erro ao buscar histórico"
+msgstr ""
+
+#: core/views.py:881 core/views.py:894 core/views.py:1112 core/views.py:1251
+#: core/views.py:2019 core/views.py:2075
 msgid "Sessão não encontrada"
 msgstr ""
 
-#: core/views.py:565
+#: core/views.py:940
 msgid "Conta não encontrada"
 msgstr ""
 
-#: core/views.py:571
+#: core/views.py:946
 msgid "Erro ao buscar mensagens"
 msgstr ""
 
-#: core/views.py:749
+#: core/views.py:1124
 msgid "Anexo não encontrado"
 msgstr ""
 
-#: core/views.py:756 core/views.py:1669 core/views.py:1737
+#: core/views.py:1131 core/views.py:2036 core/views.py:2104
 msgid "Mailbox não encontrada"
 msgstr ""
 
-#: core/views.py:769
+#: core/views.py:1144
 msgid "Conteúdo não disponível"
 msgstr ""
 
-#: core/views.py:793 core/views.py:1692
+#: core/views.py:1168 core/views.py:2059
 msgid "Mensagem não encontrada"
 msgstr ""
 
-#: core/views.py:796
+#: core/views.py:1171
 msgid "Erro ao buscar anexo"
 msgstr ""
 
-#: core/views.py:799
+#: core/views.py:1174
 msgid "Erro interno do servidor"
 msgstr ""
 
-#: core/views.py:933
+#: core/views.py:1308
 msgid "Não encontrado"
 msgstr ""
 
-#: core/views.py:939
+#: core/views.py:1314
 msgid "Erro interno"
 msgstr ""
 
-#: core/views.py:1684
+#: core/views.py:2051
 msgid "Conteúdo vazio"
 msgstr ""
 
-#: core/views.py:1696
+#: core/views.py:2063
 msgid "Não foi possível processar o download da mensagem."
 msgstr ""
 
-#: core/views.py:1729
+#: core/views.py:2096
 msgid "Anexo não encontrado nos metadados da mensagem"
 msgstr ""
 
-#: core/views.py:1751
+#: core/views.py:2118
 msgid "Conteúdo do anexo vazio ou não disponível"
 msgstr ""
 
-#: core/views.py:1764
+#: core/views.py:2131
 msgid "Arquivo não encontrado"
 msgstr ""
 
-#: core/views.py:1768
+#: core/views.py:2135
 msgid "Não foi possível processar o download do arquivo."
 msgstr ""
 
-#: core/views.py:2156
+#: core/views.py:2523
 msgid "Erro ao processar requisição"
 msgstr ""
 
-#: core/views.py:2200
+#: core/views.py:2567
 msgid "Erro ao carregar estatísticas"
 msgstr ""
 
-#: core/views.py:2230
+#: core/views.py:2597
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr ""
 
