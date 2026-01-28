@@ -84,15 +84,22 @@ class TempMailApp {
                 const iframe = this.elements.msgCorpo.querySelector('iframe');
                 if (iframe) {
                     const parentWidth = iframe.parentElement.clientWidth;
-                    // Usar largura 100% da maioria dos casos, apenas para emails muito grandes
-                    if (dimensions.width > parentWidth + 10) {
-                        iframe.style.width = Math.min(dimensions.width, parentWidth + 50) + 'px';
+                    
+                    // Se o conteúdo é mais largo que o container, ajustar iframe para permitir scroll
+                    if (dimensions.width > parentWidth) {
+                        // Manter 100% de largura do container, o scroll interno do iframe cuidará do resto
+                        iframe.style.width = '100%';
+                        iframe.style.overflowX = 'auto';
                     } else {
                         iframe.style.width = '100%';
+                        iframe.style.overflowX = 'hidden';
                     }
-                    // Garantir altura mínima de 40px e máxima de 80vh
+                    
+                    // Garantir altura mínima de 40px
+                    // Em mobile, permitir altura maior para evitar corte de conteúdo
                     const minHeight = 40;
-                    const maxHeight = window.innerHeight * 0.8;
+                    const isMobile = window.innerWidth < 768;
+                    const maxHeight = isMobile ? window.innerHeight * 0.95 : window.innerHeight * 0.85;
                     const calculatedHeight = Math.max(minHeight, Math.min(dimensions.height, maxHeight));
                     iframe.style.height = calculatedHeight + 'px';
                 }
@@ -631,6 +638,7 @@ class TempMailApp {
 
                 if (this.elements.msgCorpo) {
                     if (dados.html) {
+                        console.log('HTML encontrado. Tamanho:', dados.html.length, 'Primeiro 200 chars:', dados.html.substring(0, 200));
                         // Limpar classes de texto puro que podem ter sobrado
                         this.elements.msgCorpo.classList.remove('whitespace-pre-wrap', 'break-all', 'pl-2');
                         // Usar Tailwind para container
@@ -642,8 +650,9 @@ class TempMailApp {
                         iframe.sandbox = 'allow-scripts allow-popups allow-popups-to-escape-sandbox';
                         iframe.style.width = '100%';
                         iframe.style.border = 'none';
-                        iframe.style.overflow = 'hidden';
-                        iframe.scrolling = 'no';
+                        iframe.style.overflowX = 'auto';
+                        iframe.style.overflowY = 'auto';
+                        iframe.scrolling = 'auto';
 
                         this.elements.msgCorpo.innerHTML = '';
                         this.elements.msgCorpo.appendChild(iframe);
@@ -657,9 +666,17 @@ class TempMailApp {
                         });
 
                         const sanitizedHtml = DOMPurify.sanitize(dados.html, {
-                            ALLOWED_TAGS: ['a', 'p', 'div', 'span', 'b', 'i', 'u', 'strong', 'em', 'br', 'img', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'font', 'center', 'blockquote', 'ul', 'ol', 'li'],
-                            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id']
+                            ALLOWED_TAGS: ['a', 'p', 'div', 'span', 'b', 'i', 'u', 'strong', 'em', 'br', 'img', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'font', 'center', 'blockquote', 'ul', 'ol', 'li', 'pre', 'code', 'hr', 'section', 'article', 'nav', 'header', 'footer', 'main'],
+                            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id', 'data-*', 'aria-label', 'aria-hidden', 'role', 'title', 'dir'],
+                            ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|urn):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
+                            FORCE_BODY: false,
+                            WHOLE_DOCUMENT: false
                         });
+                        console.log('HTML sanitizado. Tamanho:', sanitizedHtml.length, 'Conteúdo:', sanitizedHtml);
+
+                        // Decodificar HTML entities para evitar escape duplo no srcdoc
+                        const htmlDecoded = this.decodeHtmlEntities(sanitizedHtml);
+                        console.log('HTML decodificado:', htmlDecoded);
 
                         // Limpar o hook depois de usar
                         DOMPurify.removeHook('afterSanitizeAttributes');
@@ -669,120 +686,119 @@ class TempMailApp {
                         const bodyBg = isDarkMode ? '#1f2937' : '#ffffff';
                         const bodyTextColor = isDarkMode ? '#f3f4f6' : '#1f2937';
 
-                        const iframeContent = `
-                            <!DOCTYPE html>
-                            <html>
-                            <head>
-                                <meta charset="utf-8">
-                                <meta name="viewport" content="width=device-width, initial-scale=1">
-                                <style>
-                                    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
-                                    
-                                    * { 
-                                        box-sizing: border-box;
-                                        margin: 0;
-                                        padding: 0;
-                                    }
-                                    html, body { 
-                                        overflow: hidden;
-                                    }
-                                    body {
-                                        font-family: 'Poppins', 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                                        font-size: 14px;
-                                        line-height: 1.5;
-                                        color: ${bodyTextColor};
-                                        background-color: ${bodyBg};
-                                        word-wrap: break-word;
-                                        padding: 8px;
-                                    }
-                                    img { 
-                                        max-width: 100% !important; 
-                                        height: auto !important;
-                                        display: block;
-                                    }
-                                    table { 
-                                        max-width: 100% !important;
-                                        border-collapse: collapse;
-                                    }
-                                    a:not([style*="color"]) {
-                                        color: #f97316;
-                                        text-decoration: underline;
-                                    }
-                                </style>
-                            </head>
-                            <body>
-                                ${sanitizedHtml}
-                                <script>
-                                    (function() {
-                                        // Definir cores iniciais baseado no tema atual
-                                        function updateThemeColors(isDark) {
-                                            const bodyBg = isDark ? '#1f2937' : '#ffffff';
-                                            const bodyTextColor = isDark ? '#f3f4f6' : '#1f2937';
-                                            document.body.style.backgroundColor = bodyBg;
-                                            document.body.style.color = bodyTextColor;
-                                        }
+                        // Criar conteúdo do iframe de forma segura usando Blob
+                        const iframeHTML = `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-                                        // Escutar mudanças de tema do parent
-                                        window.addEventListener('message', (event) => {
-                                            if (event.data && event.data.type === 'theme-change') {
-                                                updateThemeColors(event.data.isDark);
-                                            }
-                                        });
+html, body { 
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+body {
+    font-family: 'Poppins', 'Nunito', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: ${bodyTextColor};
+    background-color: ${bodyBg};
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    padding: 8px;
+    min-width: fit-content;
+}
+img { 
+    max-width: 100%;
+    vertical-align: middle;
+}
+table { 
+    max-width: 100% !important;
+    border-collapse: collapse;
+}
+a:not([style*="color"]) {
+    color: #f97316;
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+${htmlDecoded}
+<script>
+(function() {
+    function updateThemeColors(isDark) {
+        const bodyBg = isDark ? '#1f2937' : '#ffffff';
+        const bodyTextColor = isDark ? '#f3f4f6' : '#1f2937';
+        document.body.style.backgroundColor = bodyBg;
+        document.body.style.color = bodyTextColor;
+    }
 
-                                        function reportDimensions() {
-                                            const body = document.body;
-                                            const html = document.documentElement;
-                                            
-                                            // Usar scrollHeight/scrollWidth que é mais preciso para conteúdo dinâmico
-                                            // Adicionar padding do body (8px por lado = 16px total)
-                                            const width = body.scrollWidth + 16;
-                                            const height = body.scrollHeight + 16;
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'theme-change') {
+            updateThemeColors(event.data.isDark);
+        }
+    });
 
-                                            window.parent.postMessage({
-                                                type: 'resize',
-                                                dimensions: { width: width, height: height }
-                                            }, '*');
-                                        }
+    function reportDimensions() {
+        const body = document.body;
+        const html = document.documentElement;
+        const width = body.scrollWidth + 16;
+        const height = body.scrollHeight + 16;
 
-                                        // Interceptar cliques em links EXISTENTES no HTML (não quebra as linhas)
-                                        document.addEventListener('click', function(e) {
-                                            // Procurar o link mais próximo (mesmo se não for o target direto)
-                                            const link = e.target.closest('a');
-                                            if (link && link.href) {
-                                                const href = link.getAttribute('href') || link.href;
-                                                // Ignorar links internos e vazios
-                                                if (href && href.trim() !== '' && !href.startsWith('#') && !href.startsWith('javascript:')) {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    window.parent.postMessage({
-                                                        type: 'link-click',
-                                                        href: href,
-                                                        text: link.textContent || link.innerText || ''
-                                                    }, '*');
-                                                }
-                                            }
-                                        }, true); // Usar capturing phase para garantir que captura
+        window.parent.postMessage({
+            type: 'resize',
+            dimensions: { width: width, height: height }
+        }, '*');
+    }
 
-                                        if (window.ResizeObserver) {
-                                            const ro = new ResizeObserver(reportDimensions);
-                                            ro.observe(document.body);
-                                        }
-                                        
-                                        window.onload = reportDimensions;
-                                        // Múltiplos timeouts para capturar tamanho correto em diferentes cenários
-                                        setTimeout(reportDimensions, 100);  // Early check
-                                        setTimeout(reportDimensions, 300);  // After fonts load
-                                        setTimeout(reportDimensions, 800);  // After images start loading
-                                        setTimeout(reportDimensions, 2000); // Final check
-                                    })();
-                                <\/script>
-                            </body>
-                            </html>
-                        `;
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (link && link.href) {
+            const href = link.getAttribute('href') || link.href;
+            if (href && href.trim() !== '' && !href.startsWith('#') && !href.startsWith('javascript:')) {
+                e.preventDefault();
+                e.stopPropagation();
+                window.parent.postMessage({
+                    type: 'link-click',
+                    href: href,
+                    text: link.textContent || link.innerText || ''
+                }, '*');
+            }
+        }
+    }, true);
 
-                        iframe.srcdoc = iframeContent;
+    if (window.ResizeObserver) {
+        const ro = new ResizeObserver(reportDimensions);
+        ro.observe(document.body);
+    }
+    
+    window.onload = reportDimensions;
+    setTimeout(reportDimensions, 100);
+    setTimeout(reportDimensions, 300);
+    setTimeout(reportDimensions, 800);
+    setTimeout(reportDimensions, 2000);
+})();
+</script>
+</body>
+</html>`;
 
-                        // O iframe agora se comunica via postMessage (capturado pelo listener global no init)
+                        // Usar Blob para criar o iframe com conteúdo seguro
+                        const blob = new Blob([iframeHTML], { type: 'text/html;charset=utf-8' });
+                        const blobUrl = URL.createObjectURL(blob);
+                        iframe.src = blobUrl;
+
+                        // Limpar blob URL quando o iframe for removido
+                        const observer = new MutationObserver(() => {
+                            if (!document.contains(iframe)) {
+                                URL.revokeObjectURL(blobUrl);
+                                observer.disconnect();
+                            }
+                        });
+                        observer.observe(document.body, { childList: true, subtree: true });
 
                     } else {
                         // Texto Puro: escapar, linkificar e então sanitizar
@@ -1038,10 +1054,14 @@ class TempMailApp {
         if (!type) return '<i class="fa-solid fa-file"></i>';
         const t = type.toLowerCase();
         if (t.includes('pdf')) return '<i class="fa-solid fa-file-pdf text-red-500"></i>';
-        if (t.includes('image') || t.includes('png') || t.includes('jpg')) return '<i class="fa-solid fa-file-image text-blue-500"></i>';
-        if (t.includes('zip') || t.includes('rar')) return '<i class="fa-solid fa-file-zipper text-yellow-600"></i>';
-        if (t.includes('doc') || t.includes('word')) return '<i class="fa-solid fa-file-word text-blue-600"></i>';
-        if (t.includes('xls') || t.includes('sheet')) return '<i class="fa-solid fa-file-excel text-green-600"></i>';
+        if (t.includes('image') || t.includes('png') || t.includes('jpg') || t.includes('jpeg') || t.includes('gif') || t.includes('webp')) return '<i class="fa-solid fa-file-image text-blue-500"></i>';
+        if (t.includes('video') || t.includes('mp4') || t.includes('avi') || t.includes('mov') || t.includes('mkv')) return '<i class="fa-solid fa-file-video text-purple-500"></i>';
+        if (t.includes('audio') || t.includes('mp3') || t.includes('wav') || t.includes('aac') || t.includes('flac')) return '<i class="fa-solid fa-file-audio text-indigo-500"></i>';
+        if (t.includes('zip') || t.includes('rar') || t.includes('7z') || t.includes('tar') || t.includes('gz')) return '<i class="fa-solid fa-file-zipper text-yellow-600"></i>';
+        if (t.includes('doc') || t.includes('word') || t.includes('docx')) return '<i class="fa-solid fa-file-word text-blue-600"></i>';
+        if (t.includes('xls') || t.includes('sheet') || t.includes('xlsx') || t.includes('csv')) return '<i class="fa-solid fa-file-excel text-green-600"></i>';
+        if (t.includes('ppt') || t.includes('presentation')) return '<i class="fa-solid fa-file-powerpoint text-orange-600"></i>';
+        if (t.includes('text') || t.includes('txt')) return '<i class="fa-solid fa-file-lines text-gray-600"></i>';
         return '<i class="fa-solid fa-file"></i>';
     }
 
@@ -1335,6 +1355,13 @@ class TempMailApp {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+
+    decodeHtmlEntities(text) {
+        if (!text) return "";
+        const textarea = document.createElement('textarea');
+        textarea.innerHTML = text;
+        return textarea.value;
     }
 
     showError(msg) {

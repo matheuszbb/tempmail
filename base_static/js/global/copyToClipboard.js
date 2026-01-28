@@ -6,7 +6,8 @@ function copyToClipboard(clickedBtn) {
 
     const textToCopy = targetElement.value || targetElement.innerText;
 
-    navigator.clipboard.writeText(textToCopy).then(() => {
+    // Função para mostrar feedback visual de sucesso
+    const showSuccess = () => {
         // 1. Salva o estado original
         const originalHTML = clickedBtn.innerHTML;
         const originalClasses = clickedBtn.className;
@@ -44,5 +45,65 @@ function copyToClipboard(clickedBtn) {
             clickedBtn.innerHTML = originalHTML;
             clickedBtn.style.pointerEvents = 'auto';
         }, 2000);
-    });
+    };
+
+    // Tentar usar a API moderna do Clipboard primeiro
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy)
+            .then(showSuccess)
+            .catch(() => {
+                // Fallback para método tradicional se a API moderna falhar
+                fallbackCopy(textToCopy, showSuccess);
+            });
+    } else {
+        // Fallback direto se a API não estiver disponível (comum em HTTP ou mobile antigo)
+        fallbackCopy(textToCopy, showSuccess);
+    }
+}
+
+// Método fallback para copiar usando document.execCommand (compatível com mobile)
+function fallbackCopy(text, onSuccess) {
+    // Criar elemento de input temporário
+    const tempInput = document.createElement('textarea');
+    tempInput.value = text;
+    tempInput.style.position = 'fixed';
+    tempInput.style.top = '0';
+    tempInput.style.left = '-9999px';
+    tempInput.style.opacity = '0';
+    tempInput.setAttribute('readonly', '');
+    document.body.appendChild(tempInput);
+
+    // Selecionar o texto
+    if (navigator.userAgent.match(/ipad|ipod|iphone/i)) {
+        // iOS requer abordagem especial
+        tempInput.contentEditable = 'true';
+        tempInput.readOnly = false;
+        const range = document.createRange();
+        range.selectNodeContents(tempInput);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        tempInput.setSelectionRange(0, 999999);
+    } else {
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999);
+    }
+
+    // Executar comando de cópia
+    let success = false;
+    try {
+        // eslint-disable-next-line deprecation/deprecation
+        // Fallback necessário para compatibilidade com mobile/HTTP
+        success = document.execCommand('copy');
+    } catch (err) {
+        // Silencioso
+    }
+
+    // Remover elemento temporário
+    document.body.removeChild(tempInput);
+
+    // Chamar callback de sucesso se funcionou
+    if (success && onSuccess) {
+        onSuccess();
+    }
 }

@@ -121,6 +121,7 @@ class SMTPLabsClient:
         """
         url = f"{self.base_url}{endpoint}"
         session = await self._get_session()
+        timeout = aiohttp.ClientTimeout(total=30)
         
         # ✅ CORREÇÃO: Usar while ao invés de for para evitar iterador síncrono
         attempt = 0
@@ -131,7 +132,7 @@ class SMTPLabsClient:
                     url=url,
                     json=data,
                     params=params,
-                    timeout=aiohttp.ClientTimeout(total=30)
+                    timeout=timeout
                 ) as response:
                     
                     # Rate limiting - retry com backoff exponencial
