@@ -167,6 +167,7 @@ class Message(models.Model):
             models.Index(fields=['account', 'received_at']),
             models.Index(fields=['account', 'is_read']),
             models.Index(fields=['-received_at']),
+            models.Index(fields=['smtp_id']),  # Otimização: Índice para buscas por smtp_id
         ]
 
     def __str__(self):

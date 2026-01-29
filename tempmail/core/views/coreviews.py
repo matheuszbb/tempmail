@@ -68,6 +68,9 @@ class IndexView(View):
                     messages_qs = Message.objects.filter(
                         account=account,
                         received_at__gte=session_start
+                    ).only(
+                        'id', 'smtp_id', 'from_address', 'from_name', 
+                        'subject', 'text', 'has_attachments', 'is_read', 'received_at'
                     ).order_by('-received_at')
                     
                     # ✅ CORRIGIDO: Converter QuerySet em lista de forma assíncrona
@@ -862,6 +865,9 @@ class MessageListAPI(View):
                 account=account,
                 received_at__gte=session_start_dt,
                 received_at__lte=session_end
+            ).only(
+                'id', 'smtp_id', 'from_address', 'from_name', 
+                'subject', 'text', 'has_attachments', 'is_read', 'received_at'
             )
             
             # ✅ CORRIGIDO: Converter QuerySet para lista de forma assíncrona
@@ -924,6 +930,9 @@ class MessageListAPI(View):
         client = SMTPLabsClient()
         logger.info(f"Sincronizando inbox para {account.address} (Auto-sync GET)")
         
+        # Timestamp para criação de mensagens
+        now = timezone.now()
+        
         # Registrar request
         api_rate_limiter.record_request()
         
@@ -944,6 +953,15 @@ class MessageListAPI(View):
                 logger.error(f"Formato inesperado da API para mensagens: {type(api_messages)}")
                 return
 
+            # Otimização: Buscar todas mensagens existentes de uma vez (evita N+1 queries)
+            smtp_ids = [msg.get('id') for msg in api_messages if msg.get('id')]
+            existing_messages = {}
+            if smtp_ids:
+                existing_msgs_list = await sync_to_async(list)(
+                    Message.objects.filter(smtp_id__in=smtp_ids).only('id', 'smtp_id', 'attachments')
+                )
+                existing_messages = {msg.smtp_id: msg for msg in existing_msgs_list}
+
             for msg_data in api_messages:
                 if not isinstance(msg_data, dict):
                     logger.warning(f"Mensagem ignorada (formato inválido): {type(msg_data)}")
@@ -953,7 +971,7 @@ class MessageListAPI(View):
                 if not smtp_id:
                     continue
 
-                existing_msg = await Message.objects.filter(smtp_id=smtp_id).afirst()
+                existing_msg = existing_messages.get(smtp_id)
                 
                 # Buscar detalhes se necessário
                 needs_detail = not existing_msg or (

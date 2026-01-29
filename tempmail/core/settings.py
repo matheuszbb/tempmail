@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     #'core.middleware.ResponseDiagnosticsMiddleware',  # <- ajuste aqui
+    'django.middleware.gzip.GZipMiddleware',  # Compressão de respostas para melhor performance
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',

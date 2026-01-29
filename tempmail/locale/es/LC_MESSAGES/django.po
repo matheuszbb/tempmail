@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 21:29-0300\n"
+"POT-Creation-Date: 2026-01-28 21:39-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -317,7 +317,7 @@ msgstr "Entendido"
 
 #: core/views/corefilesviews.py:57 core/views/corefilesviews.py:209
 #: core/views/corefilesviews.py:995 core/views/corefilesviews.py:1069
-#: core/views/coreviews.py:837 core/views/coreviews.py:850
+#: core/views/coreviews.py:840 core/views/coreviews.py:853
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Sessão não encontrada"
@@ -432,46 +432,46 @@ msgstr "Error al procesar los datos"
 msgid "Não foi possível processar o download do arquivo."
 msgstr "No se pudo procesar la descarga del archivo."
 
-#: core/views/coreviews.py:107 core/views/coreviews.py:213
-#: core/views/coreviews.py:599
+#: core/views/coreviews.py:110 core/views/coreviews.py:216
+#: core/views/coreviews.py:602
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
 "Servicio temporalmente no disponible. Inténtelo de nuevo en unos minutos."
 
-#: core/views/coreviews.py:144
+#: core/views/coreviews.py:147
 #, fuzzy
 #| msgid "Criar Email Temporário"
 msgid "Erro ao criar email temporário"
 msgstr "Crear Correo Temporal"
 
-#: core/views/coreviews.py:168
+#: core/views/coreviews.py:171
 #, fuzzy
 #| msgid "Deseja gerar um novo endereço de e-mail?"
 msgid "Você já está usando este endereço de e-mail"
 msgstr "¿Deseas generar una nueva dirección de correo electrónico?"
 
-#: core/views/coreviews.py:185
+#: core/views/coreviews.py:188
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr "Error interno del servidor. Nuestro equipo ha sido notificado."
 
-#: core/views/coreviews.py:242
+#: core/views/coreviews.py:245
 msgid "Sessão resetada com sucesso"
 msgstr "Sesión restablecida con éxito"
 
-#: core/views/coreviews.py:257 core/views/coreviews.py:261
+#: core/views/coreviews.py:260 core/views/coreviews.py:264
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido"
 msgstr "Tu dirección de correo temporal por"
 
-#: core/views/coreviews.py:267
+#: core/views/coreviews.py:270
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr "Tu dirección de correo temporal por"
 
-#: core/views/coreviews.py:289
+#: core/views/coreviews.py:292
 #, fuzzy
 #| msgid "Nome de usuário contém caracteres inválidos"
 msgid ""
@@ -479,53 +479,53 @@ msgid ""
 "pontos, hífens e underscores."
 msgstr "El nombre de usuario contiene caracteres no válidos"
 
-#: core/views/coreviews.py:300
+#: core/views/coreviews.py:303
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr "El nombre de usuario no puede comenzar ni terminar con un punto"
 
-#: core/views/coreviews.py:328
+#: core/views/coreviews.py:331
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr "Tu dirección de correo temporal por"
 
-#: core/views/coreviews.py:334
+#: core/views/coreviews.py:337
 msgid "Não foi possível acessar este email"
 msgstr "No se pudo acceder a este correo electrónico"
 
-#: core/views/coreviews.py:354
+#: core/views/coreviews.py:357
 msgid "Email alterado com sucesso"
 msgstr "Correo electrónico cambiado con éxito"
 
-#: core/views/coreviews.py:596
+#: core/views/coreviews.py:599
 msgid "Erro interno ao processar requisição"
 msgstr "Error interno al procesar la solicitud"
 
-#: core/views/coreviews.py:601
+#: core/views/coreviews.py:604
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr "Error temporal en el servidor. Inténtelo de nuevo en unos instantes."
 
-#: core/views/coreviews.py:603
+#: core/views/coreviews.py:606
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr "Demasiados intentos. Espere unos minutos antes de intentarlo de nuevo."
 
-#: core/views/coreviews.py:605
+#: core/views/coreviews.py:608
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr "Conexión lenta. Compruebe su conexión a internet e inténtelo de nuevo."
 
-#: core/views/coreviews.py:726
+#: core/views/coreviews.py:729
 #, fuzzy
 #| msgid "Erro ao buscar mensagens"
 msgid "Erro ao buscar histórico"
 msgstr "Error al buscar mensajes"
 
-#: core/views/coreviews.py:896
+#: core/views/coreviews.py:902
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Conta não encontrada"
 msgstr "Página No Encontrada"
 
-#: core/views/coreviews.py:902
+#: core/views/coreviews.py:908
 msgid "Erro ao buscar mensagens"
 msgstr "Error al buscar mensajes"
 

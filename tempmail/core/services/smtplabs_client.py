@@ -6,6 +6,7 @@ import logging
 import asyncio
 from typing import Optional, Dict, List, Any
 from django.conf import settings
+from django.core.cache import cache
 
 
 logger = logging.getLogger(__name__)
@@ -246,15 +247,30 @@ class SMTPLabsClient:
             raise
     
     async def get_inbox_mailbox(self, account_id: str) -> Optional[Dict[str, Any]]:
+        """Busca mailbox INBOX com cache de 30s para melhor performance"""
+        cache_key = f'inbox_mailbox_{account_id}'
+        cached = cache.get(cache_key)
+        
+        if cached is not None:
+            logger.debug(f"✓ Cache hit: INBOX para {account_id}")
+            return cached
+        
         try:
             mailboxes_response = await self.get_mailboxes(account_id)
             mailboxes = mailboxes_response if isinstance(mailboxes_response, list) else mailboxes_response.get('member', [])
             
+            inbox = None
             for mailbox in mailboxes:
                 if mailbox.get('path', '').upper() == 'INBOX':
-                    return mailbox
+                    inbox = mailbox
+                    break
             
-            return None
+            # Cache por 30 segundos
+            if inbox:
+                cache.set(cache_key, inbox, 30)
+                logger.debug(f"✓ Cache set: INBOX para {account_id}")
+            
+            return inbox
         except SMTPLabsAPIError as e:
             logger.error(f"Erro ao buscar INBOX: {str(e)}")
             # Re-raise para permitir tratamento upstream
