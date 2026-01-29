@@ -242,10 +242,24 @@ class EmailAccountService:
         domain = random.choice(domains_list)
         logger.info(f"Domínio selecionado aleatoriamente: {domain.domain}")
         
-        # Gerar credenciais
-        username = EmailAccount.generate_random_username()
+        # Gerar credenciais com checagem de unicidade no banco para evitar colisões
+        max_attempts = 12
+        username = None
+        address = None
+        for attempt in range(1, max_attempts + 1):
+            username_candidate = EmailAccount.generate_random_username()
+            address_candidate = f"{username_candidate}@{domain.domain}"
+            exists = await EmailAccount.objects.filter(address=address_candidate).aexists()
+            if not exists:
+                username = username_candidate
+                address = address_candidate
+                break
+            logger.debug(f"Username collision attempt {attempt}: {address_candidate}")
+
+        if not username or not address:
+            raise Exception("Não foi possível gerar um username único após várias tentativas")
+
         password = EmailAccount.generate_random_password()
-        address = f"{username}@{domain.domain}"
         
         try:
             # Criar conta na API

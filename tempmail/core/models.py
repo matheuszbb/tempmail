@@ -1,9 +1,11 @@
 import string
 import secrets
+import random
 from django.db import models
+from .name_data import _NAMES
 from datetime import timedelta
+from django.conf import settings
 from django.utils import timezone
-
 
 class Domain(models.Model):
     """Domínios disponíveis do SMTP.dev"""
@@ -68,9 +70,7 @@ class EmailAccount(models.Model):
         return timezone.now() < self.session_expires_at
 
     def mark_as_used(self, session_key=None, session_duration_seconds=None):
-        """Marca a conta como em uso e define expiração da sessão"""
-        from django.conf import settings
-        
+        """Marca a conta como em uso e define expiração da sessão"""        
         self.is_available = False
         self.last_used_at = timezone.now()
         self.last_session_key = session_key  # Salvar session key do usuário
@@ -116,16 +116,57 @@ class EmailAccount(models.Model):
 
     @staticmethod
     def generate_random_username(length=10):
-        """Gera um username aleatório"""
-        chars = string.ascii_lowercase + string.digits
-        return ''.join(secrets.choice(chars) for _ in range(length))
+        """
+        Gera um username humanizado usando combinações de nomes e sobrenomes comuns.
+        
+        Exemplos:
+        - lucas.silva
+        - ana_santos42
+        - pedro.costa
+        - maria_oliveira7
+        
+        Args:
+            length: Parâmetro mantido por compatibilidade, mas não usado na nova implementação
+            
+        Returns:
+            str: Username humanizado
+        """
+        # Usar listas ampliadas de nomes/sobrenomes (arquivo separado)
+        names = _NAMES        
+        separators = ['.', '_']
+
+        # Padrões variados para aumentar diversidade
+        # Probabilidades: 55% -> first.sep.last(+num), 20% -> first_lastinitial(+num),
+        # 15% -> firstlast(+num), 10% -> single_first(+num)
+        pattern_roll = random.random()
+
+        first = random.choice(names)
+        last = random.choice(names)
+        sep = random.choice(separators)
+
+        add_number = random.random() < 0.6  # 60% chance de número
+        number = str(random.randint(1, 99999999999)) if add_number else ''
+
+        if pattern_roll < 0.55:
+            username = f"{first}{sep}{last}{number}"
+        elif pattern_roll < 0.75:
+            # first + sobrenome inicial
+            username = f"{first}{sep}{last[0]}{number}"
+        elif pattern_roll < 0.90:
+            # concatenado (sem separador)
+            username = f"{first}{last}{number}"
+        else:
+            # apenas primeiro nome (com chance de número)
+            username = f"{first}{number}"
+
+        # Normalizar: remover espaços, deixar minúsculo
+        return username.lower()
 
     @staticmethod
     def generate_random_password(length=16):
         """Gera uma senha aleatória segura"""
         chars = string.ascii_letters + string.digits + string.punctuation
         return ''.join(secrets.choice(chars) for _ in range(length))
-
 
 class Message(models.Model):
     """Mensagens de email recebidas"""
