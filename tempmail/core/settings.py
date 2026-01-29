@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 import sys
+import logging
 from pathlib import Path
 from django.contrib.messages import constants
 
@@ -194,6 +195,27 @@ if not DEBUG:
     DEBUG_PROPAGATE_EXCEPTIONS = False
 
 # LOGGING
+class ColoredFormatter(logging.Formatter):
+    COLORS = {
+        'DEBUG': '\x1b[36m',    # cyan
+        'INFO': '\x1b[32m',     # green
+        'WARNING': '\x1b[33m',  # yellow
+        'ERROR': '\x1b[31m',    # red
+        'CRITICAL': '\x1b[35m', # magenta
+    }
+    RESET = '\x1b[0m'
+
+    def format(self, record):
+        # Se NO_COLOR estiver setado, não usar cores
+        if os.environ.get('NO_COLOR'):
+            return super().format(record)
+
+        color = self.COLORS.get(record.levelname, '')
+        formatted = super().format(record)
+        if color:
+            return f"{color}{formatted}{self.RESET}"
+        return formatted
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -201,11 +223,17 @@ LOGGING = {
         'console': {
             'class': 'logging.StreamHandler',
             'stream': sys.stdout,  # Direciona para stdout do contêiner
-            'formatter': 'verbose',
+            'formatter': 'colored',
         },
     },
     'formatters': {
         'verbose': {
+            'format': '%(asctime)s [%(levelname)s] %(lineno)d >> %(message)s',
+            'datefmt': '%d/%m/%Y %H:%M:%S',
+        },
+        # Formatter que usa uma classe para colorir o levelname com ANSI codes.
+        'colored': {
+            '()': ColoredFormatter,
             'format': '%(asctime)s [%(levelname)s] %(lineno)d >> %(message)s',
             'datefmt': '%d/%m/%Y %H:%M:%S',
         },
@@ -225,6 +253,12 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'INFO' if DEBUG else 'WARNING',
             'propagate': True,
+        },
+        # Logger dedicado para mensagens de startup/health — sempre INFO em produção
+        'core.startup': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
         },
     },
 }
