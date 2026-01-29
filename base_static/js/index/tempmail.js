@@ -1684,6 +1684,9 @@ class TempMailApp {
     renderEmailInIframe(html) {
         console.log('🖼️ renderEmailInIframe chamado, tamanho do HTML:', html.length);
         
+        // 🔥 NORMALIZAÇÃO COMPLETA de HTML legado (converte bgcolor, background, etc)
+        html = this.normalizeEmailHTML(html);
+        
         // Limpar classes de texto puro que podem ter sobrado
         this.elements.msgCorpo.classList.remove('whitespace-pre-wrap', 'break-all', 'pl-2');
         // Usar Tailwind para container
@@ -1712,7 +1715,7 @@ class TempMailApp {
 
         const sanitizedHtml = DOMPurify.sanitize(html, {
             ALLOWED_TAGS: ['a', 'p', 'div', 'span', 'b', 'i', 'u', 'strong', 'em', 'br', 'img', 'table', 'tr', 'td', 'th', 'thead', 'tbody', 'tfoot', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'font', 'center', 'blockquote', 'ul', 'ol', 'li', 'pre', 'code', 'hr', 'section', 'article', 'nav', 'header', 'footer', 'main'],
-            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id', 'data-*', 'aria-label', 'aria-hidden', 'role', 'title', 'dir'],
+            ALLOWED_ATTR: ['href', 'src', 'alt', 'style', 'width', 'height', 'colspan', 'rowspan', 'border', 'cellpadding', 'cellspacing', 'align', 'valign', 'bgcolor', 'background', 'color', 'face', 'size', 'target', 'rel', 'translate', 'class', 'id', 'data-*', 'aria-label', 'aria-hidden', 'role', 'title', 'dir'],
             ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp|urn|data):|[^a-z]|[a-z+.\-]*(?:[^a-z+.\-:]|$))/i,
             FORCE_BODY: false,
             WHOLE_DOCUMENT: false
@@ -1873,6 +1876,338 @@ ${sanitizedHtml}
 
         // Processar links no HTML renderizado
         setTimeout(() => this.processLinks(), 100);
+    }
+
+    /**
+     * 🔥 NORMALIZAÇÃO COMPLETA DE HTML LEGADO
+     * Converte atributos HTML antigos para CSS inline moderno
+     * Garante compatibilidade com emails de todos os provedores (Bradesco, Gmail, Outlook, etc)
+     */
+    normalizeEmailHTML(html) {
+        console.log('🔧 Iniciando normalização HTML completa...');
+        
+        try {
+            // 1. Parse HTML
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // 2. Processar atributos legados
+            this._convertLegacyAttributes(doc);
+            
+            // 3. Converter tags obsoletas
+            this._convertObsoleteTags(doc);
+            
+            // 4. Aplicar proteção de contraste
+            this._applyContrastProtection(doc);
+            
+            // 5. Retornar HTML normalizado
+            const normalized = doc.body.innerHTML;
+            console.log('✅ Normalização HTML completa finalizada');
+            return normalized;
+            
+        } catch (error) {
+            console.error('❌ Erro na normalização HTML:', error);
+            return html; // Fallback seguro
+        }
+    }
+
+    /**
+     * Converte atributos HTML legados para CSS inline
+     */
+    _convertLegacyAttributes(doc) {
+        console.log('🔄 Convertendo atributos legados...');
+        
+        try {
+            // Processar bgcolor (background-color)
+            doc.querySelectorAll('[bgcolor]').forEach(el => {
+                const bgcolor = el.getAttribute('bgcolor');
+                if (bgcolor) {
+                    const currentStyle = el.getAttribute('style') || '';
+                    if (!currentStyle.includes('background-color')) {
+                        el.setAttribute('style', currentStyle + `;background-color:${bgcolor}`);
+                        console.log(`✓ bgcolor convertido: ${bgcolor} em <${el.tagName}>`);
+                    }
+                }
+            });
+
+            // Processar background (pode ser cor ou URL)
+            doc.querySelectorAll('[background]').forEach(el => {
+                const background = el.getAttribute('background');
+                if (background) {
+                    const currentStyle = el.getAttribute('style') || '';
+                    // Detectar se é URL ou cor
+                    if (background.startsWith('http') || background.startsWith('data:')) {
+                        if (!currentStyle.includes('background-image')) {
+                            el.setAttribute('style', currentStyle + `;background-image:url(${background})`);
+                            console.log(`✓ background URL convertido em <${el.tagName}>`);
+                        }
+                    } else {
+                        if (!currentStyle.includes('background-color')) {
+                            el.setAttribute('style', currentStyle + `;background-color:${background}`);
+                            console.log(`✓ background cor convertido: ${background} em <${el.tagName}>`);
+                        }
+                    }
+                }
+            });
+
+            // Processar valign (vertical-align)
+            doc.querySelectorAll('td[valign], th[valign]').forEach(el => {
+                const valign = el.getAttribute('valign');
+                if (valign) {
+                    const currentStyle = el.getAttribute('style') || '';
+                    if (!currentStyle.includes('vertical-align')) {
+                        el.setAttribute('style', currentStyle + `;vertical-align:${valign}`);
+                        console.log(`✓ valign convertido: ${valign} em <${el.tagName}>`);
+                    }
+                }
+            });
+
+            // Processar align (text-align)
+            doc.querySelectorAll('[align]').forEach(el => {
+                const align = el.getAttribute('align');
+                if (align && ['div', 'p', 'td', 'th', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'].includes(el.tagName.toLowerCase())) {
+                    const currentStyle = el.getAttribute('style') || '';
+                    if (!currentStyle.includes('text-align')) {
+                        el.setAttribute('style', currentStyle + `;text-align:${align}`);
+                        console.log(`✓ align convertido: ${align} em <${el.tagName}>`);
+                    }
+                }
+            });
+
+            // Processar width/height (adicionar px se numérico)
+            doc.querySelectorAll('[width], [height]').forEach(el => {
+                const currentStyle = el.getAttribute('style') || '';
+                
+                // Width
+                const width = el.getAttribute('width');
+                if (width && !currentStyle.includes('width:')) {
+                    const widthValue = /^\d+$/.test(width) ? `${width}px` : width;
+                    el.setAttribute('style', currentStyle + `;width:${widthValue}`);
+                }
+                
+                // Height
+                const height = el.getAttribute('height');
+                if (height && !currentStyle.includes('height:')) {
+                    const heightValue = /^\d+$/.test(height) ? `${height}px` : height;
+                    el.setAttribute('style', currentStyle + `;height:${heightValue}`);
+                }
+            });
+
+            console.log('✅ Atributos legados convertidos');
+        } catch (error) {
+            console.error('❌ Erro ao converter atributos legados:', error);
+        }
+    }
+
+    /**
+     * Converte tags HTML obsoletas para modernas
+     */
+    _convertObsoleteTags(doc) {
+        console.log('🔄 Convertendo tags obsoletas...');
+        
+        try {
+            // Converter <center> para <div style="text-align:center">
+            doc.querySelectorAll('center').forEach(center => {
+                const div = doc.createElement('div');
+                div.setAttribute('style', 'text-align:center');
+                div.innerHTML = center.innerHTML;
+                center.replaceWith(div);
+                console.log('✓ <center> convertido para <div>');
+            });
+
+            // Converter <font> para <span> com estilos
+            doc.querySelectorAll('font').forEach(font => {
+                const span = doc.createElement('span');
+                let styles = font.getAttribute('style') || '';
+                
+                // Converter face (font-family)
+                const face = font.getAttribute('face');
+                if (face && !styles.includes('font-family')) {
+                    styles += `;font-family:${face}`;
+                    console.log(`✓ font face convertido: ${face}`);
+                }
+                
+                // Converter color
+                const color = font.getAttribute('color');
+                if (color && !styles.includes('color')) {
+                    styles += `;color:${color}`;
+                    console.log(`✓ font color convertido: ${color}`);
+                }
+                
+                // Converter size (1-7 para CSS)
+                const size = font.getAttribute('size');
+                if (size && !styles.includes('font-size')) {
+                    const sizeMap = {
+                        '1': 'xx-small',
+                        '2': 'x-small',
+                        '3': 'small',
+                        '4': 'medium',
+                        '5': 'large',
+                        '6': 'x-large',
+                        '7': 'xx-large'
+                    };
+                    const fontSize = sizeMap[size] || 'medium';
+                    styles += `;font-size:${fontSize}`;
+                    console.log(`✓ font size convertido: ${size} → ${fontSize}`);
+                }
+                
+                if (styles) {
+                    span.setAttribute('style', styles);
+                }
+                span.innerHTML = font.innerHTML;
+                font.replaceWith(span);
+            });
+
+            console.log('✅ Tags obsoletas convertidas');
+        } catch (error) {
+            console.error('❌ Erro ao converter tags obsoletas:', error);
+        }
+    }
+
+    /**
+     * Aplica proteção de contraste automática
+     * Garante texto legível em qualquer fundo
+     */
+    _applyContrastProtection(doc) {
+        console.log('🔄 Aplicando proteção de contraste...');
+        
+        try {
+            // Verificar elementos com cor de texto e fundo definidos
+            doc.querySelectorAll('[style]').forEach(el => {
+                const style = el.getAttribute('style');
+                if (!style) return;
+                
+                // Extrair cores do style
+                const bgColorMatch = style.match(/background-color\s*:\s*([^;]+)/i);
+                const colorMatch = style.match(/(?:^|;)\s*color\s*:\s*([^;]+)/i);
+                
+                if (bgColorMatch && colorMatch) {
+                    const bgColor = bgColorMatch[1].trim();
+                    const textColor = colorMatch[1].trim();
+                    
+                    try {
+                        const contrast = this._calculateContrast(textColor, bgColor);
+                        
+                        // Contraste mínimo aceitável: 3:1 (WCAG AA para texto grande)
+                        if (contrast < 3) {
+                            const bgLuminance = this._getLuminance(bgColor);
+                            const newColor = bgLuminance > 0.5 ? '#000000' : '#FFFFFF';
+                            
+                            // Substituir cor no style
+                            const newStyle = style.replace(/(?:^|;)\s*color\s*:\s*[^;]+/i, `;color:${newColor}`);
+                            el.setAttribute('style', newStyle);
+                            
+                            console.log(`⚠️ Contraste ajustado em <${el.tagName}>: ${textColor} → ${newColor} (fundo: ${bgColor})`);
+                        }
+                    } catch (e) {
+                        // Ignorar erros de parsing
+                    }
+                }
+            });
+
+            console.log('✅ Proteção de contraste aplicada');
+        } catch (error) {
+            console.error('❌ Erro ao aplicar proteção de contraste:', error);
+        }
+    }
+
+    /**
+     * Calcula razão de contraste WCAG entre duas cores
+     * Retorna valor de 1 (pior) a 21 (melhor)
+     */
+    _calculateContrast(color1, color2) {
+        const lum1 = this._getLuminance(color1);
+        const lum2 = this._getLuminance(color2);
+        const brightest = Math.max(lum1, lum2);
+        const darkest = Math.min(lum1, lum2);
+        return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    /**
+     * Calcula luminância relativa de uma cor (0-1)
+     * Usado para cálculo de contraste WCAG
+     */
+    _getLuminance(color) {
+        const rgb = this._parseColor(color);
+        if (!rgb) return 0.5; // Fallback neutro
+        
+        // Converter para valores 0-1
+        const [r, g, b] = rgb.map(val => {
+            val = val / 255;
+            return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4);
+        });
+        
+        // Fórmula de luminância relativa WCAG
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
+
+    /**
+     * Parse de string de cor para RGB
+     * Suporta: hex (#RGB, #RRGGBB), rgb(r,g,b), nomes de cores
+     */
+    _parseColor(colorString) {
+        if (!colorString) return null;
+        
+        colorString = colorString.trim().toLowerCase();
+        
+        // Hex curto (#RGB)
+        let match = colorString.match(/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i);
+        if (match) {
+            return [
+                parseInt(match[1] + match[1], 16),
+                parseInt(match[2] + match[2], 16),
+                parseInt(match[3] + match[3], 16)
+            ];
+        }
+        
+        // Hex longo (#RRGGBB)
+        match = colorString.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+        if (match) {
+            return [
+                parseInt(match[1], 16),
+                parseInt(match[2], 16),
+                parseInt(match[3], 16)
+            ];
+        }
+        
+        // RGB/RGBA
+        match = colorString.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+        if (match) {
+            return [
+                parseInt(match[1]),
+                parseInt(match[2]),
+                parseInt(match[3])
+            ];
+        }
+        
+        // Nomes de cores comuns
+        const colorNames = {
+            'white': [255, 255, 255],
+            'black': [0, 0, 0],
+            'red': [255, 0, 0],
+            'green': [0, 128, 0],
+            'blue': [0, 0, 255],
+            'yellow': [255, 255, 0],
+            'cyan': [0, 255, 255],
+            'magenta': [255, 0, 255],
+            'gray': [128, 128, 128],
+            'grey': [128, 128, 128],
+            'silver': [192, 192, 192],
+            'maroon': [128, 0, 0],
+            'olive': [128, 128, 0],
+            'lime': [0, 255, 0],
+            'aqua': [0, 255, 255],
+            'teal': [0, 128, 128],
+            'navy': [0, 0, 128],
+            'fuchsia': [255, 0, 255],
+            'purple': [128, 0, 128]
+        };
+        
+        if (colorNames[colorString]) {
+            return colorNames[colorString];
+        }
+        
+        return null; // Cor não reconhecida
     }
 }
 
