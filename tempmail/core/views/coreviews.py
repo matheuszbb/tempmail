@@ -25,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import cache_control
 from ..services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 from ..mixins import AdminRequiredMixin, DateFilterMixin, EmailAccountService
+from ..rate_limiter import api_rate_limiter, message_sync_throttler
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseBadRequest
 
 logger = logging.getLogger(__name__)
@@ -903,28 +904,34 @@ class MessageListAPI(View):
 
     async def _sync_messages_if_needed(self, account):
         """
-        Sincroniza mensagens com a API se necessário (throttle de 4s).
+        Sincroniza mensagens com a API se necessário (throttle de 4s + rate limiter).
         
         Args:
             account: Instância de EmailAccount
         """
-        now = timezone.now()
-        sync_threshold = timedelta(seconds=4)
+        # 1. Verificar throttle por conta (4s)
+        can_sync, time_since = message_sync_throttler.can_sync(account.address)
+        if not can_sync:
+            logger.debug(f"⏱️ Sync throttled para {account.address} ({time_since:.1f}s desde última)")
+            return
         
-        should_sync = False
-        if not account.last_synced_at:
-            should_sync = True
-        elif now >= account.last_synced_at + sync_threshold:
-            should_sync = True
-        
-        if not should_sync:
+        # 2. Verificar rate limit global da API
+        can_request, wait_time = api_rate_limiter.can_make_request()
+        if not can_request:
+            logger.warning(f"⚠️ Rate limit ativo. Aguardar {wait_time:.1f}s antes de sincronizar {account.address}")
             return
         
         client = SMTPLabsClient()
         logger.info(f"Sincronizando inbox para {account.address} (Auto-sync GET)")
         
+        # Registrar request
+        api_rate_limiter.record_request()
+        
         try:
             api_response = await client.get_all_inbox_messages(account.smtp_id)
+            
+            # Reset error count em caso de sucesso
+            api_rate_limiter.reset_error_count()
             
             # Garantir que api_messages seja uma lista
             api_messages = []
@@ -961,7 +968,16 @@ class MessageListAPI(View):
             account.last_synced_at = now
             await sync_to_async(account.save)(update_fields=['last_synced_at', 'updated_at'])
             
-        except Exception as e:
+            # Registrar sync bem-sucedida no throttler
+            message_sync_throttler.record_sync(account.address)
+            
+        except SMTPLabsAPIError as e:
+            # Tratamento específico para erro 429 (Too Many Requests)
+            if "429" in str(e):
+                logger.error(f"🔴 API retornou 429 durante sync de {account.address}")
+                api_rate_limiter.record_429_error()
+                return
+            
             # Se a conta não existir mais na API (404), remover do banco local
             if "404" in str(e):
                 logger.warning(f"Conta {account.address} (ID: {account.smtp_id}) não existe mais na API remota durante sync")

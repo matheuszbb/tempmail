@@ -26,6 +26,7 @@ from django.views.decorators.cache import cache_control
 from ..services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 from ..mixins import AdminRequiredMixin, DateFilterMixin, EmailAccountService
 from django.http import HttpResponse, JsonResponse, HttpResponseForbidden, HttpResponseServerError, HttpResponseNotFound, HttpResponseBadRequest
+from ..rate_limiter import api_rate_limiter
 
 logger = logging.getLogger(__name__)
 
@@ -66,6 +67,13 @@ class InlineAttachmentAPI(View):
             attachment = self._find_attachment(message.attachments, attachment_id)
             if not attachment:
                 return HttpResponseNotFound(_("Anexo não encontrado"))
+            
+            # Verificar rate limit antes de fazer chamadas à API
+            if not api_rate_limiter.can_make_request():
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('Sistema temporariamente ocupado. Tente novamente em alguns segundos.'))
+                }, status=429)
             
             # Buscar conteúdo via API SMTPLabs
             client = SMTPLabsClient()
@@ -112,6 +120,12 @@ class InlineAttachmentAPI(View):
             return HttpResponseNotFound(_("Mensagem não encontrada"))
         except SMTPLabsAPIError as e:
             logger.error(f"Erro na API SMTPLabs: {e}")
+            if "429" in str(e):
+                api_rate_limiter.record_429_error()
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('API temporariamente indisponível. Aguarde alguns segundos.'))
+                }, status=429)
             return HttpResponseServerError(_("Erro ao buscar anexo"))
         except Exception as e:
             logger.exception(f"Erro ao servir anexo inline: {e}")
@@ -200,7 +214,13 @@ class MessageDetailAPI(View):
             
             await sync_to_async(message.mark_as_read)()
             
+            # Verificar rate limit antes de sync de anexos
             if message.has_attachments and not message.attachments:
+                if not api_rate_limiter.can_make_request():
+                    return JsonResponse({
+                        'success': False,
+                        'error': str(_('Sistema temporariamente ocupado. Tente novamente em alguns segundos.'))
+                    }, status=429)
                 await self._sync_attachments(account, message)
             
             html_content = message.html
@@ -251,6 +271,18 @@ class MessageDetailAPI(View):
                 'success': False, 
                 'error': str(_('Não encontrado'))
             }, status=404)
+        except SMTPLabsAPIError as e:
+            logger.error(f"Erro na API SMTPLabs: {e}")
+            if "429" in str(e):
+                api_rate_limiter.record_429_error()
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('API temporariamente indisponível. Aguarde alguns segundos.'))
+                }, status=429)
+            return JsonResponse({
+                'success': False, 
+                'error': str(_('Erro ao processar mensagem'))
+            }, status=500)
         except Exception as e:
             logger.exception("Erro ao buscar detalhes da mensagem")
             return JsonResponse({
@@ -972,6 +1004,13 @@ class MessageDownloadAPI(View):
                 account=account
             )
             
+            # Verificar rate limit antes de buscar mailbox
+            if not api_rate_limiter.can_make_request():
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('Sistema temporariamente ocupado. Tente novamente em alguns segundos.'))
+                }, status=429)
+            
             # Buscar mailbox ID
             client = SMTPLabsClient()
             inbox = await client.get_inbox_mailbox(account.smtp_id)
@@ -1001,6 +1040,17 @@ class MessageDownloadAPI(View):
             
         except (EmailAccount.DoesNotExist, Message.DoesNotExist):
             return HttpResponseNotFound(str(_("Mensagem não encontrada")))
+        except SMTPLabsAPIError as e:
+            logger.error(f"Erro na API SMTPLabs: {e}")
+            if "429" in str(e):
+                api_rate_limiter.record_429_error()
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('API temporariamente indisponível. Aguarde alguns segundos.'))
+                }, status=429)
+            return HttpResponseServerError(
+                str(_("Erro ao processar download da mensagem."))
+            )
         except Exception as e:
             logger.error(f"Erro no download da mensagem: {e}", exc_info=True)
             return HttpResponseServerError(
@@ -1040,6 +1090,13 @@ class AttachmentDownloadAPI(View):
                     str(_("Anexo não encontrado nos metadados da mensagem"))
                 )
             
+            # Verificar rate limit antes de buscar anexo
+            if not api_rate_limiter.can_make_request():
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('Sistema temporariamente ocupado. Tente novamente em alguns segundos.'))
+                }, status=429)
+            
             # Buscar mailbox ID
             client = SMTPLabsClient()
             inbox = await client.get_inbox_mailbox(account.smtp_id)
@@ -1073,6 +1130,17 @@ class AttachmentDownloadAPI(View):
             
         except (EmailAccount.DoesNotExist, Message.DoesNotExist):
             return HttpResponseNotFound(str(_("Arquivo não encontrado")))
+        except SMTPLabsAPIError as e:
+            logger.error(f"Erro na API SMTPLabs: {e}")
+            if "429" in str(e):
+                api_rate_limiter.record_429_error()
+                return JsonResponse({
+                    'success': False,
+                    'error': str(_('API temporariamente indisponível. Aguarde alguns segundos.'))
+                }, status=429)
+            return HttpResponseServerError(
+                str(_("Erro ao processar download do anexo."))
+            )
         except Exception as e:
             logger.error(f"Erro no download do anexo: {e}", exc_info=True)
             return HttpResponseServerError(

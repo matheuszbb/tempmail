@@ -326,7 +326,7 @@ class TempMailApp {
         }
 
         this.stopPolling();
-        // Iniciar polling a cada 4 segundos
+        // Polling: 4 segundos (alinhado com backend para máxima responsividade)
         this.pollingInterval = setInterval(() => this.refreshMessages(), 4000);
     }
 
