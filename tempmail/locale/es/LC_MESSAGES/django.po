@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 21:39-0300\n"
+"POT-Creation-Date: 2026-01-28 23:30-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -34,6 +34,7 @@ msgid "Sobre o tempo da sessão"
 msgstr "Sobre el tiempo de la sesión"
 
 #: core/templates/core/index.html:84
+#: core/templates/core/parciais/index/_sessionInfoModal.html:33
 msgid "QR Code"
 msgstr "Código QR"
 
@@ -42,6 +43,7 @@ msgid "Copiar"
 msgstr "Copiar"
 
 #: core/templates/core/index.html:98
+#: core/templates/core/parciais/index/_sessionInfoModal.html:49
 msgid "Atualizar"
 msgstr "Actualizar"
 
@@ -217,6 +219,7 @@ msgid "Sim, Gerar Novo"
 msgstr "Sí, Generar Nuevo"
 
 #: core/templates/core/parciais/index/_editModal.html:6
+#: core/templates/core/parciais/index/_sessionInfoModal.html:57
 msgid "Alterar Endereço"
 msgstr "Cambiar Dirección"
 
@@ -265,53 +268,51 @@ msgstr ""
 "Estás protegido contra el spam y los correos no deseados. Este servicio es "
 "exclusivamente para uso temporal y verificaciones seguras."
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:33
-msgid "Editar vs Excluir"
-msgstr "Editar vs Eliminar"
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:34
-msgid "Editar:"
-msgstr "Editar:"
-
 #: core/templates/core/parciais/index/_sessionInfoModal.html:34
 msgid ""
-"Muda o endereço de e-mail mas mantém todas as mensagens até o tempo expirar. "
-"Caso retorne ao e-mail anterior, as mensagens estarão disponíveis por mais "
-"algum tempo."
+"Gere um QR Code do seu e-mail temporário para compartilhar facilmente com "
+"outros dispositivos ou pessoas."
 msgstr ""
-"Cambia la dirección de correo pero mantiene todos los mensajes hasta que "
-"expire el tiempo. Si regresas al correo anterior, los mensajes estarán "
-"disponibles por un tiempo más."
+"Genera un código QR de tu correo temporal para compartirlo fácilmente con "
+"otros dispositivos ou personas."
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:35
-msgid "Excluir:"
-msgstr "Eliminar:"
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:35
-msgid "Remove o e-mail atual e todas as mensagens imediatamente."
-msgstr "Elimina el correo actual y todos los mensajes inmediatamente."
+#: core/templates/core/parciais/index/_sessionInfoModal.html:41
+msgid "Copiar Endereço"
+msgstr "Copiar dirección"
 
 #: core/templates/core/parciais/index/_sessionInfoModal.html:42
-msgid "Renovação"
-msgstr "Renovación"
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:43
 msgid ""
-"Se precisar de mais tempo, você pode gerar um novo endereço de e-mail "
-"temporário a qualquer momento."
+"Copie rapidamente seu e-mail temporário para a área de transferência e cole "
+"onde precisar."
 msgstr ""
-"Si necesitas más tiempo, puedes generar una nueva dirección de correo "
-"temporal en cualquier momento."
+"Copia rápidamente tu correo temporal al portapapeles y pégalo donde lo "
+"necesites."
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:51
+#: core/templates/core/parciais/index/_sessionInfoModal.html:50
+msgid ""
+"Gera um novo e-mail aleatório e exclui todas as mensagens do e-mail atual, "
+"permitindo que você comece do zero."
+msgstr ""
+"Genera un nuevo correo aleatorio y elimina todos los mensajes del correo "
+"actual, permitiéndote empezar de cero."
+
+#: core/templates/core/parciais/index/_sessionInfoModal.html:58
+msgid ""
+"Escolha um e-mail do histórico para reutilizar ou crie um novo "
+"personalizado. Suas mensagens ficam salvas até o tempo expirar."
+msgstr ""
+"Elige un correo del historial para reutilizarlo o crea uno nuevo "
+"personalizado. Tus mensajes se guardan hasta que expire el tiempo."
+
+#: core/templates/core/parciais/index/_sessionInfoModal.html:66
 msgid "Quer saber mais sobre os benefícios do Email Temporário?"
 msgstr "¿Quieres saber más sobre los beneficios del Correo Temporal?"
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:53
+#: core/templates/core/parciais/index/_sessionInfoModal.html:68
 msgid "Saiba mais aqui"
 msgstr "Más información aquí"
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:61
+#: core/templates/core/parciais/index/_sessionInfoModal.html:76
 msgid "Entendi"
 msgstr "Entendido"
 
@@ -1501,6 +1502,37 @@ msgid ""
 msgstr ""
 "Para dudas sobre estos términos, contáctanos a través de la página de "
 "contacto."
+
+#~ msgid "Editar vs Excluir"
+#~ msgstr "Editar vs Eliminar"
+
+#~ msgid "Editar:"
+#~ msgstr "Editar:"
+
+#~ msgid ""
+#~ "Muda o endereço de e-mail mas mantém todas as mensagens até o tempo "
+#~ "expirar. Caso retorne ao e-mail anterior, as mensagens estarão "
+#~ "disponíveis por mais algum tempo."
+#~ msgstr ""
+#~ "Cambia la dirección de correo pero mantiene todos los mensajes hasta que "
+#~ "expire el tiempo. Si regresas al correo anterior, los mensajes estarán "
+#~ "disponibles por un tiempo más."
+
+#~ msgid "Excluir:"
+#~ msgstr "Eliminar:"
+
+#~ msgid "Remove o e-mail atual e todas as mensagens imediatamente."
+#~ msgstr "Elimina el correo actual y todos los mensajes inmediatamente."
+
+#~ msgid "Renovação"
+#~ msgstr "Renovación"
+
+#~ msgid ""
+#~ "Se precisar de mais tempo, você pode gerar um novo endereço de e-mail "
+#~ "temporário a qualquer momento."
+#~ msgstr ""
+#~ "Si necesitas más tiempo, puedes generar una nueva dirección de correo "
+#~ "temporal en cualquier momento."
 
 #~ msgid "QR"
 #~ msgstr "QR"

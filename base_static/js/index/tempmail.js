@@ -78,7 +78,6 @@ class TempMailApp {
                     const isHiddenUrl = this.detectHiddenUrl(text || href, href);
                     this.showLinkConfirmModal(href, isHiddenUrl);
                 } catch (e) {
-                    console.error('Erro ao processar clique no link', e);
                     this.showLinkConfirmModal(href, false);
                 }
             } else if (type === 'resize' && dimensions) {
@@ -392,7 +391,6 @@ class TempMailApp {
                 }
             } else if (response.status >= 500) {
                 // Erro de servidor: implementar backoff
-                console.warn(`Erro ${response.status}, tentando novamente com backoff`);
                 this.scheduleRetryWithBackoff();
                 this.isRefreshing = false;
                 this.hidePollingLed();
@@ -400,7 +398,6 @@ class TempMailApp {
             }
         } catch (e) {
             // Erro de rede: implementar backoff
-            console.error("Erro de conexão, tentando novamente com backoff", e);
             this.scheduleRetryWithBackoff();
             this.isRefreshing = false;
             this.hidePollingLed();
@@ -584,7 +581,6 @@ class TempMailApp {
     async viewMessage(messageId) {
         // Evitar múltiplas chamadas simultâneas
         if (this.isLoadingMessage) {
-            console.log('⏸️ Já está carregando uma mensagem, ignorando clique');
             return;
         }
         
@@ -1165,7 +1161,6 @@ class TempMailApp {
         if (normalized !== username) {
             username = normalized;
             usernameInput.value = username; // Atualizar input com versão normalizada
-            console.log('📝 Username normalizado automaticamente:', username);
         }
 
         // ✅ VALIDAÇÃO: Username não pode começar ou terminar com ponto
@@ -1260,7 +1255,6 @@ class TempMailApp {
                 historyContainer.innerHTML = '';
             }
         } catch (error) {
-            console.error('❌ Erro ao carregar histórico:', error);
         }
     }
 
@@ -1515,14 +1509,12 @@ class TempMailApp {
             }
         `;
         document.head.appendChild(style);
-        console.log('✅ CSS de animações do skeleton injetado');
     }
 
     /**
      * Carrega todas as imagens inline e renderiza o email
      */
     async loadInlineImagesAndRender(html, messageId) {
-        console.log('🔍 Procurando imagens inline no HTML');
         
         // Extrair URLs de imagens inline
         const imgRegex = /data-image-url="([^"]+)"/g;
@@ -1532,8 +1524,6 @@ class TempMailApp {
         while ((match = imgRegex.exec(html)) !== null) {
             imageUrls.push(match[1]);
         }
-        
-        console.log(`📸 Encontradas ${imageUrls.length} imagens inline`);
         
         if (imageUrls.length === 0) {
             // Sem imagens inline, renderizar direto
@@ -1545,7 +1535,6 @@ class TempMailApp {
         this.injectSkeletonCSS();
         
         // ✨ RENDERIZAR IMEDIATAMENTE com skeletons (não esperar downloads)
-        console.log('⚡ Renderizando imediatamente com skeletons');
         this.renderEmailInIframe(html);
         
         // Aguardar iframe estar pronto antes de começar a substituir imagens
@@ -1562,13 +1551,11 @@ class TempMailApp {
                 let fromCache = false;
                 
                 if (cached) {
-                    console.log(`💾 Imagem ${index + 1} do cache:`, url);
                     dataUrl = cached;
                     fromCache = true;
                     // Delay mínimo para ver a animação do skeleton (300ms)
                     await new Promise(resolve => setTimeout(resolve, 300));
                 } else {
-                    console.log(`🔄 Baixando imagem ${index + 1}:`, url);
                     const response = await fetch(url, {
                         method: 'GET',
                         credentials: 'include',
@@ -1587,18 +1574,14 @@ class TempMailApp {
                     // Salvar no cache
                     try {
                         sessionStorage.setItem(cacheKey, dataUrl);
-                        console.log(`💾 Imagem ${index + 1} cacheada`);
                     } catch (e) {
-                        console.warn('⚠️ Não foi possível cachear (quota excedida?):', e);
                     }
                 }
                 
                 // Substituir skeleton pela imagem real no iframe
-                console.log(`✅ Substituindo skeleton ${index + 1}`);
                 this.updateInlineImageInIframe(url, dataUrl);
                 
             } catch (error) {
-                console.error(`❌ Erro ao carregar imagem ${index + 1}:`, url, error);
                 // Mostrar erro no skeleton
                 this.updateInlineImageInIframe(url, null, true);
             }
@@ -1611,7 +1594,6 @@ class TempMailApp {
     async waitForIframeReady() {
         const iframe = this.elements.msgCorpo?.querySelector('iframe');
         if (!iframe) {
-            console.warn('⚠️ Iframe não encontrado');
             return;
         }
         
@@ -1628,7 +1610,6 @@ class TempMailApp {
         
         // Se já estiver pronto, retornar imediatamente
         if (checkReady()) {
-            console.log('✅ Iframe já está pronto');
             return;
         }
         
@@ -1642,12 +1623,10 @@ class TempMailApp {
                 
                 if (checkReady()) {
                     clearInterval(interval);
-                    console.log(`✅ Iframe pronto após ${attempts * 100}ms`);
                     // Pequeno delay adicional para garantir
                     setTimeout(resolve, 50);
                 } else if (attempts >= maxAttempts) {
                     clearInterval(interval);
-                    console.warn('⚠️ Timeout esperando iframe - continuando mesmo assim');
                     resolve();
                 }
             }, 100);
@@ -1660,7 +1639,6 @@ class TempMailApp {
     updateInlineImageInIframe(imageUrl, dataUrl, isError = false) {
         const iframe = this.elements.msgCorpo?.querySelector('iframe');
         if (!iframe) {
-            console.warn('⚠️ Iframe não encontrado');
             return;
         }
         
@@ -1672,9 +1650,7 @@ class TempMailApp {
                 dataUrl: dataUrl,
                 isError: isError
             }, '*');
-            console.log(`📤 Comando enviado para substituir imagem no iframe`);
         } catch (e) {
-            console.warn('⚠️ Erro ao enviar mensagem para iframe:', e);
         }
     }
 
@@ -1682,7 +1658,6 @@ class TempMailApp {
      * Renderiza o email no iframe
      */
     renderEmailInIframe(html) {
-        console.log('🖼️ renderEmailInIframe chamado, tamanho do HTML:', html.length);
         
         // 🔥 NORMALIZAÇÃO COMPLETA de HTML legado (converte bgcolor, background, etc)
         html = this.normalizeEmailHTML(html);
@@ -1884,30 +1859,134 @@ ${sanitizedHtml}
      * Garante compatibilidade com emails de todos os provedores (Bradesco, Gmail, Outlook, etc)
      */
     normalizeEmailHTML(html) {
-        console.log('🔧 Iniciando normalização HTML completa...');
         
         try {
-            // 1. Parse HTML
+            // 1. Parse HTML completo (incluindo <head>)
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
             
-            // 2. Processar atributos legados
+            // 2. Inlinear CSS crítico de classes para inline styles
+            this._inlineCriticalCSS(doc);
+            
+            // 3. Processar atributos legados
             this._convertLegacyAttributes(doc);
             
-            // 3. Converter tags obsoletas
+            // 4. Converter tags obsoletas
             this._convertObsoleteTags(doc);
             
-            // 4. Aplicar proteção de contraste
+            // 5. Aplicar proteção de contraste
             this._applyContrastProtection(doc);
             
-            // 5. Retornar HTML normalizado
+            // 6. Retornar HTML normalizado
             const normalized = doc.body.innerHTML;
-            console.log('✅ Normalização HTML completa finalizada');
             return normalized;
             
         } catch (error) {
-            console.error('❌ Erro na normalização HTML:', error);
             return html; // Fallback seguro
+        }
+    }
+
+    /**
+     * Inlineia CSS crítico de <style> tags para atributos inline
+     * Foca em background-color, color, e outras propriedades essenciais para renderização
+     */
+    _inlineCriticalCSS(doc) {
+        
+        try {
+            // Extrair todos os <style> tags
+            const styleTags = doc.querySelectorAll('style');
+            if (styleTags.length === 0) {
+                return;
+            }
+
+            // Propriedades CSS críticas que devem ser inlineadas
+            const criticalProps = [
+                'background-color',
+                'background',
+                'color',
+                'width',
+                'height',
+                'padding',
+                'margin',
+                'text-align',
+                'display',
+                'border',
+                'box-shadow'
+            ];
+
+            // Para cada <style> tag
+            styleTags.forEach(styleTag => {
+                const cssText = styleTag.textContent || '';
+                
+                // Regex para extrair regras CSS simples (sem media queries por enquanto)
+                // Formato: .classe { propriedade: valor; }
+                const ruleRegex = /([.#]?[\w-]+)\s*\{([^}]+)\}/g;
+                let match;
+                
+                while ((match = ruleRegex.exec(cssText)) !== null) {
+                    const selector = match[1].trim();
+                    const declarations = match[2].trim();
+                    
+                    // Ignorar seletores complexos ou pseudo-classes
+                    if (selector.includes(':') || selector.includes('>') || 
+                        selector.includes('+') || selector.includes('~') ||
+                        selector.includes(' ') || selector.includes('[')) {
+                        continue;
+                    }
+                    
+                    // Extrair propriedades críticas
+                    const criticalStyles = {};
+                    criticalProps.forEach(prop => {
+                        const propRegex = new RegExp(`${prop}\\s*:\\s*([^;!]+)`, 'i');
+                        const propMatch = declarations.match(propRegex);
+                        if (propMatch) {
+                            criticalStyles[prop] = propMatch[1].trim();
+                        }
+                    });
+                    
+                    // Se encontrou propriedades críticas, aplicar aos elementos
+                    if (Object.keys(criticalStyles).length > 0) {
+                        try {
+                            // Remover . ou # do início do seletor
+                            const cleanSelector = selector.startsWith('.') || selector.startsWith('#') 
+                                ? selector 
+                                : `.${selector}`;
+                            
+                            const elements = doc.querySelectorAll(cleanSelector);
+                            elements.forEach(el => {
+                                const currentStyle = el.getAttribute('style') || '';
+                                const styleObj = {};
+                                
+                                // Parse estilo atual
+                                currentStyle.split(';').forEach(rule => {
+                                    const [prop, val] = rule.split(':').map(s => s.trim());
+                                    if (prop && val) styleObj[prop.toLowerCase()] = val;
+                                });
+                                
+                                // Adicionar estilos críticos (sem sobrescrever)
+                                Object.entries(criticalStyles).forEach(([prop, val]) => {
+                                    if (!styleObj[prop]) {
+                                        styleObj[prop] = val;
+                                    }
+                                });
+                                
+                                // Reconstruir atributo style
+                                const newStyle = Object.entries(styleObj)
+                                    .map(([p, v]) => `${p}:${v}`)
+                                    .join(';');
+                                
+                                if (newStyle) {
+                                    el.setAttribute('style', newStyle);
+                                }
+                            });
+                        } catch (err) {
+                            // Seletor inválido, ignorar
+                        }
+                    }
+                }
+            });
+            
+        } catch (error) {
         }
     }
 
@@ -1915,7 +1994,6 @@ ${sanitizedHtml}
      * Converte atributos HTML legados para CSS inline
      */
     _convertLegacyAttributes(doc) {
-        console.log('🔄 Convertendo atributos legados...');
         
         try {
             // Processar bgcolor (background-color)
@@ -1925,7 +2003,6 @@ ${sanitizedHtml}
                     const currentStyle = el.getAttribute('style') || '';
                     if (!currentStyle.includes('background-color')) {
                         el.setAttribute('style', currentStyle + `;background-color:${bgcolor}`);
-                        console.log(`✓ bgcolor convertido: ${bgcolor} em <${el.tagName}>`);
                     }
                 }
             });
@@ -1939,12 +2016,10 @@ ${sanitizedHtml}
                     if (background.startsWith('http') || background.startsWith('data:')) {
                         if (!currentStyle.includes('background-image')) {
                             el.setAttribute('style', currentStyle + `;background-image:url(${background})`);
-                            console.log(`✓ background URL convertido em <${el.tagName}>`);
                         }
                     } else {
                         if (!currentStyle.includes('background-color')) {
                             el.setAttribute('style', currentStyle + `;background-color:${background}`);
-                            console.log(`✓ background cor convertido: ${background} em <${el.tagName}>`);
                         }
                     }
                 }
@@ -1957,7 +2032,6 @@ ${sanitizedHtml}
                     const currentStyle = el.getAttribute('style') || '';
                     if (!currentStyle.includes('vertical-align')) {
                         el.setAttribute('style', currentStyle + `;vertical-align:${valign}`);
-                        console.log(`✓ valign convertido: ${valign} em <${el.tagName}>`);
                     }
                 }
             });
@@ -1969,7 +2043,6 @@ ${sanitizedHtml}
                     const currentStyle = el.getAttribute('style') || '';
                     if (!currentStyle.includes('text-align')) {
                         el.setAttribute('style', currentStyle + `;text-align:${align}`);
-                        console.log(`✓ align convertido: ${align} em <${el.tagName}>`);
                     }
                 }
             });
@@ -1993,9 +2066,7 @@ ${sanitizedHtml}
                 }
             });
 
-            console.log('✅ Atributos legados convertidos');
         } catch (error) {
-            console.error('❌ Erro ao converter atributos legados:', error);
         }
     }
 
@@ -2003,7 +2074,6 @@ ${sanitizedHtml}
      * Converte tags HTML obsoletas para modernas
      */
     _convertObsoleteTags(doc) {
-        console.log('🔄 Convertendo tags obsoletas...');
         
         try {
             // Converter <center> para <div style="text-align:center">
@@ -2012,7 +2082,6 @@ ${sanitizedHtml}
                 div.setAttribute('style', 'text-align:center');
                 div.innerHTML = center.innerHTML;
                 center.replaceWith(div);
-                console.log('✓ <center> convertido para <div>');
             });
 
             // Converter <font> para <span> com estilos
@@ -2024,14 +2093,12 @@ ${sanitizedHtml}
                 const face = font.getAttribute('face');
                 if (face && !styles.includes('font-family')) {
                     styles += `;font-family:${face}`;
-                    console.log(`✓ font face convertido: ${face}`);
                 }
                 
                 // Converter color
                 const color = font.getAttribute('color');
                 if (color && !styles.includes('color')) {
                     styles += `;color:${color}`;
-                    console.log(`✓ font color convertido: ${color}`);
                 }
                 
                 // Converter size (1-7 para CSS)
@@ -2048,7 +2115,6 @@ ${sanitizedHtml}
                     };
                     const fontSize = sizeMap[size] || 'medium';
                     styles += `;font-size:${fontSize}`;
-                    console.log(`✓ font size convertido: ${size} → ${fontSize}`);
                 }
                 
                 if (styles) {
@@ -2058,9 +2124,7 @@ ${sanitizedHtml}
                 font.replaceWith(span);
             });
 
-            console.log('✅ Tags obsoletas convertidas');
         } catch (error) {
-            console.error('❌ Erro ao converter tags obsoletas:', error);
         }
     }
 
@@ -2069,7 +2133,6 @@ ${sanitizedHtml}
      * Garante texto legível em qualquer fundo
      */
     _applyContrastProtection(doc) {
-        console.log('🔄 Aplicando proteção de contraste...');
         
         try {
             // Verificar elementos com cor de texto e fundo definidos
@@ -2097,7 +2160,6 @@ ${sanitizedHtml}
                             const newStyle = style.replace(/(?:^|;)\s*color\s*:\s*[^;]+/i, `;color:${newColor}`);
                             el.setAttribute('style', newStyle);
                             
-                            console.log(`⚠️ Contraste ajustado em <${el.tagName}>: ${textColor} → ${newColor} (fundo: ${bgColor})`);
                         }
                     } catch (e) {
                         // Ignorar erros de parsing
@@ -2105,9 +2167,7 @@ ${sanitizedHtml}
                 }
             });
 
-            console.log('✅ Proteção de contraste aplicada');
         } catch (error) {
-            console.error('❌ Erro ao aplicar proteção de contraste:', error);
         }
     }
 

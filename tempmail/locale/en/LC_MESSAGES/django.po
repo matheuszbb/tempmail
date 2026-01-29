@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 21:39-0300\n"
+"POT-Creation-Date: 2026-01-28 23:30-0300\n"
 "PO-Revision-Date: 2026-01-19 17:00-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -32,6 +32,7 @@ msgid "Sobre o tempo da sessão"
 msgstr "About session time"
 
 #: core/templates/core/index.html:84
+#: core/templates/core/parciais/index/_sessionInfoModal.html:33
 msgid "QR Code"
 msgstr "QR Code"
 
@@ -40,6 +41,7 @@ msgid "Copiar"
 msgstr "Copy"
 
 #: core/templates/core/index.html:98
+#: core/templates/core/parciais/index/_sessionInfoModal.html:49
 msgid "Atualizar"
 msgstr "Refresh"
 
@@ -214,6 +216,7 @@ msgid "Sim, Gerar Novo"
 msgstr "Yes, Generate New"
 
 #: core/templates/core/parciais/index/_editModal.html:6
+#: core/templates/core/parciais/index/_sessionInfoModal.html:57
 msgid "Alterar Endereço"
 msgstr "Change Address"
 
@@ -262,53 +265,51 @@ msgstr ""
 "You are protected against spam and unwanted emails. This service is "
 "exclusively for temporary use and secure verifications."
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:33
-msgid "Editar vs Excluir"
-msgstr "Edit vs Delete"
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:34
-msgid "Editar:"
-msgstr "Edit:"
-
 #: core/templates/core/parciais/index/_sessionInfoModal.html:34
 msgid ""
-"Muda o endereço de e-mail mas mantém todas as mensagens até o tempo expirar. "
-"Caso retorne ao e-mail anterior, as mensagens estarão disponíveis por mais "
-"algum tempo."
+"Gere um QR Code do seu e-mail temporário para compartilhar facilmente com "
+"outros dispositivos ou pessoas."
 msgstr ""
-"Changes the email address but keeps all messages until the time expires. If "
-"you return to the previous email, the messages will be available for a while "
-"longer."
+"Generate a QR Code for your temporary email to easily share it with other "
+"devices or people."
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:35
-msgid "Excluir:"
-msgstr "Delete:"
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:35
-msgid "Remove o e-mail atual e todas as mensagens imediatamente."
-msgstr "Removes the current email and all messages immediately."
+#: core/templates/core/parciais/index/_sessionInfoModal.html:41
+msgid "Copiar Endereço"
+msgstr "Copy Address"
 
 #: core/templates/core/parciais/index/_sessionInfoModal.html:42
-msgid "Renovação"
-msgstr "Renewal"
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:43
 msgid ""
-"Se precisar de mais tempo, você pode gerar um novo endereço de e-mail "
-"temporário a qualquer momento."
+"Copie rapidamente seu e-mail temporário para a área de transferência e cole "
+"onde precisar."
 msgstr ""
-"If you need more time, you can generate a new temporary email address at any "
-"time."
+"Quickly copy your temporary email to the clipboard and paste it wherever "
+"you need."
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:51
+#: core/templates/core/parciais/index/_sessionInfoModal.html:50
+msgid ""
+"Gera um novo e-mail aleatório e exclui todas as mensagens do e-mail atual, "
+"permitindo que você comece do zero."
+msgstr ""
+"Generates a new random email and deletes all messages from the current "
+"email, allowing you to start from scratch."
+
+#: core/templates/core/parciais/index/_sessionInfoModal.html:58
+msgid ""
+"Escolha um e-mail do histórico para reutilizar ou crie um novo "
+"personalizado. Suas mensagens ficam salvas até o tempo expirar."
+msgstr ""
+"Choose an email from your history to reuse or create a new custom one. Your "
+"messages are saved until the time expires."
+
+#: core/templates/core/parciais/index/_sessionInfoModal.html:66
 msgid "Quer saber mais sobre os benefícios do Email Temporário?"
 msgstr "Want to know more about the benefits of Temporary Email?"
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:53
+#: core/templates/core/parciais/index/_sessionInfoModal.html:68
 msgid "Saiba mais aqui"
 msgstr "Learn more here"
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:61
+#: core/templates/core/parciais/index/_sessionInfoModal.html:76
 msgid "Entendi"
 msgstr "I understand"
 
@@ -1511,6 +1512,37 @@ msgid ""
 "de contato."
 msgstr ""
 "For questions about these terms, please contact us through the contact page."
+
+#~ msgid "Editar vs Excluir"
+#~ msgstr "Edit vs Delete"
+
+#~ msgid "Editar:"
+#~ msgstr "Edit:"
+
+#~ msgid ""
+#~ "Muda o endereço de e-mail mas mantém todas as mensagens até o tempo "
+#~ "expirar. Caso retorne ao e-mail anterior, as mensagens estarão "
+#~ "disponíveis por mais algum tempo."
+#~ msgstr ""
+#~ "Changes the email address but keeps all messages until the time expires. "
+#~ "If you return to the previous email, the messages will be available for a "
+#~ "while longer."
+
+#~ msgid "Excluir:"
+#~ msgstr "Delete:"
+
+#~ msgid "Remove o e-mail atual e todas as mensagens imediatamente."
+#~ msgstr "Removes the current email and all messages immediately."
+
+#~ msgid "Renovação"
+#~ msgstr "Renewal"
+
+#~ msgid ""
+#~ "Se precisar de mais tempo, você pode gerar um novo endereço de e-mail "
+#~ "temporário a qualquer momento."
+#~ msgstr ""
+#~ "If you need more time, you can generate a new temporary email address at "
+#~ "any time."
 
 #~ msgid "QR"
 #~ msgstr "QR"

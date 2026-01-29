@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 21:39-0300\n"
+"POT-Creation-Date: 2026-01-28 23:30-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,6 +37,7 @@ msgid "Sobre o tempo da sessão"
 msgstr ""
 
 #: core/templates/core/index.html:84
+#: core/templates/core/parciais/index/_sessionInfoModal.html:33
 msgid "QR Code"
 msgstr ""
 
@@ -45,6 +46,7 @@ msgid "Copiar"
 msgstr ""
 
 #: core/templates/core/index.html:98
+#: core/templates/core/parciais/index/_sessionInfoModal.html:49
 msgid "Atualizar"
 msgstr ""
 
@@ -215,6 +217,7 @@ msgid "Sim, Gerar Novo"
 msgstr ""
 
 #: core/templates/core/parciais/index/_editModal.html:6
+#: core/templates/core/parciais/index/_sessionInfoModal.html:57
 msgid "Alterar Endereço"
 msgstr ""
 
@@ -259,48 +262,43 @@ msgid ""
 "exclusivamente para uso temporário e verificações seguras."
 msgstr ""
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:33
-msgid "Editar vs Excluir"
-msgstr ""
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:34
-msgid "Editar:"
-msgstr ""
-
 #: core/templates/core/parciais/index/_sessionInfoModal.html:34
 msgid ""
-"Muda o endereço de e-mail mas mantém todas as mensagens até o tempo expirar. "
-"Caso retorne ao e-mail anterior, as mensagens estarão disponíveis por mais "
-"algum tempo."
+"Gere um QR Code do seu e-mail temporário para compartilhar facilmente com "
+"outros dispositivos ou pessoas."
 msgstr ""
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:35
-msgid "Excluir:"
-msgstr ""
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:35
-msgid "Remove o e-mail atual e todas as mensagens imediatamente."
+#: core/templates/core/parciais/index/_sessionInfoModal.html:41
+msgid "Copiar Endereço"
 msgstr ""
 
 #: core/templates/core/parciais/index/_sessionInfoModal.html:42
-msgid "Renovação"
-msgstr ""
-
-#: core/templates/core/parciais/index/_sessionInfoModal.html:43
 msgid ""
-"Se precisar de mais tempo, você pode gerar um novo endereço de e-mail "
-"temporário a qualquer momento."
+"Copie rapidamente seu e-mail temporário para a área de transferência e cole "
+"onde precisar."
 msgstr ""
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:51
+#: core/templates/core/parciais/index/_sessionInfoModal.html:50
+msgid ""
+"Gera um novo e-mail aleatório e exclui todas as mensagens do e-mail atual, "
+"permitindo que você comece do zero."
+msgstr ""
+
+#: core/templates/core/parciais/index/_sessionInfoModal.html:58
+msgid ""
+"Escolha um e-mail do histórico para reutilizar ou crie um novo "
+"personalizado. Suas mensagens ficam salvas até o tempo expirar."
+msgstr ""
+
+#: core/templates/core/parciais/index/_sessionInfoModal.html:66
 msgid "Quer saber mais sobre os benefícios do Email Temporário?"
 msgstr ""
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:53
+#: core/templates/core/parciais/index/_sessionInfoModal.html:68
 msgid "Saiba mais aqui"
 msgstr ""
 
-#: core/templates/core/parciais/index/_sessionInfoModal.html:61
+#: core/templates/core/parciais/index/_sessionInfoModal.html:76
 msgid "Entendi"
 msgstr ""
 
