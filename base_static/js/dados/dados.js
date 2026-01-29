@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(initializeTabState, 100);
                 }
             } catch (e) {
-                console.debug('Requisição processada:', e.message);
             }
         }
     });

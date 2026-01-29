@@ -31,7 +31,6 @@ class TempMailApp {
             msgCorpo: document.getElementById('msg-corpo'),
             editModal: document.getElementById('editModal'),
             modalInputUser: document.getElementById('modalInputUser'),
-            modalDomainLabel: document.getElementById('modalDomainLabel'),
             // Novos elementos para scroll logic
             messageScrollArea: document.getElementById('message-scroll-area'),
             headerTitle: document.getElementById('header-title'),
@@ -1108,12 +1107,13 @@ class TempMailApp {
     async openEditModal() {
         if (!this.elements.editModal) return;
 
-        // Ajusta o domínio no label
+        // Carregar domínios disponíveis
+        await this.loadAvailableDomains();
+
+        // Selecionar domínio atual
         if (this.currentEmail && this.currentEmail.includes('@')) {
             const domain = this.currentEmail.split('@')[1];
-            if (this.elements.modalDomainLabel) {
-                this.elements.modalDomainLabel.textContent = `@${domain}`;
-            }
+            this.selectDomain(domain);
         }
 
         // ✅ Carregar histórico de emails
@@ -1176,8 +1176,14 @@ class TempMailApp {
             return;
         }
 
-        const domainLabel = this.elements.modalDomainLabel.textContent;
-        const domain = domainLabel.replace('@', '').trim();
+        const domainSelect = document.getElementById('modalDomainSelect');
+        if (!domainSelect || !domainSelect.value) {
+            Toast.error(gettext('Por favor, selecione um domínio.'));
+            this.isResetting = false;
+            return;
+        }
+        
+        const domain = domainSelect.value.trim();
         const fullEmail = `${username}@${domain}`;
 
         // ✅ VALIDAÇÃO: Email duplicado
@@ -1231,6 +1237,131 @@ class TempMailApp {
     }
 
     // ==================== EMAIL HISTORY ====================
+
+    async loadAvailableDomains() {
+        try {
+            const domainSelect = document.getElementById('modalDomainSelect');
+            const dropdownMenu = document.getElementById('domainDropdownMenu');
+            const selectedText = document.getElementById('selectedDomainText');
+            
+            if (!domainSelect || !dropdownMenu) return;
+
+            // Mostrar loading
+            if (selectedText) selectedText.textContent = gettext('Carregando...');
+
+            const response = await fetch('/api/domains/');
+            const data = await response.json();
+
+            if (data.success && data.domains && data.domains.length > 0) {
+                // Popular o select oculto
+                domainSelect.innerHTML = data.domains.map(domain => 
+                    `<option value="${domain}">@${domain}</option>`
+                ).join('');
+                
+                // Pegar domínio atual
+                const currentDomain = this.currentEmail ? this.currentEmail.split('@')[1] : data.domains[0];
+                
+                // Popular o dropdown customizado
+                dropdownMenu.innerHTML = data.domains.map(domain => {
+                    const isCurrent = domain === currentDomain;
+                    return `
+                    <div class="group px-4 py-3 hover:bg-orange-500 hover:text-white dark:hover:bg-orange-500 cursor-pointer transition-all duration-200 text-gray-700 dark:text-gray-200 font-semibold border-b border-gray-100 dark:border-gray-700 last:border-b-0 flex items-center justify-between"
+                         data-domain="${domain}"
+                         onclick="window.app.selectDomain('${domain}')">
+                        <span>@${domain}</span>
+                        ${isCurrent ? '<svg class="w-5 h-5 text-orange-500 dark:text-orange-400 group-hover:text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>' : ''}
+                    </div>
+                `;
+                }).join('');
+                
+                // Definir domínio atual como selecionado
+                if (selectedText) selectedText.textContent = `@${currentDomain}`;
+                domainSelect.value = currentDomain;
+                
+            } else {
+                if (selectedText) selectedText.textContent = gettext('Nenhum domínio');
+                Toast.error(gettext('Nenhum domínio disponível'));
+            }
+            
+            // Setup do dropdown toggle
+            this.setupCustomDropdown();
+        } catch (error) {
+            const selectedText = document.getElementById('selectedDomainText');
+            if (selectedText) selectedText.textContent = gettext('Erro');
+            Toast.error(gettext('Erro ao carregar domínios disponíveis'));
+        }
+    }
+    
+    setupCustomDropdown() {
+        const btn = document.getElementById('domainDropdownBtn');
+        const menu = document.getElementById('domainDropdownMenu');
+        const arrow = document.getElementById('dropdownArrow');
+        
+        
+        if (!btn || !menu) {
+            return;
+        }
+        
+        // Animação de bounce down usando Web Animations API
+        let arrowAnimation = null;
+        if (arrow) {
+            arrowAnimation = arrow.animate(
+                [
+                    { transform: 'translateY(0)', easing: 'cubic-bezier(0.8, 0, 1, 1)' },
+                    { transform: 'translateY(25%)', easing: 'cubic-bezier(0, 0, 0.2, 1)' },
+                    { transform: 'translateY(0)', easing: 'cubic-bezier(0.8, 0, 1, 1)' }
+                ],
+                {
+                    duration: 1000,
+                    iterations: Infinity
+                }
+            );
+        }
+        
+        // Toggle dropdown
+        btn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(180deg)';
+                    if (arrowAnimation) arrowAnimation.pause();
+                }
+            } else {
+                menu.classList.add('hidden');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(0deg)';
+                    if (arrowAnimation) arrowAnimation.play();
+                }
+            }
+        };
+        
+        // Fechar ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+                if (arrow) {
+                    arrow.style.transform = 'rotate(0deg)';
+                    if (arrowAnimation) arrowAnimation.play();
+                }
+            }
+        });
+    }
+    
+    selectDomain(domain) {
+        const domainSelect = document.getElementById('modalDomainSelect');
+        const selectedText = document.getElementById('selectedDomainText');
+        const menu = document.getElementById('domainDropdownMenu');
+        const arrow = document.getElementById('dropdownArrow');
+        
+        if (domainSelect) domainSelect.value = domain;
+        if (selectedText) selectedText.textContent = `@${domain}`;
+        if (menu) menu.classList.add('hidden');
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
 
     async loadEmailHistory() {
         try {
@@ -1315,13 +1446,17 @@ class TempMailApp {
     }
 
     async useHistoryEmail(email) {
-        // Preencher input com o username
+        // Preencher input com o username e selecionar domínio
         const [username, domain] = email.split('@');
         const input = this.elements.modalInputUser;
+        
         if (input) {
             input.value = username;
-            await this.saveEditModal();
         }
+        
+        this.selectDomain(domain);
+        
+        await this.saveEditModal();
     }
 
     // Helper para limpar lista

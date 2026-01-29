@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 23:30-0300\n"
+"POT-Creation-Date: 2026-01-29 09:52-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,8 +179,9 @@ msgstr ""
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:32
 #: core/templates/core/parciais/index/_confirmationResetModal.html:18
-#: core/templates/core/parciais/index/_editModal.html:38
-#: templates/parciais/_confirmationExternalLinkModal.html:38
+#: core/templates/core/parciais/index/_editModal.html:73
+#: templates/parciais/modals/_clearCacheModal.html:17
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:38
 msgid "Cancelar"
 msgstr ""
 
@@ -190,8 +191,8 @@ msgstr ""
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:41
 #: core/templates/core/parciais/index/_confirmationResetModal.html:29
-#: core/templates/core/parciais/index/_editModal.html:51
-#: templates/parciais/_confirmationExternalLinkModal.html:52
+#: core/templates/core/parciais/index/_editModal.html:86
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:52
 msgid "fechar"
 msgstr ""
 
@@ -229,7 +230,16 @@ msgstr ""
 msgid "ex: usuario123"
 msgstr ""
 
-#: core/templates/core/parciais/index/_editModal.html:45
+#: core/templates/core/parciais/index/_editModal.html:29
+#: core/templates/core/parciais/index/_editModal.html:36
+msgid "Carregando..."
+msgstr ""
+
+#: core/templates/core/parciais/index/_editModal.html:63
+msgid "Clique no domínio para escolher entre as opções disponíveis"
+msgstr ""
+
+#: core/templates/core/parciais/index/_editModal.html:80
 msgid "Salvar Alterações"
 msgstr ""
 
@@ -304,7 +314,7 @@ msgstr ""
 
 #: core/views/corefilesviews.py:57 core/views/corefilesviews.py:209
 #: core/views/corefilesviews.py:995 core/views/corefilesviews.py:1069
-#: core/views/coreviews.py:840 core/views/coreviews.py:853
+#: core/views/coreviews.py:909 core/views/coreviews.py:922
 msgid "Sessão não encontrada"
 msgstr ""
 
@@ -387,83 +397,91 @@ msgstr ""
 msgid "Não foi possível processar o download do arquivo."
 msgstr ""
 
-#: core/views/coreviews.py:110 core/views/coreviews.py:216
-#: core/views/coreviews.py:602
+#: core/views/coreviews.py:111 core/views/coreviews.py:217
+#: core/views/coreviews.py:603
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
 
-#: core/views/coreviews.py:147
+#: core/views/coreviews.py:148
 msgid "Erro ao criar email temporário"
 msgstr ""
 
-#: core/views/coreviews.py:171
+#: core/views/coreviews.py:172
 msgid "Você já está usando este endereço de e-mail"
 msgstr ""
 
-#: core/views/coreviews.py:188
+#: core/views/coreviews.py:189
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr ""
 
-#: core/views/coreviews.py:245
+#: core/views/coreviews.py:246
 msgid "Sessão resetada com sucesso"
 msgstr ""
 
-#: core/views/coreviews.py:260 core/views/coreviews.py:264
+#: core/views/coreviews.py:261 core/views/coreviews.py:265
 msgid "Endereço de email inválido"
 msgstr ""
 
-#: core/views/coreviews.py:270
+#: core/views/coreviews.py:271
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr ""
 
-#: core/views/coreviews.py:292
+#: core/views/coreviews.py:293
 msgid ""
 "Nome de usuário contém caracteres inválidos. Use apenas letras, números, "
 "pontos, hífens e underscores."
 msgstr ""
 
-#: core/views/coreviews.py:303
+#: core/views/coreviews.py:304
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr ""
 
-#: core/views/coreviews.py:331
+#: core/views/coreviews.py:332
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr ""
 
-#: core/views/coreviews.py:337
+#: core/views/coreviews.py:338
 msgid "Não foi possível acessar este email"
 msgstr ""
 
-#: core/views/coreviews.py:357
+#: core/views/coreviews.py:358
 msgid "Email alterado com sucesso"
 msgstr ""
 
-#: core/views/coreviews.py:599
+#: core/views/coreviews.py:600
 msgid "Erro interno ao processar requisição"
 msgstr ""
 
-#: core/views/coreviews.py:604
+#: core/views/coreviews.py:605
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr ""
 
-#: core/views/coreviews.py:606
+#: core/views/coreviews.py:607
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr ""
 
-#: core/views/coreviews.py:608
+#: core/views/coreviews.py:609
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr ""
 
-#: core/views/coreviews.py:729
+#: core/views/coreviews.py:759
+msgid "Nenhum domínio disponível"
+msgstr ""
+
+#: core/views/coreviews.py:775
+msgid "Erro ao buscar domínios"
+msgstr ""
+
+#: core/views/coreviews.py:798
 msgid "Erro ao buscar histórico"
 msgstr ""
 
-#: core/views/coreviews.py:902
+#: core/views/coreviews.py:971
 msgid "Conta não encontrada"
 msgstr ""
 
-#: core/views/coreviews.py:908
+#: core/views/coreviews.py:977
 msgid "Erro ao buscar mensagens"
 msgstr ""
 
@@ -475,8 +493,16 @@ msgstr ""
 msgid "Erro ao carregar estatísticas"
 msgstr ""
 
-#: core/views/simpleviews.py:115
+#: core/views/simpleviews.py:116
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
+msgstr ""
+
+#: core/views/simpleviews.py:173
+msgid "Cache limpo e domínios sincronizados com sucesso!"
+msgstr ""
+
+#: core/views/simpleviews.py:180
+msgid "Erro ao processar."
 msgstr ""
 
 #: templates/400.html:18
@@ -727,34 +753,6 @@ msgid ""
 "outros canais de comunicação."
 msgstr ""
 
-#: templates/parciais/_confirmationExternalLinkModal.html:8
-msgid "Aviso de Link Externo"
-msgstr ""
-
-#: templates/parciais/_confirmationExternalLinkModal.html:13
-msgid "URL de Destino:"
-msgstr ""
-
-#: templates/parciais/_confirmationExternalLinkModal.html:22
-msgid "Você está prestes a sair do EmailRush e visitar um site externo."
-msgstr ""
-
-#: templates/parciais/_confirmationExternalLinkModal.html:23
-msgid "Certifique-se de que o site é seguro"
-msgstr ""
-
-#: templates/parciais/_confirmationExternalLinkModal.html:24
-msgid "antes de prosseguir."
-msgstr ""
-
-#: templates/parciais/_confirmationExternalLinkModal.html:31
-msgid "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!"
-msgstr ""
-
-#: templates/parciais/_confirmationExternalLinkModal.html:45
-msgid "Prosseguir"
-msgstr ""
-
 #: templates/parciais/_erros_forms.html:12
 #, python-format
 msgid "Erro em %(label)s"
@@ -824,11 +822,20 @@ msgstr ""
 msgid "Alterar Idioma"
 msgstr ""
 
-#: templates/parciais/_nav.html:82
+#: templates/parciais/_nav.html:68
+#: templates/parciais/modals/_clearCacheModal.html:8
+msgid "Limpar Cache de Domínios"
+msgstr ""
+
+#: templates/parciais/_nav.html:85
+msgid "Limpar Cache"
+msgstr ""
+
+#: templates/parciais/_nav.html:89
 msgid "Estatísticas"
 msgstr ""
 
-#: templates/parciais/_nav.html:86
+#: templates/parciais/_nav.html:93
 msgid "Admin"
 msgstr ""
 
@@ -842,6 +849,48 @@ msgstr ""
 
 #: templates/parciais/_qrPopover.html:17
 msgid "Escaneie seu email"
+msgstr ""
+
+#: templates/parciais/modals/_clearCacheModal.html:12
+msgid ""
+"Tem certeza que deseja limpar o cache de domínios? Esta ação forçará uma "
+"nova consulta à API na próxima requisição."
+msgstr ""
+
+#: templates/parciais/modals/_clearCacheModal.html:21
+msgid "Confirmar"
+msgstr ""
+
+#: templates/parciais/modals/_clearCacheModal.html:26
+msgid "Fechar"
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:8
+msgid "Aviso de Link Externo"
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:13
+msgid "URL de Destino:"
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:22
+msgid "Você está prestes a sair do EmailRush e visitar um site externo."
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:23
+msgid "Certifique-se de que o site é seguro"
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:24
+msgid "antes de prosseguir."
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:31
+msgid "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!"
+msgstr ""
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:45
+msgid "Prosseguir"
 msgstr ""
 
 #: templates/privacidade.html:11

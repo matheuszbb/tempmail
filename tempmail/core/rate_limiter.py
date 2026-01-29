@@ -4,9 +4,9 @@ Rate Limiter inteligente para controlar chamadas à API externa
 import time
 import logging
 from collections import deque
-from datetime import datetime, timedelta
-from django.core.cache import cache
 from django.utils import timezone
+from django.core.cache import cache
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 

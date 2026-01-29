@@ -1,16 +1,18 @@
 """
 Mixins e utilitários reutilizáveis para views
 """
-from django.db import models
-from django.http import JsonResponse
-from django.contrib.auth import get_user_model
-from asgiref.sync import sync_to_async
-from datetime import datetime, timedelta
-from django.utils import timezone
-from django.conf import settings
-from .models import Domain, EmailAccount
-from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
+import random
 import logging
+from django.db import models
+from django.conf import settings
+from django.utils import timezone
+from django.core.cache import cache
+from django.http import JsonResponse
+from asgiref.sync import sync_to_async
+from .models import Domain, EmailAccount
+from datetime import datetime, timedelta
+from django.contrib.auth import get_user_model
+from .services.smtplabs_client import SMTPLabsClient, SMTPLabsAPIError
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +201,7 @@ class EmailAccountService:
     
     async def _create_new_account(self) -> EmailAccount:
         """
-        Cria uma nova conta de email.
+        Cria uma nova conta de email usando cache para performance.
         
         Returns:
             EmailAccount: Conta criada
@@ -207,16 +209,38 @@ class EmailAccountService:
         Raises:
             Exception: Se não houver domínios disponíveis ou erro na API
         """
-        # Garantir que temos domínios
-        domains = Domain.objects.filter(is_active=True)
         
-        if not await domains.aexists():
-            await self._sync_domains()
+        # 1. Tentar buscar domínios do cache primeiro
+        cache_key = 'available_domains_list'
+        cached_domains = cache.get(cache_key)
+        
+        if cached_domains:
+            logger.debug("✓ Cache hit: usando domínios do cache para geração aleatória")
+            # Buscar objetos Domain do banco apenas para os domínios cacheados
+            domains_list = await sync_to_async(list)(
+                Domain.objects.filter(domain__in=cached_domains, is_active=True)
+            )
+        else:
+            # 2. Cache miss: buscar do banco
+            logger.debug("✗ Cache miss: buscando domínios do banco")
             domains = Domain.objects.filter(is_active=True)
+            
+            if not await domains.aexists():
+                await self._sync_domains()
+                domains = Domain.objects.filter(is_active=True)
+            
+            domains_list = await sync_to_async(list)(domains)
+            
+            # Cachear para próximas requisições
+            domain_names = [d.domain for d in domains_list]
+            cache.set(cache_key, domain_names, 86400)  # 1 dia
+            logger.info(f"✓ Cache set: {len(domain_names)} domínios por 1 dia")
         
-        domain = await domains.afirst()
-        if not domain:
+        if not domains_list:
             raise Exception("Nenhum domínio disponível")
+        
+        domain = random.choice(domains_list)
+        logger.info(f"Domínio selecionado aleatoriamente: {domain.domain}")
         
         # Gerar credenciais
         username = EmailAccount.generate_random_username()
@@ -250,6 +274,7 @@ class EmailAccountService:
     
     async def _sync_domains(self):
         """Sincroniza domínios da API."""
+        
         logger.info("Sincronizando domínios da API...")
         domains_response = await self.client.get_domains(is_active=True)
         
@@ -263,6 +288,10 @@ class EmailAccountService:
                     'is_active': domain_data.get('isActive', True)
                 }
             )
+        
+        # Limpar cache de domínios após sincronização
+        cache.delete('available_domains_list')
+        logger.info(f"✓ {len(domains_list)} domínios sincronizados, cache limpo")
     
     async def _handle_orphaned_account(self, account: 'EmailAccount'):
         """Remove conta local que não existe mais na API remota"""

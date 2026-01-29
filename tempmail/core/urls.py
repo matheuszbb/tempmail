@@ -1,12 +1,12 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import JavaScriptCatalog
-from django.conf.urls.static import static
-from django.conf import settings
 
 from .views.coreviews import (
-    IndexView,TempEmailAPI, MessageListAPI, EmailHistoryAPI
+    IndexView,TempEmailAPI, MessageListAPI, EmailHistoryAPI, DomainsListAPI
 )
 from .views.corefilesviews import (
     MessageDetailAPI, MessageDownloadAPI, 
@@ -14,7 +14,7 @@ from .views.corefilesviews import (
 )
 from .views.simpleviews import (
     Robots_txtView, Sitemap_xmlView, HeartCheckView, ChromeDevToolsStubView,
-    PrivacidadeView, TermosView, ContatoView, SobreView
+    PrivacidadeView, TermosView, ContatoView, SobreView, ClearDomainCacheView
 )
 from .views.dadosviews import DadosView
 
@@ -23,9 +23,11 @@ urlpatterns = [
     path('robots.txt', Robots_txtView.as_view(), name='robots_txt'),
     path('sitemap.xml', Sitemap_xmlView.as_view(), name='sitemap_xml'),
     path('health/', HeartCheckView.as_view(), name='health_check'),
+    path('clear-domain-cache/', ClearDomainCacheView.as_view(), name='clear_domain_cache'),
     path(".well-known/appspecific/com.chrome.devtools.json", ChromeDevToolsStubView.as_view(), name="chrome-devtools-stub"),
 
     # API endpoints (não precisam de tradução)
+    path('api/domains/', DomainsListAPI.as_view(), name='domains_list_api'),
     path('api/email/', TempEmailAPI.as_view(), name='temp_email_api'),
     path('api/email/history/', EmailHistoryAPI.as_view(), name='email_history_api'),
     path('api/messages/', MessageListAPI.as_view(), name='message_list_api'),

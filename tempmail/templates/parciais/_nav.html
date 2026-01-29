@@ -65,6 +65,9 @@
 
                 {% if request.user.is_authenticated and request.user.is_superuser %}
                     <div class="hidden sm:flex items-center gap-2">
+                        <button onclick="openClearCacheModal()" class="btn btn-ghost btn-circle group transition-all duration-300" title="{% trans 'Limpar Cache de Domínios' %}">
+                            <i class="fa-solid fa-trash-can text-xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
+                        </button>
                         <a href="{% url 'dados_admin' %}" class="btn btn-ghost btn-circle group transition-all duration-300">
                             <i class="fa-solid fa-chart-simple text-xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
                         </a>
@@ -78,6 +81,10 @@
                             <i class="fa-solid fa-bars text-xl"></i>
                         </div>
                         <ul tabindex="0" class="dropdown-content z-[60] p-2 shadow-2xl bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800 w-48 mt-4">
+                            <li><button onclick="openClearCacheModal()" class="flex justify-between py-3 px-4 hover:bg-orange-50 dark:hover:bg-white/5 rounded-xl transition-all w-full text-left">
+                                <span>{% trans "Limpar Cache" %}</span>
+                                <i class="fa-solid fa-trash-can text-[#f97316]"></i>
+                            </button></li>
                             <li><a href="{% url 'dados_admin' %}" class="flex justify-between py-3 px-4 hover:bg-orange-50 dark:hover:bg-white/5 rounded-xl transition-all">
                                 <span>{% trans "Estatísticas" %}</span>
                                 <i class="fa-solid fa-chart-simple text-[#f97316]"></i>

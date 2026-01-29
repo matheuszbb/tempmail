@@ -6,13 +6,13 @@ import hashlib
 import logging
 import asyncio
 import unicodedata
-from html import escape as html_escape
 from django.views import View
 from django.urls import reverse
 from collections import Counter
 from django.conf import settings
 from django.utils import timezone
 from django.contrib import messages
+from html import escape as html_escape
 from asgiref.sync import sync_to_async
 from datetime import datetime, timedelta
 from django.middleware.csrf import get_token

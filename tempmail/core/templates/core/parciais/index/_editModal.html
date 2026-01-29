@@ -11,7 +11,7 @@
                 {% trans "Novo Nome de Usuário" %}
             </label>
             
-            <div class="flex items-stretch border-2 border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-brand-orange focus-within:border-brand-orange transition-all">
+            <div class="flex items-stretch border-2 border-gray-300 dark:border-gray-600 rounded-xl overflow-visible bg-white dark:bg-gray-800 focus-within:ring-2 focus-within:ring-brand-orange focus-within:border-brand-orange transition-all">
                 <input type="text" 
                        id="modalInputUser" 
                        name="new_username"
@@ -19,14 +19,49 @@
                        spellcheck="false"
                        data-lpignore="true" 
                        data-1p-ignore
-                       class="appearance-none bg-transparent border-none w-full text-gray-900 dark:text-white py-3 px-4 text-base leading-relaxed focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                       class="appearance-none bg-transparent border-none w-full text-gray-900 dark:text-white py-3 px-4 text-base leading-relaxed focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500 rounded-l-xl"
                        placeholder="{% trans 'ex: usuario123' %}">
                 
-                <div id="modalDomainLabel"
-                     class="flex items-center bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-4 text-base font-medium border-l-2 border-gray-200 dark:border-gray-600 whitespace-nowrap">
-                    @example.com
+                <!-- Dropdown customizado de domínios -->
+                <div class="relative border-l-2 border-gray-200 dark:border-gray-600 z-10">
+                    <!-- Select oculto para funcionalidade -->
+                    <select id="modalDomainSelect" class="hidden">
+                        <option value="">{% trans 'Carregando...' %}</option>
+                    </select>
+                    
+                    <!-- Botão customizado do dropdown -->
+                    <button type="button" 
+                            id="domainDropdownBtn"
+                            class="w-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 pl-4 pr-10 py-3 text-base font-semibold cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-600 transition-all duration-300 min-w-[170px] h-full rounded-r-lg text-left flex items-center justify-between">
+                        <span id="selectedDomainText">{% trans 'Carregando...' %}</span>
+                        <!-- Ícone de seta -->
+                        <svg class="w-5 h-5 text-orange-500 dark:text-orange-400 transition-transform duration-300 -mr-1" 
+                             id="dropdownArrow"
+                             fill="none" 
+                             stroke="currentColor" 
+                             viewBox="0 0 24 24">
+                            <path stroke-linecap="round" 
+                                  stroke-linejoin="round" 
+                                  stroke-width="2.5" 
+                                  d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    
+                    <!-- Menu dropdown customizado -->
+                    <div id="domainDropdownMenu" 
+                         class="hidden absolute top-full left-0 w-full mt-1 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-xl shadow-2xl overflow-hidden z-[100] max-h-64 overflow-y-auto">
+                        <!-- Opções serão inseridas aqui via JavaScript -->
+                    </div>
                 </div>
             </div>
+            
+            <!-- Hint visual -->
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                <span>{% trans "Clique no domínio para escolher entre as opções disponíveis" %}</span>
+            </p>
         </div>
 
         <!-- ✅ Container para histórico de emails -->

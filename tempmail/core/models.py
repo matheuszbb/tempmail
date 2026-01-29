@@ -1,8 +1,8 @@
-from django.db import models
-from django.utils import timezone
-from datetime import timedelta
-import secrets
 import string
+import secrets
+from django.db import models
+from datetime import timedelta
+from django.utils import timezone
 
 
 class Domain(models.Model):

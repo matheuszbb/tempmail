@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 23:30-0300\n"
+"POT-Creation-Date: 2026-01-29 09:52-0300\n"
 "PO-Revision-Date: 2026-01-19 17:00-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: English\n"
@@ -178,8 +178,9 @@ msgstr ""
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:32
 #: core/templates/core/parciais/index/_confirmationResetModal.html:18
-#: core/templates/core/parciais/index/_editModal.html:38
-#: templates/parciais/_confirmationExternalLinkModal.html:38
+#: core/templates/core/parciais/index/_editModal.html:73
+#: templates/parciais/modals/_clearCacheModal.html:17
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:38
 msgid "Cancelar"
 msgstr "Cancel"
 
@@ -189,8 +190,8 @@ msgstr "Yes, download file"
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:41
 #: core/templates/core/parciais/index/_confirmationResetModal.html:29
-#: core/templates/core/parciais/index/_editModal.html:51
-#: templates/parciais/_confirmationExternalLinkModal.html:52
+#: core/templates/core/parciais/index/_editModal.html:86
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:52
 msgid "fechar"
 msgstr "close"
 
@@ -228,7 +229,16 @@ msgstr "New Username"
 msgid "ex: usuario123"
 msgstr "ex: user123"
 
-#: core/templates/core/parciais/index/_editModal.html:45
+#: core/templates/core/parciais/index/_editModal.html:29
+#: core/templates/core/parciais/index/_editModal.html:36
+msgid "Carregando..."
+msgstr "Loading..."
+
+#: core/templates/core/parciais/index/_editModal.html:63
+msgid "Clique no domínio para escolher entre as opções disponíveis"
+msgstr "Click on the domain to choose from the available options"
+
+#: core/templates/core/parciais/index/_editModal.html:80
 msgid "Salvar Alterações"
 msgstr "Save Changes"
 
@@ -282,8 +292,8 @@ msgid ""
 "Copie rapidamente seu e-mail temporário para a área de transferência e cole "
 "onde precisar."
 msgstr ""
-"Quickly copy your temporary email to the clipboard and paste it wherever "
-"you need."
+"Quickly copy your temporary email to the clipboard and paste it wherever you "
+"need."
 
 #: core/templates/core/parciais/index/_sessionInfoModal.html:50
 msgid ""
@@ -315,7 +325,7 @@ msgstr "I understand"
 
 #: core/views/corefilesviews.py:57 core/views/corefilesviews.py:209
 #: core/views/corefilesviews.py:995 core/views/corefilesviews.py:1069
-#: core/views/coreviews.py:840 core/views/coreviews.py:853
+#: core/views/coreviews.py:909 core/views/coreviews.py:922
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Sessão não encontrada"
@@ -428,45 +438,45 @@ msgstr "Error processing data"
 msgid "Não foi possível processar o download do arquivo."
 msgstr "Could not process file download."
 
-#: core/views/coreviews.py:110 core/views/coreviews.py:216
-#: core/views/coreviews.py:602
+#: core/views/coreviews.py:111 core/views/coreviews.py:217
+#: core/views/coreviews.py:603
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr "Service temporarily unavailable. Please try again in a few minutes."
 
-#: core/views/coreviews.py:147
+#: core/views/coreviews.py:148
 #, fuzzy
 #| msgid "Criar Email Temporário"
 msgid "Erro ao criar email temporário"
 msgstr "Create Temporary Email"
 
-#: core/views/coreviews.py:171
+#: core/views/coreviews.py:172
 #, fuzzy
 #| msgid "Deseja gerar um novo endereço de e-mail?"
 msgid "Você já está usando este endereço de e-mail"
 msgstr "Do you want to generate a new email address?"
 
-#: core/views/coreviews.py:188
+#: core/views/coreviews.py:189
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr "Internal server error. Our team has been notified."
 
-#: core/views/coreviews.py:245
+#: core/views/coreviews.py:246
 msgid "Sessão resetada com sucesso"
 msgstr "Session reset successfully"
 
-#: core/views/coreviews.py:260 core/views/coreviews.py:264
+#: core/views/coreviews.py:261 core/views/coreviews.py:265
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido"
 msgstr "Your temporary email address for"
 
-#: core/views/coreviews.py:270
+#: core/views/coreviews.py:271
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr "Your temporary email address for"
 
-#: core/views/coreviews.py:292
+#: core/views/coreviews.py:293
 #, fuzzy
 #| msgid "Nome de usuário contém caracteres inválidos"
 msgid ""
@@ -474,53 +484,65 @@ msgid ""
 "pontos, hífens e underscores."
 msgstr "Username contains invalid characters"
 
-#: core/views/coreviews.py:303
+#: core/views/coreviews.py:304
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr "Username cannot start or end with a dot"
 
-#: core/views/coreviews.py:331
+#: core/views/coreviews.py:332
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr "Your temporary email address for"
 
-#: core/views/coreviews.py:337
+#: core/views/coreviews.py:338
 msgid "Não foi possível acessar este email"
 msgstr "Could not access this email"
 
-#: core/views/coreviews.py:357
+#: core/views/coreviews.py:358
 msgid "Email alterado com sucesso"
 msgstr "Email changed successfully"
 
-#: core/views/coreviews.py:599
+#: core/views/coreviews.py:600
 msgid "Erro interno ao processar requisição"
 msgstr "Internal error while processing request"
 
-#: core/views/coreviews.py:604
+#: core/views/coreviews.py:605
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr "Temporary server error. Please try again in a few moments."
 
-#: core/views/coreviews.py:606
+#: core/views/coreviews.py:607
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr "Too many attempts. Please wait a few minutes before trying again."
 
-#: core/views/coreviews.py:608
+#: core/views/coreviews.py:609
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr "Slow connection. Check your internet and try again."
 
-#: core/views/coreviews.py:729
+#: core/views/coreviews.py:759
+#, fuzzy
+#| msgid "Conteúdo do anexo vazio ou não disponível"
+msgid "Nenhum domínio disponível"
+msgstr "Attachment content empty or unavailable"
+
+#: core/views/coreviews.py:775
+#, fuzzy
+#| msgid "Erro ao buscar mensagens"
+msgid "Erro ao buscar domínios"
+msgstr "Error fetching messages"
+
+#: core/views/coreviews.py:798
 #, fuzzy
 #| msgid "Erro ao buscar mensagens"
 msgid "Erro ao buscar histórico"
 msgstr "Error fetching messages"
 
-#: core/views/coreviews.py:902
+#: core/views/coreviews.py:971
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Conta não encontrada"
 msgstr "Page Not Found"
 
-#: core/views/coreviews.py:908
+#: core/views/coreviews.py:977
 msgid "Erro ao buscar mensagens"
 msgstr "Error fetching messages"
 
@@ -536,9 +558,19 @@ msgstr "Internal error while processing request"
 msgid "Erro ao carregar estatísticas"
 msgstr "Statistics"
 
-#: core/views/simpleviews.py:115
+#: core/views/simpleviews.py:116
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr "Message sent successfully! We will respond shortly."
+
+#: core/views/simpleviews.py:173
+msgid "Cache limpo e domínios sincronizados com sucesso!"
+msgstr "Cache cleared and domains synchronized successfully!"
+
+#: core/views/simpleviews.py:180
+#, fuzzy
+#| msgid "Erro ao processar dados"
+msgid "Erro ao processar."
+msgstr "Error processing data"
 
 #: templates/400.html:18
 msgid "Erro 400"
@@ -805,36 +837,6 @@ msgstr ""
 "We will respond as soon as possible. For urgent matters, consider using "
 "other communication channels."
 
-#: templates/parciais/_confirmationExternalLinkModal.html:8
-msgid "Aviso de Link Externo"
-msgstr "External Link Warning"
-
-#: templates/parciais/_confirmationExternalLinkModal.html:13
-msgid "URL de Destino:"
-msgstr "Destination URL:"
-
-#: templates/parciais/_confirmationExternalLinkModal.html:22
-msgid "Você está prestes a sair do EmailRush e visitar um site externo."
-msgstr "You are about to leave EmailRush and visit an external site."
-
-#: templates/parciais/_confirmationExternalLinkModal.html:23
-msgid "Certifique-se de que o site é seguro"
-msgstr "Make sure the site is secure"
-
-#: templates/parciais/_confirmationExternalLinkModal.html:24
-msgid "antes de prosseguir."
-msgstr "before proceeding."
-
-#: templates/parciais/_confirmationExternalLinkModal.html:31
-msgid "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!"
-msgstr ""
-"⚠️ Caution: The link visible in the email was different from the actual "
-"destination!"
-
-#: templates/parciais/_confirmationExternalLinkModal.html:45
-msgid "Prosseguir"
-msgstr "Proceed"
-
 #: templates/parciais/_erros_forms.html:12
 #, python-format
 msgid "Erro em %(label)s"
@@ -917,11 +919,20 @@ msgstr "View attachments"
 msgid "Alterar Idioma"
 msgstr "Change"
 
-#: templates/parciais/_nav.html:82
+#: templates/parciais/_nav.html:68
+#: templates/parciais/modals/_clearCacheModal.html:8
+msgid "Limpar Cache de Domínios"
+msgstr "Clear Domain Cache"
+
+#: templates/parciais/_nav.html:85
+msgid "Limpar Cache"
+msgstr "Clear Cache"
+
+#: templates/parciais/_nav.html:89
 msgid "Estatísticas"
 msgstr "Statistics"
 
-#: templates/parciais/_nav.html:86
+#: templates/parciais/_nav.html:93
 msgid "Admin"
 msgstr "Admin"
 
@@ -936,6 +947,54 @@ msgstr "Last"
 #: templates/parciais/_qrPopover.html:17
 msgid "Escaneie seu email"
 msgstr "Scan your email"
+
+#: templates/parciais/modals/_clearCacheModal.html:12
+msgid ""
+"Tem certeza que deseja limpar o cache de domínios? Esta ação forçará uma "
+"nova consulta à API na próxima requisição."
+msgstr ""
+"Are you sure you want to clear the domain cache? This action will force a "
+"new API query on the next request."
+
+#: templates/parciais/modals/_clearCacheModal.html:21
+#, fuzzy
+#| msgid "Confirmar Download"
+msgid "Confirmar"
+msgstr "Confirm Download"
+
+#: templates/parciais/modals/_clearCacheModal.html:26
+msgid "Fechar"
+msgstr "Close"
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:8
+msgid "Aviso de Link Externo"
+msgstr "External Link Warning"
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:13
+msgid "URL de Destino:"
+msgstr "Destination URL:"
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:22
+msgid "Você está prestes a sair do EmailRush e visitar um site externo."
+msgstr "You are about to leave EmailRush and visit an external site."
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:23
+msgid "Certifique-se de que o site é seguro"
+msgstr "Make sure the site is secure"
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:24
+msgid "antes de prosseguir."
+msgstr "before proceeding."
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:31
+msgid "⚠️ Cuidado: O link visível no e-mail era diferente do destino real!"
+msgstr ""
+"⚠️ Caution: The link visible in the email was different from the actual "
+"destination!"
+
+#: templates/parciais/modals/_confirmationExternalLinkModal.html:45
+msgid "Prosseguir"
+msgstr "Proceed"
 
 #: templates/privacidade.html:11
 msgid ""
@@ -1568,6 +1627,3 @@ msgstr ""
 
 #~ msgid "Período muito grande. Reduza o intervalo."
 #~ msgstr "Period too long. Please reduce the interval."
-
-#~ msgid "Fechar"
-#~ msgstr "Close"

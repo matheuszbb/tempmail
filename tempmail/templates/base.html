@@ -6,32 +6,36 @@
 <html lang="{{ LANGUAGE_CODE }}">
 
 <head>
-  {% include "parciais/_head.html" %}
-  {% block style %}{% endblock %}
+    {% include "parciais/_head.html" %}
+    {% block style %}{% endblock %}
 </head>
 
 <body
-  class="bg-gray-100 text-gray-700 dark:bg-dark-bg dark:text-dark-text antialiased font-sans flex flex-col min-h-screen">
+    class="bg-gray-100 text-gray-700 dark:bg-dark-bg dark:text-dark-text antialiased font-sans flex flex-col min-h-screen">
 
-  {% include "parciais/_nav.html" %}
+    {% include "parciais/_nav.html" %}
 
-  <main class="flex-grow flex flex-col">
-    {% block conteudo %}
+    <main class="flex-grow flex flex-col">
+        {% block conteudo %}
+        {% endblock %}
+    </main>
+
+    {% block extra_content %}
     {% endblock %}
-  </main>
 
-  {% block extra_content %}
-  {% endblock %}
+    {% if request.user.is_authenticated and request.user.is_superuser %}
+        {% include 'parciais/modals/_clearCacheModal.html' %}
+        <script src="{% static 'js/global/clearCache.js' %}"></script>
+    {% endif %}
+    {% include 'parciais/modals/_confirmationExternalLinkModal.html' %}
+    {% include 'parciais/_toast.html' %}
+    {% include 'parciais/_footer.html' %}
 
-  {% include 'parciais/_confirmationExternalLinkModal.html' %}
-  {% include 'parciais/_toast.html' %}
-  {% include 'parciais/_footer.html' %}
-
-  <script src="{% static 'js/global/externalLinks.js' %}"></script>
-  <script src="{% static 'js/global/toggleTheme.js' %}"></script>
-  <script src="{% static 'js/global/toast.js' %}"></script>
-  {% block scripts %}
-  {% endblock %}
+    <script src="{% static 'js/global/externalLinks.js' %}"></script>
+    <script src="{% static 'js/global/toggleTheme.js' %}"></script>
+    <script src="{% static 'js/global/toast.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
 </body>
 
 </html>

@@ -6,13 +6,14 @@ import hashlib
 import logging
 import asyncio
 import unicodedata
-from html import escape as html_escape
 from django.views import View
 from django.urls import reverse
 from collections import Counter
 from django.conf import settings
 from django.utils import timezone
 from django.contrib import messages
+from django.core.cache import cache
+from html import escape as html_escape
 from asgiref.sync import sync_to_async
 from datetime import datetime, timedelta
 from django.middleware.csrf import get_token
@@ -140,3 +141,41 @@ class ContatoView(AdminRequiredMixin, View):
                 return redirect('admin:index')
             
             return await self._response_user(request)
+
+class ClearDomainCacheView(AdminRequiredMixin, View):
+    """
+    View para limpar o cache de domínios E sincronizar novos da API
+    Requer permissões de superuser
+    """
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.email_service = EmailAccountService()
+    
+    async def post(self, request):
+        """Limpa o cache e sincroniza domínios da API"""        
+        try:
+            # 1. Limpar cache
+            await sync_to_async(cache.delete)('available_domains_list')
+            
+            # 2. Sincronizar domínios da API
+            await self.email_service._sync_domains()
+            
+            # 3. Contar domínios ativos
+            domain_count = await Domain.objects.filter(is_active=True).acount()
+            
+            # Pegar username de forma async para logging
+            username = await sync_to_async(lambda: request.user.username)()
+            logger.info(f"Cache limpo e {domain_count} domínios sincronizados por admin: {username}")
+            
+            return JsonResponse({
+                'success': True,
+                'message': str(_("Cache limpo e domínios sincronizados com sucesso!")),
+                'domain_count': domain_count
+            })
+        except Exception as e:
+            logger.error(f"Erro ao limpar cache/sincronizar domínios: {e}")
+            return JsonResponse({
+                'success': False,
+                'error': str(_("Erro ao processar."))
+            }, status=500)

@@ -6,14 +6,15 @@ import hashlib
 import logging
 import asyncio
 import unicodedata
-from html import escape as html_escape
 from django.views import View
 from django.urls import reverse
 from collections import Counter
 from django.conf import settings
 from django.utils import timezone
+from django.core.cache import cache
 from django.contrib import messages
 from asgiref.sync import sync_to_async
+from html import escape as html_escape
 from datetime import datetime, timedelta
 from django.middleware.csrf import get_token
 from django.shortcuts import render, redirect
@@ -705,6 +706,74 @@ class TempEmailAPI(View):
             samesite='Lax'
         )
         logger.debug(f"Fingerprints salvos no cookie para {email_address}")
+
+class DomainsListAPI(View):
+    """API para retornar lista de domínios disponíveis"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.email_service = EmailAccountService()
+    
+    async def get(self, request):
+        """Retorna lista de domínios ativos com cache de 1 dia"""
+        
+        # Verificar cache primeiro
+        cache_key = 'available_domains_list'
+        cached_domains = cache.get(cache_key)
+        
+        if cached_domains is not None:
+            logger.debug("✓ Cache hit: lista de domínios")
+            return JsonResponse({
+                'success': True,
+                'domains': cached_domains
+            }, status=200)
+        
+        try:
+            # Buscar domínios ativos do banco
+            domains = await sync_to_async(list)(
+                Domain.objects.filter(is_active=True)
+                .order_by('domain')
+                .values('domain')
+            )
+            
+            # Extrair apenas os nomes dos domínios
+            domain_list = [d['domain'] for d in domains]
+            
+            # Se não houver domínios, tentar sincronizar da API
+            if not domain_list:
+                logger.warning("Nenhum domínio no banco, sincronizando da API...")
+                await self.email_service._sync_domains()
+                
+                # Tentar buscar novamente
+                domains = await sync_to_async(list)(
+                    Domain.objects.filter(is_active=True)
+                    .order_by('domain')
+                    .values('domain')
+                )
+                domain_list = [d['domain'] for d in domains]
+                
+                if not domain_list:
+                    logger.error("Nenhum domínio encontrado mesmo após sincronização")
+                    return JsonResponse({
+                        'success': False,
+                        'error': str(_('Nenhum domínio disponível'))
+                    }, status=404)
+            
+            # Cachear por 1 dia (86400 segundos)
+            cache.set(cache_key, domain_list, 86400)
+            logger.info(f"✓ Cache set: {len(domain_list)} domínios por 1 dia")
+            
+            return JsonResponse({
+                'success': True,
+                'domains': domain_list
+            }, status=200)
+            
+        except Exception as e:
+            logger.error(f"Erro ao buscar domínios: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': str(_('Erro ao buscar domínios'))
+            }, status=500)
 
 class EmailHistoryAPI(View):
     """API para buscar histórico de emails usados"""
