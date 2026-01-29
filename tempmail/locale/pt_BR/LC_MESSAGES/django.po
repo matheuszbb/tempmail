@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 20:27-0300\n"
+"POT-Creation-Date: 2026-01-28 21:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -304,155 +304,158 @@ msgstr ""
 msgid "Entendi"
 msgstr ""
 
-#: core/views.py:161 core/views.py:267 core/views.py:653
+#: core/views/corefilesviews.py:56 core/views/corefilesviews.py:195
+#: core/views/corefilesviews.py:963 core/views/corefilesviews.py:1019
+#: core/views/coreviews.py:836 core/views/coreviews.py:849
+msgid "Sessão não encontrada"
+msgstr ""
+
+#: core/views/corefilesviews.py:68
+msgid "Anexo não encontrado"
+msgstr ""
+
+#: core/views/corefilesviews.py:75 core/views/corefilesviews.py:980
+#: core/views/corefilesviews.py:1048
+msgid "Mailbox não encontrada"
+msgstr ""
+
+#: core/views/corefilesviews.py:88
+msgid "Conteúdo não disponível"
+msgstr ""
+
+#: core/views/corefilesviews.py:112 core/views/corefilesviews.py:1003
+msgid "Mensagem não encontrada"
+msgstr ""
+
+#: core/views/corefilesviews.py:115
+msgid "Erro ao buscar anexo"
+msgstr ""
+
+#: core/views/corefilesviews.py:118
+msgid "Erro interno do servidor"
+msgstr ""
+
+#: core/views/corefilesviews.py:252
+msgid "Não encontrado"
+msgstr ""
+
+#: core/views/corefilesviews.py:258
+msgid "Erro interno"
+msgstr ""
+
+#: core/views/corefilesviews.py:995
+msgid "Conteúdo vazio"
+msgstr ""
+
+#: core/views/corefilesviews.py:1007
+msgid "Não foi possível processar o download da mensagem."
+msgstr ""
+
+#: core/views/corefilesviews.py:1040
+msgid "Anexo não encontrado nos metadados da mensagem"
+msgstr ""
+
+#: core/views/corefilesviews.py:1062
+msgid "Conteúdo do anexo vazio ou não disponível"
+msgstr ""
+
+#: core/views/corefilesviews.py:1075
+msgid "Arquivo não encontrado"
+msgstr ""
+
+#: core/views/corefilesviews.py:1079
+msgid "Não foi possível processar o download do arquivo."
+msgstr ""
+
+#: core/views/coreviews.py:106 core/views/coreviews.py:212
+#: core/views/coreviews.py:598
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
 
-#: core/views.py:198
+#: core/views/coreviews.py:143
 msgid "Erro ao criar email temporário"
 msgstr ""
 
-#: core/views.py:222
+#: core/views/coreviews.py:167
 msgid "Você já está usando este endereço de e-mail"
 msgstr ""
 
-#: core/views.py:239
+#: core/views/coreviews.py:184
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr ""
 
-#: core/views.py:296
+#: core/views/coreviews.py:241
 msgid "Sessão resetada com sucesso"
 msgstr ""
 
-#: core/views.py:311 core/views.py:315
+#: core/views/coreviews.py:256 core/views/coreviews.py:260
 msgid "Endereço de email inválido"
 msgstr ""
 
-#: core/views.py:321
+#: core/views/coreviews.py:266
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr ""
 
-#: core/views.py:343
+#: core/views/coreviews.py:288
 msgid ""
 "Nome de usuário contém caracteres inválidos. Use apenas letras, números, "
 "pontos, hífens e underscores."
 msgstr ""
 
-#: core/views.py:354
+#: core/views/coreviews.py:299
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr ""
 
-#: core/views.py:382
+#: core/views/coreviews.py:327
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr ""
 
-#: core/views.py:388
+#: core/views/coreviews.py:333
 msgid "Não foi possível acessar este email"
 msgstr ""
 
-#: core/views.py:408
+#: core/views/coreviews.py:353
 msgid "Email alterado com sucesso"
 msgstr ""
 
-#: core/views.py:650
+#: core/views/coreviews.py:595
 msgid "Erro interno ao processar requisição"
 msgstr ""
 
-#: core/views.py:655
+#: core/views/coreviews.py:600
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr ""
 
-#: core/views.py:657
+#: core/views/coreviews.py:602
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr ""
 
-#: core/views.py:659
+#: core/views/coreviews.py:604
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr ""
 
-#: core/views.py:780
+#: core/views/coreviews.py:725
 msgid "Erro ao buscar histórico"
 msgstr ""
 
-#: core/views.py:891 core/views.py:904 core/views.py:1122 core/views.py:1261
-#: core/views.py:2029 core/views.py:2085
-msgid "Sessão não encontrada"
-msgstr ""
-
-#: core/views.py:950
+#: core/views/coreviews.py:895
 msgid "Conta não encontrada"
 msgstr ""
 
-#: core/views.py:956
+#: core/views/coreviews.py:901
 msgid "Erro ao buscar mensagens"
 msgstr ""
 
-#: core/views.py:1134
-msgid "Anexo não encontrado"
-msgstr ""
-
-#: core/views.py:1141 core/views.py:2046 core/views.py:2114
-msgid "Mailbox não encontrada"
-msgstr ""
-
-#: core/views.py:1154
-msgid "Conteúdo não disponível"
-msgstr ""
-
-#: core/views.py:1178 core/views.py:2069
-msgid "Mensagem não encontrada"
-msgstr ""
-
-#: core/views.py:1181
-msgid "Erro ao buscar anexo"
-msgstr ""
-
-#: core/views.py:1184
-msgid "Erro interno do servidor"
-msgstr ""
-
-#: core/views.py:1318
-msgid "Não encontrado"
-msgstr ""
-
-#: core/views.py:1324
-msgid "Erro interno"
-msgstr ""
-
-#: core/views.py:2061
-msgid "Conteúdo vazio"
-msgstr ""
-
-#: core/views.py:2073
-msgid "Não foi possível processar o download da mensagem."
-msgstr ""
-
-#: core/views.py:2106
-msgid "Anexo não encontrado nos metadados da mensagem"
-msgstr ""
-
-#: core/views.py:2128
-msgid "Conteúdo do anexo vazio ou não disponível"
-msgstr ""
-
-#: core/views.py:2141
-msgid "Arquivo não encontrado"
-msgstr ""
-
-#: core/views.py:2145
-msgid "Não foi possível processar o download do arquivo."
-msgstr ""
-
-#: core/views.py:2533
+#: core/views/dadosviews.py:417
 msgid "Erro ao processar requisição"
 msgstr ""
 
-#: core/views.py:2577
+#: core/views/dadosviews.py:461
 msgid "Erro ao carregar estatísticas"
 msgstr ""
 
-#: core/views.py:2607
+#: core/views/simpleviews.py:115
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr ""
 

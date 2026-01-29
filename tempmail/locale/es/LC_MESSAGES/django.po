@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-28 20:27-0300\n"
+"POT-Creation-Date: 2026-01-28 21:07-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -315,45 +315,127 @@ msgstr "Más información aquí"
 msgid "Entendi"
 msgstr "Entendido"
 
-#: core/views.py:161 core/views.py:267 core/views.py:653
+#: core/views/corefilesviews.py:56 core/views/corefilesviews.py:195
+#: core/views/corefilesviews.py:963 core/views/corefilesviews.py:1019
+#: core/views/coreviews.py:836 core/views/coreviews.py:849
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Sessão não encontrada"
+msgstr "Página No Encontrada"
+
+#: core/views/corefilesviews.py:68
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Anexo não encontrado"
+msgstr "Página No Encontrada"
+
+#: core/views/corefilesviews.py:75 core/views/corefilesviews.py:980
+#: core/views/corefilesviews.py:1048
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Mailbox não encontrada"
+msgstr "Página No Encontrada"
+
+#: core/views/corefilesviews.py:88
+#, fuzzy
+#| msgid "Conteúdo do anexo vazio ou não disponível"
+msgid "Conteúdo não disponível"
+msgstr "Contenido del archivo adjunto vacío o no disponible"
+
+#: core/views/corefilesviews.py:112 core/views/corefilesviews.py:1003
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Mensagem não encontrada"
+msgstr "Página No Encontrada"
+
+#: core/views/corefilesviews.py:115
+#, fuzzy
+#| msgid "Erro ao buscar mensagens"
+msgid "Erro ao buscar anexo"
+msgstr "Error al buscar mensajes"
+
+#: core/views/corefilesviews.py:118
+msgid "Erro interno do servidor"
+msgstr "Error interno del servidor"
+
+#: core/views/corefilesviews.py:252
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Não encontrado"
+msgstr "Página No Encontrada"
+
+#: core/views/corefilesviews.py:258
+#, fuzzy
+#| msgid "Erro no"
+msgid "Erro interno"
+msgstr "Error en el"
+
+#: core/views/corefilesviews.py:995
+msgid "Conteúdo vazio"
+msgstr "Contenido vacío"
+
+#: core/views/corefilesviews.py:1007
+msgid "Não foi possível processar o download da mensagem."
+msgstr "No se pudo procesar la descarga del mensaje."
+
+#: core/views/corefilesviews.py:1040
+msgid "Anexo não encontrado nos metadados da mensagem"
+msgstr "Archivo adjunto no encontrado en los metadatos del mensaje"
+
+#: core/views/corefilesviews.py:1062
+msgid "Conteúdo do anexo vazio ou não disponível"
+msgstr "Contenido del archivo adjunto vacío o no disponible"
+
+#: core/views/corefilesviews.py:1075
+#, fuzzy
+#| msgid "Página Não Encontrada"
+msgid "Arquivo não encontrado"
+msgstr "Página No Encontrada"
+
+#: core/views/corefilesviews.py:1079
+msgid "Não foi possível processar o download do arquivo."
+msgstr "No se pudo procesar la descarga del archivo."
+
+#: core/views/coreviews.py:106 core/views/coreviews.py:212
+#: core/views/coreviews.py:598
 msgid ""
 "Serviço temporariamente indisponível. Tente novamente em alguns minutos."
 msgstr ""
 "Servicio temporalmente no disponible. Inténtelo de nuevo en unos minutos."
 
-#: core/views.py:198
+#: core/views/coreviews.py:143
 #, fuzzy
 #| msgid "Criar Email Temporário"
 msgid "Erro ao criar email temporário"
 msgstr "Crear Correo Temporal"
 
-#: core/views.py:222
+#: core/views/coreviews.py:167
 #, fuzzy
 #| msgid "Deseja gerar um novo endereço de e-mail?"
 msgid "Você já está usando este endereço de e-mail"
 msgstr "¿Deseas generar una nueva dirección de correo electrónico?"
 
-#: core/views.py:239
+#: core/views/coreviews.py:184
 msgid "Erro interno do servidor. Nossa equipe foi notificada."
 msgstr "Error interno del servidor. Nuestro equipo ha sido notificado."
 
-#: core/views.py:296
+#: core/views/coreviews.py:241
 msgid "Sessão resetada com sucesso"
 msgstr "Sesión restablecida con éxito"
 
-#: core/views.py:311 core/views.py:315
+#: core/views/coreviews.py:256 core/views/coreviews.py:260
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido"
 msgstr "Tu dirección de correo temporal por"
 
-#: core/views.py:321
+#: core/views/coreviews.py:266
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Endereço de email inválido. Verifique o formato."
 msgstr "Tu dirección de correo temporal por"
 
-#: core/views.py:343
+#: core/views/coreviews.py:288
 #, fuzzy
 #| msgid "Nome de usuário contém caracteres inválidos"
 msgid ""
@@ -361,148 +443,69 @@ msgid ""
 "pontos, hífens e underscores."
 msgstr "El nombre de usuario contiene caracteres no válidos"
 
-#: core/views.py:354
+#: core/views/coreviews.py:299
 msgid "Nome de usuário não pode começar ou terminar com ponto"
 msgstr "El nombre de usuario no puede comenzar ni terminar con un punto"
 
-#: core/views.py:382
+#: core/views/coreviews.py:327
 #, fuzzy
 #| msgid "O seu endereço de e-mail temporário por"
 msgid "Este endereço de e-mail já está sendo usado por outro usuário"
 msgstr "Tu dirección de correo temporal por"
 
-#: core/views.py:388
+#: core/views/coreviews.py:333
 msgid "Não foi possível acessar este email"
 msgstr "No se pudo acceder a este correo electrónico"
 
-#: core/views.py:408
+#: core/views/coreviews.py:353
 msgid "Email alterado com sucesso"
 msgstr "Correo electrónico cambiado con éxito"
 
-#: core/views.py:650
+#: core/views/coreviews.py:595
 msgid "Erro interno ao processar requisição"
 msgstr "Error interno al procesar la solicitud"
 
-#: core/views.py:655
+#: core/views/coreviews.py:600
 msgid "Erro temporário no servidor. Tente novamente em alguns instantes."
 msgstr "Error temporal en el servidor. Inténtelo de nuevo en unos instantes."
 
-#: core/views.py:657
+#: core/views/coreviews.py:602
 msgid "Muitas tentativas. Aguarde alguns minutos antes de tentar novamente."
 msgstr "Demasiados intentos. Espere unos minutos antes de intentarlo de nuevo."
 
-#: core/views.py:659
+#: core/views/coreviews.py:604
 msgid "Conexão lenta. Verifique sua internet e tente novamente."
 msgstr "Conexión lenta. Compruebe su conexión a internet e inténtelo de nuevo."
 
-#: core/views.py:780
+#: core/views/coreviews.py:725
 #, fuzzy
 #| msgid "Erro ao buscar mensagens"
 msgid "Erro ao buscar histórico"
 msgstr "Error al buscar mensajes"
 
-#: core/views.py:891 core/views.py:904 core/views.py:1122 core/views.py:1261
-#: core/views.py:2029 core/views.py:2085
-#, fuzzy
-#| msgid "Página Não Encontrada"
-msgid "Sessão não encontrada"
-msgstr "Página No Encontrada"
-
-#: core/views.py:950
+#: core/views/coreviews.py:895
 #, fuzzy
 #| msgid "Página Não Encontrada"
 msgid "Conta não encontrada"
 msgstr "Página No Encontrada"
 
-#: core/views.py:956
+#: core/views/coreviews.py:901
 msgid "Erro ao buscar mensagens"
 msgstr "Error al buscar mensajes"
 
-#: core/views.py:1134
-#, fuzzy
-#| msgid "Página Não Encontrada"
-msgid "Anexo não encontrado"
-msgstr "Página No Encontrada"
-
-#: core/views.py:1141 core/views.py:2046 core/views.py:2114
-#, fuzzy
-#| msgid "Página Não Encontrada"
-msgid "Mailbox não encontrada"
-msgstr "Página No Encontrada"
-
-#: core/views.py:1154
-#, fuzzy
-#| msgid "Conteúdo do anexo vazio ou não disponível"
-msgid "Conteúdo não disponível"
-msgstr "Contenido del archivo adjunto vacío o no disponible"
-
-#: core/views.py:1178 core/views.py:2069
-#, fuzzy
-#| msgid "Página Não Encontrada"
-msgid "Mensagem não encontrada"
-msgstr "Página No Encontrada"
-
-#: core/views.py:1181
-#, fuzzy
-#| msgid "Erro ao buscar mensagens"
-msgid "Erro ao buscar anexo"
-msgstr "Error al buscar mensajes"
-
-#: core/views.py:1184
-msgid "Erro interno do servidor"
-msgstr "Error interno del servidor"
-
-#: core/views.py:1318
-#, fuzzy
-#| msgid "Página Não Encontrada"
-msgid "Não encontrado"
-msgstr "Página No Encontrada"
-
-#: core/views.py:1324
-#, fuzzy
-#| msgid "Erro no"
-msgid "Erro interno"
-msgstr "Error en el"
-
-#: core/views.py:2061
-msgid "Conteúdo vazio"
-msgstr "Contenido vacío"
-
-#: core/views.py:2073
-msgid "Não foi possível processar o download da mensagem."
-msgstr "No se pudo procesar la descarga del mensaje."
-
-#: core/views.py:2106
-msgid "Anexo não encontrado nos metadados da mensagem"
-msgstr "Archivo adjunto no encontrado en los metadatos del mensaje"
-
-#: core/views.py:2128
-msgid "Conteúdo do anexo vazio ou não disponível"
-msgstr "Contenido del archivo adjunto vacío o no disponible"
-
-#: core/views.py:2141
-#, fuzzy
-#| msgid "Página Não Encontrada"
-msgid "Arquivo não encontrado"
-msgstr "Página No Encontrada"
-
-#: core/views.py:2145
-msgid "Não foi possível processar o download do arquivo."
-msgstr "No se pudo procesar la descarga del archivo."
-
-#: core/views.py:2533
+#: core/views/dadosviews.py:417
 #, fuzzy
 #| msgid "Erro interno ao processar requisição"
 msgid "Erro ao processar requisição"
 msgstr "Error interno al procesar la solicitud"
 
-#: core/views.py:2577
+#: core/views/dadosviews.py:461
 #, fuzzy
 #| msgid "Estatísticas"
 msgid "Erro ao carregar estatísticas"
 msgstr "Estadísticas"
 
-#: core/views.py:2607
+#: core/views/simpleviews.py:115
 msgid "Mensagem enviada com sucesso! Responderemos em breve."
 msgstr "¡Mensaje enviado con éxito! Responderemos pronto."
 

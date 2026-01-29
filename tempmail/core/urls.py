@@ -5,12 +5,18 @@ from django.views.i18n import JavaScriptCatalog
 from django.conf.urls.static import static
 from django.conf import settings
 
-from .views import (
-    IndexView, Robots_txtView, Sitemap_xmlView, HeartCheckView,
-    TempEmailAPI, MessageListAPI, MessageDetailAPI, MessageDownloadAPI, InlineAttachmentAPI,
-    AttachmentDownloadAPI, DadosView, PrivacidadeView, TermosView, ContatoView, SobreView, ChromeDevToolsStubView,
-    EmailHistoryAPI
+from .views.coreviews import (
+    IndexView,TempEmailAPI, MessageListAPI, EmailHistoryAPI
 )
+from .views.corefilesviews import (
+    MessageDetailAPI, MessageDownloadAPI, 
+    InlineAttachmentAPI, AttachmentDownloadAPI
+)
+from .views.simpleviews import (
+    Robots_txtView, Sitemap_xmlView, HeartCheckView, ChromeDevToolsStubView,
+    PrivacidadeView, TermosView, ContatoView, SobreView
+)
+from .views.dadosviews import DadosView
 
 # 🌍 Rotas que não precisam de tradução (como arquivos técnicos e APIs)
 urlpatterns = [
