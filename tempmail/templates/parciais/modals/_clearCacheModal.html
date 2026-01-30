@@ -2,22 +2,22 @@
 {% load static %}
 <!-- Modal de Confirmação de Limpeza de Cache -->
 <dialog id="clearCacheModal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box bg-white dark:bg-dark-card">
-        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
-            <i class="fa-solid fa-trash-can text-orange-500 mr-2"></i>
+    <div class="modal-box bg-white dark:bg-dark-card 2xl:max-w-2xl">
+        <h3 class="text-xl 2xl:text-2xl font-bold text-gray-800 dark:text-white mb-4 2xl:mb-6">
+            <i class="fa-solid fa-trash-can text-orange-500 mr-2 2xl:text-2xl"></i>
             {% trans "Limpar Cache de Domínios" %}
         </h3>
         
-        <p class="text-gray-600 dark:text-gray-300 mb-6">
+        <p class="text-gray-600 dark:text-gray-300 text-base 2xl:text-lg mb-6 2xl:mb-8">
             {% trans "Tem certeza que deseja limpar o cache de domínios? Esta ação forçará uma nova consulta à API na próxima requisição." %}
         </p>
         
-        <div class="flex gap-3 justify-end">
-            <button onclick="closeClearCacheModal()" class="btn btn-ghost">
+        <div class="flex gap-3 2xl:gap-4 justify-end">
+            <button onclick="closeClearCacheModal()" class="btn btn-ghost 2xl:btn-lg 2xl:text-base">
                 {% trans "Cancelar" %}
             </button>
-            <button onclick="confirmClearCache()" class="btn bg-orange-500 hover:bg-orange-600 text-white">
-                <i class="fa-solid fa-trash-can mr-2"></i>
+            <button onclick="confirmClearCache()" class="btn bg-orange-500 hover:bg-orange-600 text-white 2xl:btn-lg 2xl:text-base">
+                <i class="fa-solid fa-trash-can mr-2 2xl:text-lg"></i>
                 {% trans "Confirmar" %}
             </button>
         </div>

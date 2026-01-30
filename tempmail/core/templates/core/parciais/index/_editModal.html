@@ -1,13 +1,13 @@
 {% load i18n %}
 <dialog id="editModal" class="modal modal-bottom sm:modal-middle transition-all duration-300">
-    <div class="modal-box bg-white dark:bg-dark-card w-full max-w-lg rounded-xl shadow-2xl p-6 border border-gray-200 dark:border-gray-700 max-h-[90vh]">
+    <div class="modal-box bg-white dark:bg-dark-card w-full max-w-lg 2xl:max-w-2xl rounded-xl shadow-2xl p-6 2xl:p-8 border border-gray-200 dark:border-gray-700 max-h-[90vh]">
         
-        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-4">
+        <h3 class="text-xl 2xl:text-2xl font-bold text-gray-800 dark:text-white mb-4 2xl:mb-6">
             {% trans "Alterar Endereço" %}
         </h3>
         
-        <div class="mb-4">
-            <label for="modalInputUser" class="block text-gray-700 dark:text-gray-400 text-sm font-bold mb-2">
+        <div class="mb-4 2xl:mb-6">
+            <label for="modalInputUser" class="block text-gray-700 dark:text-gray-400 text-sm 2xl:text-base font-bold mb-2 2xl:mb-3">
                 {% trans "Novo Nome de Usuário" %}
             </label>
             
@@ -56,7 +56,7 @@
             </div>
             
             <!-- Hint visual -->
-            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
+            <p class="mt-2 2xl:mt-3 text-xs 2xl:text-sm text-gray-500 dark:text-gray-400 flex items-center gap-1.5">
                 <svg class="w-3.5 h-3.5 text-orange-500 dark:text-orange-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                 </svg>
@@ -67,7 +67,7 @@
         <!-- ✅ Container para histórico de emails -->
         <div id="email-history"></div>
 
-        <div class="flex justify-end gap-3 mt-6">
+        <div class="flex justify-end gap-3 2xl:gap-4 mt-6 2xl:mt-8">
             <form method="dialog">
                 <button class="px-5 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg text-gray-600 dark:text-gray-200 font-semibold transition-all active:scale-95">
                     {% trans "Cancelar" %}

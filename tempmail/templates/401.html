@@ -3,29 +3,29 @@
 {% load i18n %}
 
 {% block conteudo %}
-<div class="min-h-[80vh] flex items-center justify-center px-4">
-    <div class="text-center">
-        <div class="relative flex justify-center mb-8">
+<div class="min-h-[80vh] flex items-center justify-center px-4 2xl:px-8">
+    <div class="text-center max-w-3xl 2xl:max-w-4xl">
+        <div class="relative flex justify-center mb-8 2xl:mb-12">
             <div class="absolute inset-0 bg-orange-500/10 blur-3xl rounded-full scale-150"></div>
 
             <div class="relative">
-                <i class="fa-solid fa-shield-halved text-8xl text-orange-600 transition-transform duration-700 hover:rotate-[360deg] cursor-default"></i>
+                <i class="fa-solid fa-shield-halved text-8xl 2xl:text-9xl text-orange-600 transition-transform duration-700 hover:rotate-[360deg] cursor-default"></i>
 
-                <div class="absolute -bottom-2 -right-2 bg-gray-100 dark:bg-dark-bg p-1 rounded-lg">
-                    <i class="fa-solid fa-lock text-2xl text-orange-500"></i>
+                <div class="absolute -bottom-2 -right-2 2xl:-bottom-3 2xl:-right-3 bg-gray-100 dark:bg-dark-bg p-1 2xl:p-1.5 rounded-lg">
+                    <i class="fa-solid fa-lock text-2xl 2xl:text-3xl text-orange-500"></i>
                 </div>
             </div>
         </div>
         
-        <span class="px-4 py-1.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-black uppercase tracking-widest">
+        <span class="px-4 py-1.5 2xl:px-5 2xl:py-2 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs 2xl:text-sm font-black uppercase tracking-widest">
             {% trans "Acesso Negado" %}
         </span>
 
-        <h1 class="mt-6 text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
+        <h1 class="mt-6 2xl:mt-8 text-4xl md:text-6xl 2xl:text-7xl font-black text-gray-900 dark:text-white tracking-tighter">
             {% trans "Erro" %} <span class="text-orange-600">401</span>
         </h1>
 
-        <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
+        <p class="mt-4 2xl:mt-6 text-base 2xl:text-lg text-gray-600 dark:text-gray-400 max-w-sm 2xl:max-w-2xl mx-auto leading-relaxed font-medium">
             {% trans "Desculpe, você não tem permissão para acessar esta área. Certifique-se de que está logado com a conta correta." %}
         </p>
 

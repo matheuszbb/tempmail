@@ -3,35 +3,35 @@
 {% load i18n %}
 
 {% block conteudo %}
-<div class="min-h-[80vh] flex items-center justify-center px-4">
-    <div class="text-center">
-        <div class="relative flex justify-center mb-8">
+<div class="min-h-[80vh] flex items-center justify-center px-4 2xl:px-8">
+    <div class="text-center max-w-3xl 2xl:max-w-4xl">
+        <div class="relative flex justify-center mb-8 2xl:mb-12">
             <div class="absolute inset-0 bg-red-500/10 dark:bg-orange-500/5 blur-3xl rounded-full scale-150"></div>
-            <i class="fa-solid fa-hand text-8xl text-orange-600 relative animate-pulse"></i>
+            <i class="fa-solid fa-hand text-8xl 2xl:text-9xl text-orange-600 relative animate-pulse"></i>
         </div>
 
         <span
-            class="px-4 py-1.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs font-black uppercase tracking-widest">
+            class="px-4 py-1.5 2xl:px-5 2xl:py-2 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-xs 2xl:text-sm font-black uppercase tracking-widest">
             {% trans "Acesso Restrito" %}
         </span>
 
-        <h1 class="mt-6 text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
+        <h1 class="mt-6 2xl:mt-8 text-4xl md:text-6xl 2xl:text-7xl font-black text-gray-900 dark:text-white tracking-tighter">
             {% trans "Erro" %} <span class="text-orange-600">403</span>
         </h1>
 
-        <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-sm mx-auto leading-relaxed font-medium">
+        <p class="mt-4 2xl:mt-6 text-base 2xl:text-lg text-gray-600 dark:text-gray-400 max-w-sm 2xl:max-w-2xl mx-auto leading-relaxed font-medium">
             {% trans "Você não tem as credenciais necessárias para visualizar este recurso. Esta área é restrita a administradores ou níveis específicos de acesso." %}
         </p>
 
-        <div class="mt-10">
+        <div class="mt-10 2xl:mt-12">
             <a href="{% url 'index' %}"
-                class="btn btn-lg bg-orange-600 hover:bg-orange-700 border-none text-white px-8 rounded-2xl shadow-xl shadow-orange-600/20 group transition-all duration-300">
-                <i class="fa-solid fa-house-chimney mr-2 group-hover:-translate-x-1 transition-transform"></i>
+                class="btn btn-lg 2xl:btn-wide bg-orange-600 hover:bg-orange-700 border-none text-white px-8 2xl:px-12 2xl:text-lg rounded-2xl shadow-xl shadow-orange-600/20 group transition-all duration-300">
+                <i class="fa-solid fa-house-chimney mr-2 2xl:text-xl group-hover:-translate-x-1 transition-transform"></i>
                 {% trans "Retornar ao Início" %}
             </a>
         </div>
 
-        <p class="mt-12 text-xs font-bold uppercase tracking-widest">
+        <p class="mt-12 2xl:mt-16 text-xs 2xl:text-sm font-bold uppercase tracking-widest">
             <span class="text-orange-600">Email</span><span class="text-gray-900 dark:text-gray-100">Rush</span>
             <span class="text-gray-500 dark:text-gray-400">{% trans "Firewall" %}</span>
         </p>

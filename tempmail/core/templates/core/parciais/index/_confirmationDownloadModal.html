@@ -1,32 +1,32 @@
 {% load i18n %}
 <dialog id="downloadConfirmModal" class="modal modal-bottom sm:modal-middle">
-    <div class="modal-box bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-700 shadow-2xl">
-        <div class="flex items-center gap-4 mb-4">
+    <div class="modal-box bg-white dark:bg-dark-card border border-gray-100 dark:border-gray-700 shadow-2xl 2xl:max-w-2xl">
+        <div class="flex items-center gap-4 2xl:gap-5 mb-4 2xl:mb-6">
             <div
-                class="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600">
-                <i class="fa-solid fa-file-shield text-2xl"></i>
+                class="w-12 h-12 2xl:w-14 2xl:h-14 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center text-yellow-600">
+                <i class="fa-solid fa-file-shield text-2xl 2xl:text-3xl"></i>
             </div>
-            <h3 class="font-black text-xl text-gray-900 dark:text-white">{% trans "Confirmar Download" %}</h3>
+            <h3 class="font-black text-xl 2xl:text-2xl text-gray-900 dark:text-white">{% trans "Confirmar Download" %}</h3>
         </div>
 
-        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl mb-4 border border-gray-100 dark:border-gray-700">
-            <p class="text-[10px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">
+        <div class="bg-gray-50 dark:bg-gray-800/50 p-4 2xl:p-5 rounded-xl mb-4 2xl:mb-5 border border-gray-100 dark:border-gray-700">
+            <p class="text-[10px] 2xl:text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-widest mb-2">
                 {% trans "Arquivo:" %}</p>
             <p id="downloadFileNameDisplay"
-                class="text-sm font-bold truncate text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                class="text-sm 2xl:text-base font-bold truncate text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-900 p-3 2xl:p-4 rounded-lg border border-gray-200 dark:border-gray-700">
                 {% trans "nome_do_arquivo.zip" %}
             </p>
         </div>
 
         <div
-            class="alert alert-warning shadow-sm mb-4 bg-yellow-50 dark:bg-yellow-900/10 border-yellow-100 dark:border-yellow-900/30">
-            <i class="fa-solid fa-circle-exclamation text-yellow-600"></i>
-            <span class="text-xs font-medium text-yellow-800 dark:text-yellow-200">
+            class="alert alert-warning shadow-sm mb-4 2xl:mb-5 bg-yellow-50 dark:bg-yellow-900/10 border-yellow-100 dark:border-yellow-900/30 2xl:p-4">
+            <i class="fa-solid fa-circle-exclamation text-yellow-600 2xl:text-lg"></i>
+            <span class="text-xs 2xl:text-sm font-medium text-yellow-800 dark:text-yellow-200">
                 {% trans "Atenção: Arquivos de fontes desconhecidas podem conter vírus ou scripts maliciosos. Baixe apenas se confiar no remetente." %}
             </span>
         </div>
 
-        <div class="modal-action gap-2 mt-6">
+        <div class="modal-action gap-2 2xl:gap-3 mt-6 2xl:mt-8">
             <form method="dialog" class="flex-1 sm:flex-none">
                 <button
                     class="btn btn-ghost w-full sm:w-auto text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 font-bold uppercase tracking-tight">{% trans "Cancelar" %}</button>

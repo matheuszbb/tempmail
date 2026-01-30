@@ -2,16 +2,16 @@
 <div id="sessionInfoModal"
     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
     <div
-        class="bg-white dark:bg-dark-card w-full max-w-md mx-4 rounded-xl shadow-2xl transform transition-all scale-95 p-6 border border-gray-200 dark:border-gray-700">
-        <div class="flex items-center gap-3 mb-4">
-            <div class="p-2 bg-orange-100 dark:bg-orange-900/20 rounded-full">
-                <i class="fas fa-clock text-orange-600 dark:text-orange-400 text-lg"></i>
+        class="bg-white dark:bg-dark-card w-full max-w-md 2xl:max-w-2xl mx-4 rounded-xl shadow-2xl transform transition-all scale-95 p-6 2xl:p-8 border border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-3 2xl:gap-4 mb-4 2xl:mb-6">
+            <div class="p-2 2xl:p-3 bg-orange-100 dark:bg-orange-900/20 rounded-full">
+                <i class="fas fa-clock text-orange-600 dark:text-orange-400 text-lg 2xl:text-xl"></i>
             </div>
-            <h3 class="text-xl font-bold text-gray-800 dark:text-white">{% trans "Sobre o Tempo da Sessão" %}</h3>
+            <h3 class="text-xl 2xl:text-2xl font-bold text-gray-800 dark:text-white">{% trans "Sobre o Tempo da Sessão" %}</h3>
         </div>
 
-        <div class="space-y-4 text-gray-600 dark:text-gray-300">
-            <div class="flex items-start gap-3">
+        <div class="space-y-4 2xl:space-y-5 text-gray-600 dark:text-gray-300 text-sm 2xl:text-base">
+            <div class="flex items-start gap-3 2xl:gap-4">
                 <i class="fas fa-clock text-orange-500 mt-0.5 text-sm"></i>
                 <div>
                     <p class="font-semibold text-gray-800 dark:text-gray-200 mb-1">{% trans "Tempo Limitado" %}</p>
@@ -60,8 +60,8 @@
             </div>
         </div>
 
-        <div class="mt-6 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
-            <p class="text-sm text-orange-800 dark:text-orange-200 text-center">
+        <div class="mt-6 2xl:mt-8 p-4 2xl:p-5 bg-orange-50 dark:bg-orange-900/20 rounded-lg border border-orange-200 dark:border-orange-800">
+            <p class="text-sm 2xl:text-base text-orange-800 dark:text-orange-200 text-center">
                 <i class="fas fa-lightbulb mr-2"></i>
                 {% trans "Quer saber mais sobre os benefícios do Email Temporário?" %}
                 <a href="{% url 'sobre' %}" class="font-semibold underline hover:no-underline ml-1">
@@ -70,7 +70,7 @@
             </p>
         </div>
 
-        <div class="flex justify-end mt-6">
+        <div class="flex justify-end mt-6 2xl:mt-8">
             <button onclick="closeSessionInfoModal()"
                 class="px-4 py-2 bg-brand-orange hover:bg-orange-600 text-white rounded-lg font-semibold shadow-lg shadow-orange-500/30 transition">
                 {% trans "Entendi" %}

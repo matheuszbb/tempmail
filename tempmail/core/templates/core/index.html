@@ -8,10 +8,10 @@
     <div class="absolute inset-0 bg-gradient-to-r from-transparent via-orange-600 to-transparent"></div>
 </div>
 
-<div class="relative bg-gradient-to-r from-orange-600 to-orange-500 pt-16 pb-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-white relative z-10">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-4">{% trans "Seu Email Temporário" %}</h1>
-        <p class="text-orange-100 text-lg max-w-2xl">
+<div class="relative bg-gradient-to-r from-orange-600 to-orange-500 pt-16 2xl:pt-20 pb-40 2xl:pb-48">
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-24 text-white relative z-10">
+        <h1 class="text-4xl md:text-5xl 2xl:text-6xl font-extrabold mb-4 2xl:mb-6">{% trans "Seu Email Temporário" %}</h1>
+        <p class="text-orange-100 text-lg 2xl:text-xl max-w-2xl 2xl:max-w-3xl">
             {% trans "Obtenha um endereço de e-mail temporário descartável e seguro instantaneamente." %}
         </p>
     </div>
@@ -32,24 +32,24 @@
     </div>
 </div>
 
-<div class="max-w-screen-2xl px-4 sm:px-6 lg:px-8 -mt-24 relative z-20 pb-20 w-full">
+<div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 2xl:px-24 -mt-24 2xl:-mt-32 relative z-20 pb-20 2xl:pb-28 w-full">
     
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 2xl:gap-10">
 
-        <div class="lg:col-span-8 space-y-8">
+        <div class="lg:col-span-8 space-y-8 2xl:space-y-10">
 
             <div id="emailCard"
-                class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-4 md:p-6 border border-gray-100 dark:border-gray-700 transition-colors w-full overflow-hidden">
-                <div class="flex flex-col gap-3 w-full min-w-0">
-                    <div class="flex items-center gap-3 w-full min-w-0">
+                class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-4 md:p-6 2xl:p-8 border border-gray-100 dark:border-gray-700 transition-colors w-full overflow-hidden">
+                <div class="flex flex-col gap-3 2xl:gap-4 w-full min-w-0">
+                    <div class="flex items-center gap-3 2xl:gap-4 w-full min-w-0">
                         <div
-                            class="flex bg-gradient-to-br from-orange-400 to-orange-600 w-12 h-12 sm:w-14 sm:h-14 rounded-full items-center justify-center text-white text-xl sm:text-2xl shadow-md shrink-0">
+                            class="flex bg-gradient-to-br from-orange-400 to-orange-600 w-12 h-12 sm:w-14 sm:h-14 2xl:w-16 2xl:h-16 rounded-full items-center justify-center text-white text-xl sm:text-2xl 2xl:text-3xl shadow-md shrink-0">
                             <i class="fa-solid fa-paper-plane"></i>
                         </div>
 
                         <div
-                            class="flex-1 w-full min-w-0 bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 sm:p-2 rounded-xl shadow-inner flex items-center relative group min-h-[50px] sm:min-h-[60px]">
-                            <div id="emailSkeleton" class="skeleton h-6 sm:h-8 w-3/4 mx-4 bg-white/40 shrink-0"></div>
+                            class="flex-1 w-full min-w-0 bg-gradient-to-r from-orange-600 via-orange-400 to-orange-300 p-1.5 sm:p-2 2xl:p-3 rounded-xl shadow-inner flex items-center relative group min-h-[50px] sm:min-h-[60px] 2xl:min-h-[70px]">
+                            <div id="emailSkeleton" class="skeleton h-6 sm:h-8 2xl:h-10 w-3/4 mx-4 bg-white/40 shrink-0"></div>
                             <div class="flex-1 min-w-0 overflow-hidden flex items-center py-1">
                                 <input type="text" id="emailDisplay" value="" readonly autocomplete="off" data-bwignore
                                     class="block w-full bg-transparent text-white font-semibold text-[clamp(0.8rem,3vw,1.25rem)] px-2 outline-none cursor-text hidden truncate leading-relaxed">
@@ -60,11 +60,11 @@
                 </div>
 
                 <p
-                    class="text-center text-gray-400 text-sm mt-3 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5">
+                    class="text-center text-gray-400 text-sm 2xl:text-base mt-3 2xl:mt-4 flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5">
                     <span>{% trans "O seu endereço de e-mail temporário por" %}</span>
 
                     <span class="flex items-center gap-1">
-                        <span id="session-countdown" class="font-bold text-orange-600 dark:text-orange-400 tracking-tight">...</span>
+                        <span id="session-countdown" class="font-bold text-orange-600 dark:text-orange-400 tracking-tight 2xl:text-lg">...</span>
                         <button onclick="openSessionInfoModal()"
                             class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                             title="{% trans 'Sobre o tempo da sessão' %}" aria-label="{% trans 'Sobre o tempo da sessão' %}">
@@ -74,12 +74,12 @@
                 </p>
             </div>
 
-            <div class="w-full my-8">
+            <div class="w-full my-8 2xl:my-10">
                 <div class="relative">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-4 w-full">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-4 2xl:gap-5 w-full">
 
                         <button onclick="toggleQR(event)" data-qr-trigger data-qr-source="emailDisplay"
-                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
+                            class="flex flex-col lg:flex-row items-center justify-center py-5 lg:py-4 2xl:py-5 bg-white dark:bg-[#1e293b] rounded-2xl lg:rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all active:scale-95 group">
                               <i
                                     class="fa-solid fa-qrcode text-lg mr-2 group-hover:scale-110 transition-transform group-hover:text-brand-orange transition-colors"></i>
                                 <span class="text-sm font-bold text-gray-700 dark:text-gray-200">{% trans "QR Code" %}</span>
@@ -181,7 +181,7 @@
                 class="bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col relative w-full">
 
                 <div
-                    class="px-4 py-6 bg-orange-600 text-white text-[10px] sm:text-xs font-bold uppercase tracking-wider">
+                    class="px-4 2xl:px-6 py-6 bg-orange-600 text-white text-[10px] sm:text-xs 2xl:text-sm font-bold uppercase tracking-wider">
                     <div class="flex items-center gap-3 w-full">
                         <div class="flex-none w-[35%]">{% trans "Remetente" %}</div>
                         <div class="flex-1 min-w-0">{% trans "Assunto" %}</div>
@@ -190,7 +190,7 @@
                 </div>
 
                 <div id="email-container"
-                    class="h-[410px] overflow-y-auto overflow-x-hidden bg-white dark:bg-dark-card">
+                    class="h-[410px] 2xl:h-[480px] overflow-y-auto overflow-x-hidden bg-white dark:bg-dark-card">
                     <div id="empty-state"
                         class="{% if initial_messages %}hidden{% endif %} flex flex-col items-center justify-center text-center h-full p-8">
                         <div
@@ -225,7 +225,7 @@
             </div>
 
             <div id="view-content"
-                class="hidden bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col relative w-full h-[538px]">
+                class="hidden bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col relative w-full h-[538px] 2xl:h-[620px]">
 
                 <div
                     class="flex-none px-4 py-5 bg-orange-600 text-white flex items-center justify-between z-20 shadow-md">
@@ -354,16 +354,16 @@
                 </div>
             </div>
 
-            <div class="mt-4">
+            <div class="mt-4 2xl:mt-6">
                 <a href="{% url 'sobre' %}"
-                    class="flex items-center gap-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold py-4 px-6 rounded-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md group w-full">
+                    class="flex items-center gap-3 2xl:gap-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold py-4 2xl:py-5 px-6 2xl:px-8 rounded-xl transition-all duration-300 border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md group w-full">
                     <div class="flex-shrink-0">
                         <i
                             class="fas fa-lightbulb text-orange-500 text-xl group-hover:scale-110 transition-transform"></i>
                     </div>
                     <div class="flex-1 text-left min-w-0">
-                        <div class="text-base font-bold text-gray-900 dark:text-white">{% trans "Por que usar Email Temporário?" %}</div>
-                        <div class="text-sm text-gray-600 dark:text-gray-400">{% trans "Saiba os benefícios e proteja sua privacidade" %}</div>
+                        <div class="text-base 2xl:text-lg font-bold text-gray-900 dark:text-white">{% trans "Por que usar Email Temporário?" %}</div>
+                        <div class="text-sm 2xl:text-base text-gray-600 dark:text-gray-400">{% trans "Saiba os benefícios e proteja sua privacidade" %}</div>
                     </div>
                     <div class="flex-shrink-0">
                         <i
@@ -390,7 +390,7 @@
 
         <div class="hidden lg:block lg:col-span-4 mt-8 lg:mt-0">
             <!-- Espaço reservado para anúncios laterais -->
-            <div class="sticky top-8 space-y-6">
+            <div class="sticky top-8 space-y-6 2xl:space-y-8">
                 <!-- Slot de anúncio 1 -->
                 <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 min-h-[250px] flex items-center justify-center p-6">
                     <div class="text-center">

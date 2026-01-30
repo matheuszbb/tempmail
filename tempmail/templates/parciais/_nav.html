@@ -2,31 +2,31 @@
 {% load static %}
 
 <nav class="bg-white dark:bg-[#0b0f19] border-b border-gray-100 dark:border-gray-800 transition-colors duration-300">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-20">
+    <div class="max-w-[1920px] mx-auto px-3 sm:px-6 lg:px-8 md:px-12 2xl:px-24">
+        <div class="flex justify-between items-center h-20 2xl:h-24">
 
-            <a href="{% url 'index' %}" class="flex items-center gap-2 shrink-0 cursor-pointer group">
-                <div class="w-9 h-9 sm:w-11 sm:h-11 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22)] group-hover:opacity-90 transition-all">
-                    <i class="fa-solid fa-envelope text-white text-lg sm:text-xl"></i>
+            <a href="{% url 'index' %}" class="flex items-center gap-2 2xl:gap-3 shrink-0 cursor-pointer group">
+                <div class="w-9 h-9 sm:w-11 sm:h-11 2xl:w-14 2xl:h-14 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22)] group-hover:opacity-90 transition-all">
+                    <i class="fa-solid fa-envelope text-white text-lg sm:text-xl 2xl:text-2xl"></i>
                 </div>
-                <span class="text-xl sm:text-2xl font-black italic tracking-tighter font-inter">
+                <span class="text-xl sm:text-2xl 2xl:text-3xl font-black italic tracking-tighter font-inter">
                     <span class="text-[#f97316] drop-shadow-[0_6px_10px_rgba(249,115,22)]">Email</span><span class="text-gray-800 dark:text-white">Rush</span>
                 </span>
             </a>
 
-            <div class="flex items-center gap-1 sm:gap-4">
+            <div class="flex items-center gap-1 sm:gap-4 2xl:gap-5">
                 
                 <button id="themeToggle" onclick="toggleTheme()" class="transition-all duration-300 hover:scale-110 active:scale-90 group">
-                    <i class="fa-solid fa-moon text-xl sm:text-2xl dark:hidden text-[#1e293b] [filter:drop-shadow(0_0_5px_#60a5fa)] transition-all"></i>
-                    <i class="fa-solid fa-sun text-xl sm:text-2xl hidden dark:inline text-yellow-400 [filter:drop-shadow(0_0_10px_rgba(250,204,21,0.8))] transition-all"></i>
+                    <i class="fa-solid fa-moon text-xl sm:text-2xl 2xl:text-3xl dark:hidden text-[#1e293b] [filter:drop-shadow(0_0_5px_#60a5fa)] transition-all"></i>
+                    <i class="fa-solid fa-sun text-xl sm:text-2xl 2xl:text-3xl hidden dark:inline text-yellow-400 [filter:drop-shadow(0_0_10px_rgba(250,204,21,0.8))] transition-all"></i>
                 </button>
 
                 <div title="{% trans 'Alterar Idioma' %}" class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle group transition-all duration-300">
-                        <i class="fa-solid fa-language text-xl sm:text-2xl text-gray-700 dark:text-gray-100 group-hover:text-[#f97316]"></i>
+                    <div tabindex="0" role="button" class="btn btn-ghost btn-circle 2xl:btn-lg group transition-all duration-300">
+                        <i class="fa-solid fa-language text-xl sm:text-2xl 2xl:text-3xl text-gray-700 dark:text-gray-100 group-hover:text-[#f97316]"></i>
                     </div>
 
-                    <ul tabindex="0" class="dropdown-content z-[60] flex flex-col p-2 shadow-2xl bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800 w-64 sm:w-72 mt-4">
+                    <ul tabindex="0" class="dropdown-content z-[60] flex flex-col p-2 shadow-2xl bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800 w-64 sm:w-72 2xl:w-80 mt-4">
                         {% get_current_language as CURRENT_LANG %}
                         {% get_available_languages as LANGUAGES %}
                         {% get_language_info_list for LANGUAGES as languages %}
@@ -39,7 +39,7 @@
                                 <input name="language" type="hidden" value="{{ language.code }}">
 
                                 <button type="submit"
-                                    class="group flex items-center justify-between w-full px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer outline-none focus:outline-none
+                                    class="group flex items-center justify-between w-full px-4 py-3 2xl:px-5 2xl:py-4 rounded-xl transition-all duration-200 cursor-pointer outline-none focus:outline-none
                                     {% if language.code == LANGUAGE_CODE %}
                                         bg-[#f97316] text-white shadow-md shadow-orange-500/20
                                     {% else %}
@@ -47,11 +47,11 @@
                                     {% endif %}">
 
                                     <div class="flex items-center gap-3 min-w-0">
-                                        <span class="flex items-center justify-center h-5 px-2 rounded-md border text-[10px] font-mono font-bold tracking-widest uppercase
+                                        <span class="flex items-center justify-center h-5 px-2 rounded-md border text-[10px] 2xl:text-xs font-mono font-bold tracking-widest uppercase
                                             {% if language.code == LANGUAGE_CODE %} border-white/40 text-white {% else %} border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 group-hover:border-[#f97316] group-hover:text-[#f97316] {% endif %}">
                                             {{ language.code }}
                                         </span>
-                                        <span class="text-sm font-medium leading-normal">{{ language.name_local|title }}</span>
+                                        <span class="text-sm 2xl:text-base font-medium leading-normal">{{ language.name_local|title }}</span>
                                     </div>
                                     {% if language.code == LANGUAGE_CODE %}
                                         <i class="fa-solid fa-check text-xs text-white"></i>
@@ -64,21 +64,21 @@
                 </div>
 
                 <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                    <div class="w-10 h-10 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.5)] shrink-0">
-                        <i class="fa-solid fa-comment-sms text-white text-2xl"></i>
+                    <div class="w-10 h-10 2xl:w-12 2xl:h-12 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.5)] shrink-0">
+                        <i class="fa-solid fa-comment-sms text-white text-2xl 2xl:text-3xl"></i>
                     </div>
                 </a>
 
                 {% if request.user.is_authenticated and request.user.is_superuser %}
                     <div class="hidden sm:flex items-center gap-2">
-                        <button onclick="openClearCacheModal()" class="btn btn-ghost btn-circle group transition-all duration-300" title="{% trans 'Limpar Cache de Domínios' %}">
-                            <i class="fa-solid fa-trash-can text-xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
+                        <button onclick="openClearCacheModal()" class="btn btn-ghost btn-circle 2xl:btn-lg group transition-all duration-300" title="{% trans 'Limpar Cache de Domínios' %}">
+                            <i class="fa-solid fa-trash-can text-xl 2xl:text-2xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
                         </button>
-                        <a href="{% url 'dados_admin' %}" class="btn btn-ghost btn-circle group transition-all duration-300">
-                            <i class="fa-solid fa-chart-simple text-xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
+                        <a href="{% url 'dados_admin' %}" class="btn btn-ghost btn-circle 2xl:btn-lg group transition-all duration-300">
+                            <i class="fa-solid fa-chart-simple text-xl 2xl:text-2xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
                         </a>
-                        <a href="{% url 'admin:index' %}" class="btn btn-ghost btn-circle group transition-all duration-300">
-                            <i class="fa-solid fa-database text-xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
+                        <a href="{% url 'admin:index' %}" class="btn btn-ghost btn-circle 2xl:btn-lg group transition-all duration-300">
+                            <i class="fa-solid fa-database text-xl 2xl:text-2xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
                         </a>
                     </div>
 

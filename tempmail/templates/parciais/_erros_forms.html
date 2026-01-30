@@ -1,17 +1,17 @@
 {% load i18n %}
 
 {% if form.errors %}
-<div class="flex flex-col gap-2 mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+<div class="flex flex-col gap-2 2xl:gap-3 mb-6 2xl:mb-8 animate-in fade-in slide-in-from-top-4 duration-500">
     {% for field in form %}
         {% for error in field.errors %}
-            <div role="alert" class="alert alert-error bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 shadow-sm py-3">
-                <i class="fa-solid fa-circle-exclamation text-red-600 dark:text-red-400"></i>
+            <div role="alert" class="alert alert-error bg-red-50 dark:bg-red-900/10 border-l-4 border-red-500 shadow-sm py-3 2xl:py-4">
+                <i class="fa-solid fa-circle-exclamation text-red-600 dark:text-red-400 2xl:text-lg"></i>
                 <div class="flex flex-col">
-                    <span class="text-xs font-black uppercase tracking-wider text-red-700 dark:text-red-400">
+                    <span class="text-xs 2xl:text-sm font-black uppercase tracking-wider text-red-700 dark:text-red-400">
                         {# Usamos blocktrans para permitir a inserção da variável dentro da tradução #}
                         {% blocktrans with label=field.label %}Erro em {{ label }}{% endblocktrans %}
                     </span>
-                    <span class="text-sm text-red-600 dark:text-red-300">
+                    <span class="text-sm 2xl:text-base text-red-600 dark:text-red-300">
                         {{ error|escape }}
                     </span>
                 </div>
@@ -21,9 +21,9 @@
     
     {# Tratamento para erros globais (non_field_errors) #}
     {% for error in form.non_field_errors %}
-        <div role="alert" class="alert alert-error bg-red-50 dark:bg-red-900/10 border-l-4 border-red-600 shadow-sm py-3">
-            <i class="fa-solid fa-triangle-exclamation text-red-600"></i>
-            <span class="text-sm font-bold text-red-700 dark:text-red-300">{{ error|escape }}</span>
+        <div role="alert" class="alert alert-error bg-red-50 dark:bg-red-900/10 border-l-4 border-red-600 shadow-sm py-3 2xl:py-4">
+            <i class="fa-solid fa-triangle-exclamation text-red-600 2xl:text-lg"></i>
+            <span class="text-sm 2xl:text-base font-bold text-red-700 dark:text-red-300">{{ error|escape }}</span>
         </div>
     {% endfor %}
 </div>

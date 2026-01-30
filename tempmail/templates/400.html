@@ -3,38 +3,38 @@
 {% load i18n %}
 
 {% block conteudo %}
-<div class="flex-grow flex items-center justify-center px-4 pt-24 pb-12">
-    <div class="text-center">
-        <div class="relative flex justify-center mb-8">
+<div class="flex-grow flex items-center justify-center px-4 pt-24 pb-12 2xl:pt-32 2xl:pb-16">
+    <div class="text-center max-w-3xl 2xl:max-w-4xl">
+        <div class="relative flex justify-center mb-8 2xl:mb-12">
             <div class="absolute inset-0 bg-orange-500/10 blur-3xl rounded-full scale-150"></div>
 
-            <div class="relative h-32 flex items-end justify-center">
-                <i class="fa-solid fa-triangle-exclamation text-8xl text-orange-600 animate-bounce"></i>
+            <div class="relative h-32 2xl:h-40 flex items-end justify-center">
+                <i class="fa-solid fa-triangle-exclamation text-8xl 2xl:text-9xl text-orange-600 animate-bounce"></i>
             </div>
         </div>
 
         <span
-            class="px-4 py-1.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-black uppercase tracking-widest">
+            class="px-4 py-1.5 2xl:px-5 2xl:py-2 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs 2xl:text-sm font-black uppercase tracking-widest">
             {% trans "Erro 400" %}
         </span>
 
-        <h1 class="mt-6 text-4xl md:text-6xl font-black text-gray-900 dark:text-white tracking-tighter">
+        <h1 class="mt-6 2xl:mt-8 text-4xl md:text-6xl 2xl:text-7xl font-black text-gray-900 dark:text-white tracking-tighter">
             {% trans "Oops! Algo deu" %} <span class="text-orange-600">{% trans "errado" %}</span>.
         </h1>
 
-        <p class="mt-4 text-gray-600 dark:text-gray-400 max-w-md mx-auto leading-relaxed font-medium">
+        <p class="mt-4 2xl:mt-6 text-base 2xl:text-lg text-gray-600 dark:text-gray-400 max-w-md 2xl:max-w-2xl mx-auto leading-relaxed font-medium">
             {% trans "Esta página está com problemas técnicos no momento. Por favor, tente acessar novamente mais tarde ou verifique seu link." %}
         </p>
 
-        <div class="mt-10">
+        <div class="mt-10 2xl:mt-12">
             <a href="{% url 'index' %}"
-                class="btn btn-lg bg-orange-600 hover:bg-orange-700 border-none text-white px-8 rounded-2xl shadow-xl shadow-orange-600/20 group transition-all duration-300">
+                class="btn btn-lg 2xl:btn-wide bg-orange-600 hover:bg-orange-700 border-none text-white px-8 2xl:px-12 2xl:text-lg rounded-2xl shadow-xl shadow-orange-600/20 group transition-all duration-300">
                 <i class="fa-solid fa-house-chimney mr-2 group-hover:-translate-y-1 transition-transform"></i>
                 {% trans "Retornar ao Início" %}
             </a>
         </div>
 
-        <p class="mt-12 text-xs font-bold uppercase tracking-widest">
+        <p class="mt-12 2xl:mt-16 text-xs 2xl:text-sm font-bold uppercase tracking-widest">
             <span class="text-orange-600">Email</span><span class="text-gray-900 dark:text-gray-100">Rush</span>
             <span class="text-gray-500 dark:text-gray-400">{% trans "Security" %}</span>
         </p>

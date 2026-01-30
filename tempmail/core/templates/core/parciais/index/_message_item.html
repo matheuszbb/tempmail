@@ -1,21 +1,21 @@
 {% load static %}
 {% load i18n %}
-<div class="group px-4 py-4 sm:px-8 sm:py-6 hover:bg-orange-50/50 dark:hover:bg-gray-800/40 cursor-pointer transition-all duration-300 relative border-l-4 {% if not message.is_read %}bg-white dark:bg-dark-card font-semibold border-l-brand-orange dark:border-l-orange-400{% else %}opacity-60 bg-gray-50 dark:bg-gray-800/40 border-l-transparent{% endif %}"
+<div class="group px-4 py-4 sm:px-8 sm:py-6 2xl:px-10 2xl:py-7 hover:bg-orange-50/50 dark:hover:bg-gray-800/40 cursor-pointer transition-all duration-300 relative border-l-4 {% if not message.is_read %}bg-white dark:bg-dark-card font-semibold border-l-brand-orange dark:border-l-orange-400{% else %}opacity-60 bg-gray-50 dark:bg-gray-800/40 border-l-transparent{% endif %}"
     data-message-id="{{ message.id }}" onclick="tempMailApp.viewMessage('{{ message.id }}')">
 
-    <div class="flex items-center gap-3 w-full">
+    <div class="flex items-center gap-3 2xl:gap-4 w-full">
         <div class="flex-none w-[35%] min-w-0 relative">
             <p
-                class="{% if not message.is_read %}text-gray-900 dark:text-white{% else %}text-gray-600 dark:text-gray-400 font-normal{% endif %} text-[11px] sm:text-sm truncate leading-tight group-hover:underline decoration-gray-900 dark:decoration-white underline-offset-2">
+                class="{% if not message.is_read %}text-gray-900 dark:text-white{% else %}text-gray-600 dark:text-gray-400 font-normal{% endif %} text-[11px] sm:text-sm 2xl:text-base truncate leading-tight group-hover:underline decoration-gray-900 dark:decoration-white underline-offset-2">
                 {{ message.from_name|default:message.from_address }}
             </p>
             <p
-                class="font-bold text-[9px] sm:text-xs text-gray-800 dark:text-gray-100 truncate group-hover:underline decoration-gray-600 dark:decoration-gray-300 underline-offset-2">
+                class="font-bold text-[9px] sm:text-xs 2xl:text-sm text-gray-800 dark:text-gray-100 truncate group-hover:underline decoration-gray-600 dark:decoration-gray-300 underline-offset-2">
                 {{ message.from_address }}
             </p>
 
             <div
-                class="js-popover absolute invisible opacity-0 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-3 rounded-lg shadow-2xl left-0 whitespace-nowrap pointer-events-none border border-gray-200 dark:border-gray-700 min-w-[280px] z-[100]">
+                class="js-popover absolute invisible opacity-0 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-3 2xl:p-4 rounded-lg shadow-2xl left-0 whitespace-nowrap pointer-events-none border border-gray-200 dark:border-gray-700 min-w-[280px] 2xl:min-w-[320px] z-[100]">
                 <div class="flex flex-col gap-2">
                     <div class="flex flex-col">
                         <span
@@ -43,13 +43,13 @@
         </div>
 
         <div class="flex-1 min-w-0">
-            <p class="text-[12px] sm:text-sm font-bold text-gray-900 dark:text-white truncate">
+            <p class="text-[12px] sm:text-sm 2xl:text-base font-bold text-gray-900 dark:text-white truncate">
                 {% if message.subject %}{{ message.subject }}{% else %}{% trans "(Sem assunto)" %}{% endif %}
             </p>
         </div>
 
         <div class="flex-none text-right text-gray-300 group-hover:text-orange-600 transition-colors">
-            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            <i class="fa-solid fa-chevron-right text-[10px] 2xl:text-xs"></i>
         </div>
     </div>
 </div>

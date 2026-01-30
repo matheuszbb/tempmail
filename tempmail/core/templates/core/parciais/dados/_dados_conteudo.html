@@ -1,8 +1,8 @@
 {% load static %}
 <!-- Filtros de Data -->
-<div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700 mb-8">
-    <div class="card-body p-6">
-        <h3 class="card-title text-lg font-semibold text-gray-900 dark:text-white mb-4">
+<div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700 mb-8 2xl:mb-10">
+    <div class="card-body p-6 2xl:p-8">
+        <h3 class="card-title text-lg 2xl:text-xl font-semibold text-gray-900 dark:text-white mb-4 2xl:mb-6">
             <i class="fas fa-calendar-alt mr-2 text-green-600"></i>
             Filtros por Período
         </h3>
@@ -46,7 +46,7 @@
                 </a>
             </div>
         </form>
-        <div class="mt-4 text-sm text-gray-600 dark:text-gray-400 period-info">
+        <div class="mt-4 2xl:mt-5 text-sm 2xl:text-base text-gray-600 dark:text-gray-400 period-info">
             <i class="fas fa-info-circle mr-1"></i>
             Mostrando dados do período: <strong>{{ data_inicio|date:'d/m/Y' }} até {{ data_fim|date:'d/m/Y' }}</strong>
             ({{ dias_periodo }} dias)
@@ -55,7 +55,7 @@
 </div>
 
 <!-- Cards de Estatísticas Principais -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 2xl:gap-8 mb-8 2xl:mb-10">
     <!-- Total de Contas -->
     <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
         <div class="card-body p-6">
@@ -148,7 +148,7 @@
 </div>
 
 <!-- Gráficos e Tabelas -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 2xl:gap-10 mb-8 2xl:mb-10">
     <!-- Distribuição por Domínio -->
     <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
         <div class="card-body p-6">
@@ -216,7 +216,7 @@
 
 <!-- Top 100 Sites -->
 <div class="card bg-white dark:bg-dark-card shadow-lg border border-gray-200 dark:border-gray-700">
-    <div class="card-body p-6">
+    <div class="card-body p-6 2xl:p-8">
         <h3 class="card-title text-lg font-semibold text-gray-900 dark:text-white mb-4">
             <i class="fas fa-globe mr-2 text-green-600"></i>
             Top 100 Sites que Enviam Emails
