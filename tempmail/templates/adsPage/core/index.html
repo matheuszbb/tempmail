@@ -109,6 +109,74 @@
                 </div>
             </div>
 
+            <div class="w-full mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <!-- Card SMSRush -->
+                    <div class="bg-gradient-to-br from-indigo-900 via-purple-800 to-blue-900 rounded-2xl overflow-hidden relative p-4 shadow-xl border border-white/10">
+                        <div class="relative z-10 max-w-md mx-auto flex flex-col items-center text-center gap-4">
+                            
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.5)] shrink-0">
+                                    <i class="fa-solid fa-comment-sms text-white text-2xl"></i>
+                                </div>
+                                <div class="text-xl font-black italic tracking-tighter font-inter leading-none">
+                                    <span class="text-[#f97316] [filter:drop-shadow(0_2px_4px_rgba(249,115,22,0.4))]">SMS</span><span class="text-white">Rush</span>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <h3 class="text-white font-bold text-sm sm:text-base leading-tight">
+                                    {% trans "Números temporários para SMS" %}
+                                </h3>
+                                <p class="text-gray-200 text-xs sm:text-sm leading-relaxed px-4 font-medium">
+                                    {% trans "Receba códigos de verificação sem expor seu número real." %} <br class="hidden sm:block">
+                                    {% trans "Rápido, seguro e prático." %}
+                                </p>
+                            </div>
+
+                            <div class="w-full pt-1">
+                                <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer"
+                                    class="inline-flex items-center justify-center bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_6px_15px_rgba(249,115,22,0.6)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.7)] hover:-translate-y-0.5">
+                                    {% trans "Acessar SMSRush" %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Espaço para anúncio desktop 1 -->
+                    <div class="hidden md:flex bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 items-center justify-center p-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                {% trans "Espaço para Anúncio" %}
+                            </p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                                300x250
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Espaço para anúncio desktop 2 -->
+                    <div class="hidden md:flex bg-white dark:bg-dark-card rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 items-center justify-center p-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                                <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                            </div>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                {% trans "Espaço para Anúncio" %}
+                            </p>
+                            <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                                300x250
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
             <div id="view-list"
                 class="bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col relative w-full">
 
@@ -303,39 +371,68 @@
                     </div>
                 </a>
             </div>
+
+            <!-- In-Content Ad Slot -->
+            <div class="mt-8">
+                <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-3 p-4 hover:shadow-xl transition-all">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-ad text-2xl text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="text-sm font-bold text-gray-900 dark:text-white">{% trans "Espaço para Anúncio" %}</div>
+                        <div class="text-xs text-gray-500 dark:text-gray-400">Responsive (728x90 / 320x50)</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="hidden lg:block lg:col-span-4 mt-8 lg:mt-0">
+            <!-- Espaço reservado para anúncios laterais -->
             <div class="sticky top-8 space-y-6 2xl:space-y-8">
-                <!-- Card SMSRush -->
-                <div class="bg-gradient-to-br from-indigo-900 via-purple-800 to-blue-900 rounded-2xl overflow-hidden relative p-4 shadow-xl border border-white/10">
-                    <div class="relative z-10 max-w-md mx-auto flex flex-col items-center text-center gap-4">
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.5)] shrink-0">
-                                <i class="fa-solid fa-comment-sms text-white text-2xl"></i>
-                            </div>
-                            <div class="text-xl font-black italic tracking-tighter font-inter leading-none">
-                                <span class="text-[#f97316] [filter:drop-shadow(0_2px_4px_rgba(249,115,22,0.4))]">SMS</span><span class="text-white">Rush</span>
-                            </div>
+                <!-- Slot de anúncio 1 -->
+                <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 min-h-[250px] flex items-center justify-center p-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                            <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
                         </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                            {% trans "Espaço para Anúncio" %}
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                            300x250
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Slot de anúncio 2 -->
+                <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 min-h-[250px] flex items-center justify-center p-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                            <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                            {% trans "Espaço para Anúncio" %}
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                            300x250
+                        </p>
+                    </div>
+                </div>
 
-                        <div class="space-y-1">
-                            <h3 class="text-white font-bold text-sm sm:text-base leading-tight">
-                                {% trans "Números temporários para SMS" %}
-                            </h3>
-                            <p class="text-gray-200 text-xs sm:text-sm leading-relaxed px-4 font-medium">
-                                {% trans "Receba códigos de verificação sem expor seu número real." %} <br class="hidden sm:block">
-                                {% trans "Rápido, seguro e prático." %}
-                            </p>
+                <!-- Slot de anúncio 3 -->
+                <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700 min-h-[250px] flex items-center justify-center p-6">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                            <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
                         </div>
-
-                        <div class="w-full pt-1">
-                            <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer"
-                                class="inline-flex items-center justify-center bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-2 px-6 rounded-full transition-all shadow-[0_6px_15px_rgba(249,115,22,0.6)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.7)] hover:-translate-y-0.5">
-                                {% trans "Acessar SMSRush" %}
-                            </a>
-                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                            {% trans "Espaço para Anúncio" %}
+                        </p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                            300x250
+                        </p>
                     </div>
                 </div>
             </div>

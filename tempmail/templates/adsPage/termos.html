@@ -2,7 +2,46 @@
 {% load i18n %}
 
 {% block conteudo %}
+
+<!-- ADSENSE: Skyscraper Lateral Esquerdo (Desktop Only) -->
+<div class="hidden xl:block fixed left-4 top-24 z-30">
+    <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="w-[160px] h-[600px] flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+            <div class="text-center">
+                <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">160x600</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADSENSE: Skyscraper Lateral Direito (Desktop Only) -->
+<div class="hidden xl:block fixed right-4 top-24 z-30">
+    <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="w-[160px] h-[600px] flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+            <div class="text-center">
+                <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">160x600</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="max-w-4xl 2xl:max-w-[1920px] mx-auto px-4 2xl:px-24 py-8 2xl:py-12">
+    <!-- ADSENSE: Banner Topo - Desktop 728x90 / Mobile 320x50 ak-->
+    <div class="mb-8 sm:mb-12 2xl:mb-16 w-full mx-auto">
+        <div class="bg-white dark:bg-dark-card rounded-lg sm:rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-2 sm:gap-3 p-3 sm:p-4">
+            <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-ad text-2xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-900 dark:text-white">{% trans "Espaço para Anúncio" %}</div>
+            </div>
+        </div>
+    </div>
+
     <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-6 md:p-8 2xl:p-12 border border-gray-100 dark:border-gray-700">
         <h1 class="text-3xl 2xl:text-4xl font-bold text-gray-800 dark:text-white mb-8 2xl:mb-12 text-center">{% trans "Termos de Serviço" %}</h1>
 
@@ -99,6 +138,20 @@
                 <p class="text-sm text-orange-800 dark:text-orange-200">
                     <strong>{% trans "Última atualização:" %}</strong> {% trans "Janeiro de 2026" %}
                 </p>
+            </div>
+        </div>
+    </div>
+
+     <!-- ADSENSE: Banner Pré-CTA - Desktop 728x90 / Mobile 320x50 -->
+    <div class="mt-12 2xl:mt-16 sm:mb-12 w-full mx-auto">
+        <div class="bg-white dark:bg-dark-card rounded-lg sm:rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-2 sm:gap-3 p-3 sm:p-4">
+            <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-ad text-2xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-900 dark:text-white">{% trans "Espaço para Anúncio" %}</div>
             </div>
         </div>
     </div>
