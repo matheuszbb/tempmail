@@ -6,6 +6,7 @@ from .name_data import _NAMES
 from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
+from .last_name_data import _LAST_NAMES
 
 class Domain(models.Model):
     """Domínios disponíveis do SMTP.dev"""
@@ -132,8 +133,9 @@ class EmailAccount(models.Model):
             str: Username humanizado
         """
         # Usar listas ampliadas de nomes/sobrenomes (arquivo separado)
-        names = _NAMES        
-        separators = ['.', '_']
+        names = _NAMES   
+        last_names = _LAST_NAMES     
+        separators = ['.', '_', '-']
 
         # Padrões variados para aumentar diversidade
         # Probabilidades: 55% -> first.sep.last(+num), 20% -> first_lastinitial(+num),
@@ -141,20 +143,20 @@ class EmailAccount(models.Model):
         pattern_roll = random.random()
 
         first = random.choice(names)
-        last = random.choice(names)
+        last = random.choice(last_names)
         sep = random.choice(separators)
 
-        add_number = random.random() < 0.6  # 60% chance de número
-        number = str(random.randint(1, 99999999999)) if add_number else ''
+        add_number = random.random() < 0.1  # 10% chance de número
+        number = str(random.randint(1, 9999)) if add_number else ''
 
         if pattern_roll < 0.55:
-            username = f"{first}{sep}{last}{number}"
+            username = f"{first}{sep}{last}"
         elif pattern_roll < 0.75:
             # first + sobrenome inicial
-            username = f"{first}{sep}{last[0]}{number}"
+            username = f"{first}{last}"
         elif pattern_roll < 0.90:
             # concatenado (sem separador)
-            username = f"{first}{last}{number}"
+            username = f"{first}{sep}{last}{number}"
         else:
             # apenas primeiro nome (com chance de número)
             username = f"{first}{number}"
