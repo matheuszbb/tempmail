@@ -2,24 +2,63 @@
 {% load i18n %}
 
 {% block conteudo %}
-<div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="text-center mb-12">
-        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-6">
+
+<!-- ADSENSE: Skyscraper Lateral Esquerdo (Desktop Only) -->
+<div class="hidden xl:block fixed left-4 top-24 z-30">
+    <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="w-[160px] h-[600px] flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+            <div class="text-center">
+                <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">160x600</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ADSENSE: Skyscraper Lateral Direito (Desktop Only) -->
+<div class="hidden xl:block fixed right-4 top-24 z-30">
+    <div class="bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="w-[160px] h-[600px] flex items-center justify-center bg-gray-100 dark:bg-gray-800">
+            <div class="text-center">
+                <i class="fas fa-ad text-3xl text-gray-400 dark:text-gray-500"></i>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">160x600</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
+    <!-- ADSENSE: Banner Topo - Desktop 728x90 / Mobile 320x50 ak-->
+    <div class="mb-8 sm:mb-12 w-full mx-auto">
+        <div class="bg-white dark:bg-dark-card rounded-lg sm:rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-2 sm:gap-3 p-3 sm:p-4">
+            <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-ad text-2xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-900 dark:text-white">{% trans "Espaço para Anúncio" %}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mb-8 sm:mb-12">
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6 px-2">
             {% trans "Por que usar" %} <span class="text-orange-600">EmailRush</span>?
         </h1>
-        <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+        <p class="text-base sm:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto px-2">
             {% trans "Proteja sua privacidade e evite spam com endereços de email temporários seguros e eficientes" %}
         </p>
     </div>
 
-    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-8 md:p-12 mb-12 border border-gray-100 dark:border-gray-700">
-        <div class="grid md:grid-cols-5 gap-8 items-stretch">
+    <div class="bg-white dark:bg-dark-card rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-8 md:p-12 mb-8 sm:mb-12 border border-gray-100 dark:border-gray-700">
+        <div class="grid md:grid-cols-5 gap-6 sm:gap-8 items-stretch">
             
             <div class="md:col-span-3 flex flex-col justify-center">
-                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">
+                <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">
                     {% trans "O que é um endereço de email temporário?" %}
                 </h2>
-                <div class="space-y-4 text-gray-600 dark:text-gray-300">
+                <div class="space-y-3 sm:space-y-4 text-sm sm:text-base text-gray-600 dark:text-gray-300">
                     <p>
                         {% trans "Um endereço de email temporário permite criar um email válido e único para se cadastrar em serviços e sites sem revelar sua identidade real." %}
                     </p>
@@ -50,8 +89,22 @@
         </div>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        <div class="bg-white dark:bg-dark-card rounded-xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+    <!-- ADSENSE: In-Content Ad Responsivo -->
+    <div class="mb-8 sm:mb-12 w-full mx-auto">
+        <div class="bg-white dark:bg-dark-card rounded-lg sm:rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-2 sm:gap-3 p-3 sm:p-4">
+            <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-ad text-2xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-900 dark:text-white">{% trans "Espaço para Anúncio" %}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
+        <div class="bg-white dark:bg-dark-card rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100 dark:border-gray-700">
             <div class="text-center mb-4">
                 <div class="bg-green-100 dark:bg-green-900/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-shield-alt text-2xl text-green-600 dark:text-green-400"></i>
@@ -124,10 +177,10 @@
         </div>
     </div>
 
-    <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-8 md:p-12 text-white mb-12">
-        <h2 class="text-3xl font-bold mb-8 text-center">{% trans "Como Funciona o EmailRush" %}</h2>
+    <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl sm:rounded-2xl p-6 sm:p-8 md:p-12 text-white mb-8 sm:mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">{% trans "Como Funciona o EmailRush" %}</h2>
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
             <div class="text-center">
                 <div class="bg-white/20 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                     <span class="text-2xl font-bold">1</span>
@@ -154,13 +207,13 @@
         </div>
     </div>
 
-    <div class="bg-white dark:bg-dark-card rounded-2xl shadow-xl p-8 md:p-12 mb-12 border border-gray-100 dark:border-gray-700">
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-8 text-center">
+    <div class="bg-white dark:bg-dark-card rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-8 md:p-12 mb-8 sm:mb-12 border border-gray-100 dark:border-gray-700">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-6 sm:mb-8 text-center">
             {% trans "Por que escolher EmailRush?" %}
         </h2>
 
-        <div class="grid md:grid-cols-2 gap-8">
-            <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+            <div class="space-y-4 sm:space-y-6">
                 <div class="flex items-start gap-4">
                     <div class="bg-green-100 dark:bg-green-900/20 p-2 rounded-lg">
                         <i class="fas fa-check text-green-600 dark:text-green-400"></i>
@@ -226,15 +279,29 @@
         </div>
     </div>
 
-    <div class="text-center">
-        <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">
+    <!-- ADSENSE: Banner Pré-CTA - Desktop 728x90 / Mobile 320x50 -->
+    <div class="mb-8 sm:mb-12 w-full mx-auto">
+        <div class="bg-white dark:bg-dark-card rounded-lg sm:rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 flex items-center gap-2 sm:gap-3 p-3 sm:p-4">
+            <div class="flex-shrink-0">
+                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-800 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-ad text-2xl text-gray-400 dark:text-gray-500"></i>
+                </div>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="text-sm font-bold text-gray-900 dark:text-white">{% trans "Espaço para Anúncio" %}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center px-2">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white mb-4 sm:mb-6">
             {% trans "Pronto para proteger sua privacidade?" %}
         </h2>
-        <p class="text-xl text-gray-600 dark:text-gray-300 mb-8">
+        <p class="text-base sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8">
             {% trans "Comece a usar EmailRush agora mesmo - é gratuito e leva apenas alguns segundos!" %}
         </p>
         <a href="{% url 'index' %}"
-           class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 px-8 rounded-lg transition duration-300 shadow-lg shadow-orange-500/30 transform hover:scale-105">
+           class="inline-block bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 sm:py-4 px-6 sm:px-8 rounded-lg transition duration-300 shadow-lg shadow-orange-500/30 transform hover:scale-105 text-sm sm:text-base">
             <i class="fas fa-envelope mr-2"></i>
             {% trans "Criar Email Temporário" %}
         </a>

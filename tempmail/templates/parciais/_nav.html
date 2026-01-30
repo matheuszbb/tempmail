@@ -16,14 +16,14 @@
 
             <div class="flex items-center gap-1 sm:gap-4">
                 
-                <button id="themeToggle" onclick="toggleTheme()" class="p-2 transition-all duration-300 hover:scale-110 active:scale-90 group">
+                <button id="themeToggle" onclick="toggleTheme()" class="transition-all duration-300 hover:scale-110 active:scale-90 group">
                     <i class="fa-solid fa-moon text-xl sm:text-2xl dark:hidden text-[#1e293b] [filter:drop-shadow(0_0_5px_#60a5fa)] transition-all"></i>
                     <i class="fa-solid fa-sun text-xl sm:text-2xl hidden dark:inline text-yellow-400 [filter:drop-shadow(0_0_10px_rgba(250,204,21,0.8))] transition-all"></i>
                 </button>
 
                 <div title="{% trans 'Alterar Idioma' %}" class="dropdown dropdown-end">
                     <div tabindex="0" role="button" class="btn btn-ghost btn-circle group transition-all duration-300">
-                        <i class="fa-solid fa-language text-xl sm:text-2xl text-gray-600 dark:text-gray-300 group-hover:text-[#f97316]"></i>
+                        <i class="fa-solid fa-language text-xl sm:text-2xl text-gray-700 dark:text-gray-100 group-hover:text-[#f97316]"></i>
                     </div>
 
                     <ul tabindex="0" class="dropdown-content z-[60] flex flex-col p-2 shadow-2xl bg-white dark:bg-[#1e293b] rounded-2xl border border-gray-100 dark:border-gray-800 w-64 sm:w-72 mt-4">
@@ -62,6 +62,12 @@
                         {% endfor %}
                     </ul>
                 </div>
+
+                <a href="https://smsrush.com.br/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                    <div class="w-10 h-10 bg-[#f97316] rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(249,115,22,0.5)] shrink-0">
+                        <i class="fa-solid fa-comment-sms text-white text-2xl"></i>
+                    </div>
+                </a>
 
                 {% if request.user.is_authenticated and request.user.is_superuser %}
                     <div class="hidden sm:flex items-center gap-2">

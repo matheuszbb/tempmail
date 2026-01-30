@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: EmailRush\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-29 09:52-0300\n"
+"POT-Creation-Date: 2026-01-29 21:32-0300\n"
 "PO-Revision-Date: 2026-01-19 18:45-0300\n"
 "Last-Translator: Gemini <ai@google.com>\n"
 "Language-Team: Spanish\n"
@@ -25,138 +25,140 @@ msgstr ""
 "Obtén una dirección de correo electrónico temporal, desechable y segura al "
 "instante."
 
-#: core/templates/core/index.html:63
+#: core/templates/core/index.html:64
 msgid "O seu endereço de e-mail temporário por"
 msgstr "Tu dirección de correo temporal por"
 
-#: core/templates/core/index.html:69
+#: core/templates/core/index.html:70
 msgid "Sobre o tempo da sessão"
 msgstr "Sobre el tiempo de la sesión"
 
-#: core/templates/core/index.html:84
+#: core/templates/core/index.html:85
 #: core/templates/core/parciais/index/_sessionInfoModal.html:33
 msgid "QR Code"
 msgstr "Código QR"
 
-#: core/templates/core/index.html:91
+#: core/templates/core/index.html:92
 msgid "Copiar"
 msgstr "Copiar"
 
-#: core/templates/core/index.html:98
+#: core/templates/core/index.html:99
 #: core/templates/core/parciais/index/_sessionInfoModal.html:49
 msgid "Atualizar"
 msgstr "Actualizar"
 
-#: core/templates/core/index.html:105
+#: core/templates/core/index.html:106
 msgid "Alterar"
 msgstr "Cambiar"
 
-#: core/templates/core/index.html:133 core/templates/core/index.html:369
+#: core/templates/core/index.html:130
 msgid "Números temporários para SMS"
 msgstr "Números temporales para SMS"
 
-#: core/templates/core/index.html:136
+#: core/templates/core/index.html:133
 msgid "Receba códigos de verificação sem expor seu número real."
 msgstr "Recibe códigos de verificación sin exponer tu número real."
 
-#: core/templates/core/index.html:138
+#: core/templates/core/index.html:134
 msgid "Rápido, seguro e prático."
 msgstr "Rápido, seguro y práctico."
 
-#: core/templates/core/index.html:145 core/templates/core/index.html:376
+#: core/templates/core/index.html:141
 msgid "Acessar SMSRush"
 msgstr "Acceder a SMSRush"
 
-#: core/templates/core/index.html:157
+#: core/templates/core/index.html:154 core/templates/core/index.html:169
+#: core/templates/core/index.html:384 core/templates/core/index.html:401
+#: core/templates/core/index.html:416 core/templates/core/index.html:431
+#: templates/contato.html:41 templates/privacidade.html:39
+#: templates/privacidade.html:112 templates/sobre.html:40
+#: templates/sobre.html:101 templates/sobre.html:291 templates/termos.html:40
+#: templates/termos.html:154
+msgid "Espaço para Anúncio"
+msgstr "Espacio para anuncio"
+
+#: core/templates/core/index.html:186
 msgid "Remetente"
 msgstr "Remitente"
 
-#: core/templates/core/index.html:158 templates/contato.html:90
+#: core/templates/core/index.html:187 templates/contato.html:129
 msgid "Assunto"
 msgstr "Asunto"
 
-#: core/templates/core/index.html:159
+#: core/templates/core/index.html:188
 msgid "Visualizar"
 msgstr "Ver"
 
-#: core/templates/core/index.html:174
+#: core/templates/core/index.html:203
 msgid "Sua caixa de entrada está vazia"
 msgstr "Tu bandeja de entrada está vacía"
 
-#: core/templates/core/index.html:192
+#: core/templates/core/index.html:221
 msgid "Buscando novos e-mails"
 msgstr "Buscando nuevos correos"
 
-#: core/templates/core/index.html:206
+#: core/templates/core/index.html:235
 msgid "Voltar para a lista"
 msgstr "Volver a la lista"
 
-#: core/templates/core/index.html:208 templates/parciais/_btn_voltar.html:8
+#: core/templates/core/index.html:237 templates/parciais/_btn_voltar.html:8
 #: templates/parciais/_btn_voltar_args.html:7
 msgid "Voltar"
 msgstr "Volver"
 
-#: core/templates/core/index.html:215
+#: core/templates/core/index.html:244
 msgid "Leitura da Mensagem"
 msgstr "Lectura del Mensaje"
 
-#: core/templates/core/index.html:216 templates/contato.html:109
+#: core/templates/core/index.html:245 templates/contato.html:148
 msgid "Mensagem"
 msgstr "Mensaje"
 
-#: core/templates/core/index.html:223
+#: core/templates/core/index.html:252
 msgid "Ver anexos"
 msgstr "Ver archivos adjuntos"
 
-#: core/templates/core/index.html:233
+#: core/templates/core/index.html:262
 msgid "Baixar arquivo .eml"
 msgstr "Descargar archivo .eml"
 
-#: core/templates/core/index.html:235
+#: core/templates/core/index.html:264
 msgid "Download"
 msgstr "Descargar"
 
-#: core/templates/core/index.html:253
+#: core/templates/core/index.html:282
 #: core/templates/core/parciais/index/_message_item.html:22
 msgid "Remetente:"
 msgstr "Remitente:"
 
-#: core/templates/core/index.html:280
+#: core/templates/core/index.html:309
 msgid "Recebido em:"
 msgstr "Recibido el:"
 
-#: core/templates/core/index.html:292
+#: core/templates/core/index.html:321
 #: core/templates/core/parciais/index/_message_item.html:32
 msgid "Assunto:"
 msgstr "Asunto:"
 
-#: core/templates/core/index.html:296
+#: core/templates/core/index.html:325
 msgid "Título da Mensagem"
 msgstr "Título del Mensaje"
 
-#: core/templates/core/index.html:303
+#: core/templates/core/index.html:332
 msgid "Mensagem:"
 msgstr "Mensaje:"
 
-#: core/templates/core/index.html:317
+#: core/templates/core/index.html:346
 msgid "Anexos:"
 msgstr "Adjuntos:"
 
-#: core/templates/core/index.html:336
+#: core/templates/core/index.html:365
 msgid "Por que usar Email Temporário?"
 msgstr "¿Por qué usar un correo temporal?"
 
-#: core/templates/core/index.html:337
+#: core/templates/core/index.html:366
 msgid "Saiba os benefícios e proteja sua privacidade"
 msgstr "Conoce los beneficios y protege tu privacidad"
-
-#: core/templates/core/index.html:371
-msgid ""
-"Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
-"prático."
-msgstr ""
-"Recibe códigos de verificación sin exponer tu número real. Rápido, seguro y "
-"práctico."
 
 #: core/templates/core/parciais/index/_confirmationDownloadModal.html:9
 msgid "Confirmar Download"
@@ -744,35 +746,35 @@ msgstr "Ocurrió un error interno de pasarela."
 msgid "Support Service"
 msgstr "Servicio de Soporte"
 
-#: templates/contato.html:9
+#: templates/contato.html:48
 msgid "Entre em Contato"
 msgstr "Ponte en Contacto"
 
-#: templates/contato.html:13
+#: templates/contato.html:52
 msgid "Fale Conosco"
 msgstr "Contáctanos"
 
-#: templates/contato.html:21
+#: templates/contato.html:60
 msgid "Email"
 msgstr "Correo electrónico"
 
-#: templates/contato.html:31
+#: templates/contato.html:70
 msgid "Website"
 msgstr "Sitio web"
 
-#: templates/contato.html:41
+#: templates/contato.html:80
 msgid "Horário de Atendimento"
 msgstr "Horario de Atención"
 
-#: templates/contato.html:42
+#: templates/contato.html:81
 msgid "Segunda a Sexta, 9h às 18h"
 msgstr "Lunes a Viernes, de 9h a 18h"
 
-#: templates/contato.html:48
+#: templates/contato.html:87
 msgid "Sobre nós"
 msgstr "Sobre nosotros"
 
-#: templates/contato.html:50
+#: templates/contato.html:89
 msgid ""
 "EmailRush é um serviço gratuito de email temporário desenvolvido para "
 "proteger sua privacidade e combater spam. Nosso compromisso é fornecer uma "
@@ -783,59 +785,59 @@ msgstr ""
 "tu privacidad y combatir el spam. Nuestro compromiso es proporcionar una "
 "herramienta segura y eficiente para tus necesidades de comunicación temporal."
 
-#: templates/contato.html:56
+#: templates/contato.html:95
 msgid "Envie sua Mensagem"
 msgstr "Envía tu Mensaje"
 
-#: templates/contato.html:63
+#: templates/contato.html:102
 msgid "Nome (opcional)"
 msgstr "Nombre (opcional)"
 
-#: templates/contato.html:70
+#: templates/contato.html:109
 msgid "Seu nome"
 msgstr "Tu nombre"
 
-#: templates/contato.html:76
+#: templates/contato.html:115
 msgid "Email de resposta"
 msgstr "Correo de respuesta"
 
-#: templates/contato.html:98
+#: templates/contato.html:137
 msgid "Selecione um assunto"
 msgstr "Selecciona un asunto"
 
-#: templates/contato.html:99
+#: templates/contato.html:138
 msgid "Suporte Técnico"
 msgstr "Soporte Técnico"
 
-#: templates/contato.html:100
+#: templates/contato.html:139
 msgid "Questões de Privacidade"
 msgstr "Cuestiones de Privacidad"
 
-#: templates/contato.html:101
+#: templates/contato.html:140
 msgid "Denúncia de Abuso"
 msgstr "Reportar Abuso"
 
-#: templates/contato.html:102
+#: templates/contato.html:141
 msgid "Sugestão de Melhoria"
 msgstr "Sugerencia de Mejora"
 
-#: templates/contato.html:103
+#: templates/contato.html:142
 msgid "Outros"
 msgstr "Otros"
 
-#: templates/contato.html:117
+#: templates/contato.html:156
 msgid "Digite sua mensagem aqui..."
 msgstr "Escribe tu mensaje aquí..."
 
-#: templates/contato.html:118
+#: templates/contato.html:157
 msgid "Preciso de ajuda."
 msgstr "Necesito ayuda."
 
-#: templates/contato.html:127
+#: templates/contato.html:166
 msgid "Enviar Mensagem"
 msgstr "Enviar Mensaje"
 
-#: templates/contato.html:134
+#: templates/contato.html:173
 msgid ""
 "Responderemos o mais breve possível. Para questões urgentes, considere usar "
 "outros canais de comunicação."
@@ -852,11 +854,11 @@ msgstr "Error en %(label)s"
 msgid "Sobre"
 msgstr "Sobre"
 
-#: templates/parciais/_footer.html:9 templates/privacidade.html:7
+#: templates/parciais/_footer.html:9 templates/privacidade.html:45
 msgid "Política de Privacidade"
 msgstr "Política de Privacidad"
 
-#: templates/parciais/_footer.html:12 templates/termos.html:7
+#: templates/parciais/_footer.html:12 templates/termos.html:46
 msgid "Termos de Serviço"
 msgstr "Términos de Servicio"
 
@@ -925,20 +927,20 @@ msgstr "Ver archivos adjuntos"
 msgid "Alterar Idioma"
 msgstr "Cambiar"
 
-#: templates/parciais/_nav.html:68
+#: templates/parciais/_nav.html:74
 #: templates/parciais/modals/_clearCacheModal.html:8
 msgid "Limpar Cache de Domínios"
 msgstr "Limpiar caché de dominios"
 
-#: templates/parciais/_nav.html:85
+#: templates/parciais/_nav.html:91
 msgid "Limpar Cache"
 msgstr "Limpiar caché"
 
-#: templates/parciais/_nav.html:89
+#: templates/parciais/_nav.html:95
 msgid "Estatísticas"
 msgstr "Estadísticas"
 
-#: templates/parciais/_nav.html:93
+#: templates/parciais/_nav.html:99
 msgid "Admin"
 msgstr "Admin"
 
@@ -1001,7 +1003,7 @@ msgstr ""
 msgid "Prosseguir"
 msgstr "Continuar"
 
-#: templates/privacidade.html:11
+#: templates/privacidade.html:49
 msgid ""
 "Esta Política de Privacidade descreve como coletamos, usamos e protegemos "
 "suas informações pessoais quando você utiliza nosso serviço de email "
@@ -1010,11 +1012,11 @@ msgstr ""
 "Esta Política de Privacidad describe cómo recopilamos, usamos y protegemos "
 "tu información personal cuando utilizas nuestro servicio."
 
-#: templates/privacidade.html:14
+#: templates/privacidade.html:52
 msgid "1. Informações que Coletamos"
 msgstr "1. Información que Recopilamos"
 
-#: templates/privacidade.html:16
+#: templates/privacidade.html:54
 msgid ""
 "Nosso serviço de email temporário é projetado para ser anônimo e não requer "
 "registro ou coleta de dados pessoais."
@@ -1022,11 +1024,11 @@ msgstr ""
 "Nuestro servicio está diseñado para ser anónimo y no requiere registro ni "
 "recopilación de datos personales."
 
-#: templates/privacidade.html:19
+#: templates/privacidade.html:57
 msgid "2. Retenção de Dados"
 msgstr "2. Retención de Datos"
 
-#: templates/privacidade.html:21
+#: templates/privacidade.html:59
 msgid ""
 "Os emails temporários e seu conteúdo são automaticamente excluídos após o "
 "período de expiração."
@@ -1034,11 +1036,11 @@ msgstr ""
 "Los correos temporales y su contenido se eliminan automáticamente tras el "
 "periodo de expiración."
 
-#: templates/privacidade.html:24
+#: templates/privacidade.html:62
 msgid "3. Seus Direitos"
 msgstr "3. Tus Derechos"
 
-#: templates/privacidade.html:26
+#: templates/privacidade.html:64
 msgid ""
 "Como nosso serviço não requer identificação pessoal, a maioria dos direitos "
 "tradicionais de privacidade não se aplica. No entanto, você sempre pode:"
@@ -1046,23 +1048,23 @@ msgstr ""
 "Como nuestro servicio no requiere identificación personal, la mayoría de los "
 "derechos tradicionales no se aplican. Sin embargo, siempre puedes:"
 
-#: templates/privacidade.html:29
+#: templates/privacidade.html:67
 msgid "Escolher não usar o serviço"
 msgstr "Elegir no usar el servicio"
 
-#: templates/privacidade.html:30
+#: templates/privacidade.html:68
 msgid "Limpar dados locais do navegador"
 msgstr "Limpiar los datos locales del navegador"
 
-#: templates/privacidade.html:31
+#: templates/privacidade.html:69
 msgid "Entrar em contato conosco para dúvidas"
 msgstr "Contactar con nosotros para cualquier duda"
 
-#: templates/privacidade.html:34
+#: templates/privacidade.html:72
 msgid "4. Segurança"
 msgstr "4. Seguridad"
 
-#: templates/privacidade.html:36
+#: templates/privacidade.html:74
 msgid ""
 "Implementamos medidas técnicas e organizacionais apropriadas para proteger "
 "as informações contra acesso não autorizado, alteração, divulgação ou "
@@ -1071,11 +1073,11 @@ msgstr ""
 "Implementamos medidas técnicas y organizativas adecuadas para proteger la "
 "información contra el acceso no autorizado."
 
-#: templates/privacidade.html:39
+#: templates/privacidade.html:77
 msgid "5. Cookies e Tecnologias Similares"
 msgstr "5. Cookies y Tecnologías Similares"
 
-#: templates/privacidade.html:41
+#: templates/privacidade.html:79
 msgid ""
 "Podemos usar cookies técnicos necessários para o funcionamento adequado do "
 "site. No futuro, poderemos implementar anúncios de terceiros para sustentar "
@@ -1085,11 +1087,11 @@ msgstr ""
 "En el futuro, podríamos implementar anuncios de terceros para mantener el "
 "servicio."
 
-#: templates/privacidade.html:44
+#: templates/privacidade.html:82
 msgid "Importante:"
 msgstr "Importante:"
 
-#: templates/privacidade.html:44
+#: templates/privacidade.html:82
 msgid ""
 "O site em si não coleta dados pessoais dos usuários. Qualquer coleta de "
 "dados relacionada a anúncios será feita exclusivamente pelas plataformas de "
@@ -1098,11 +1100,11 @@ msgstr ""
 "El sitio no recopila datos personales. Cualquier recopilación por anuncios "
 "será realizada por plataformas de publicidad externas."
 
-#: templates/privacidade.html:47
+#: templates/privacidade.html:85
 msgid "6. Alterações nesta Política"
 msgstr "6. Cambios en esta Política"
 
-#: templates/privacidade.html:49
+#: templates/privacidade.html:87
 msgid ""
 "Podemos atualizar esta política periodicamente. Alterações significativas "
 "serão comunicadas através do site ou por outros meios apropriados."
@@ -1110,11 +1112,11 @@ msgstr ""
 "Podemos actualizar esta política periódicamente. Los cambios significativos "
 "se comunicarán a través del sitio."
 
-#: templates/privacidade.html:52
+#: templates/privacidade.html:90
 msgid "7. Contato"
 msgstr "7. Contacto"
 
-#: templates/privacidade.html:54
+#: templates/privacidade.html:92
 msgid ""
 "Se você tiver dúvidas sobre esta política de privacidade, entre em contato "
 "conosco através da página de contato."
@@ -1122,19 +1124,19 @@ msgstr ""
 "Si tienes dudas sobre esta política, contáctanos a través de la página de "
 "contacto."
 
-#: templates/privacidade.html:59 templates/termos.html:100
+#: templates/privacidade.html:97 templates/termos.html:139
 msgid "Última atualização:"
 msgstr "Última actualización:"
 
-#: templates/privacidade.html:59 templates/termos.html:100
+#: templates/privacidade.html:97 templates/termos.html:139
 msgid "Janeiro de 2026"
 msgstr "Enero de 2026"
 
-#: templates/sobre.html:8
+#: templates/sobre.html:47
 msgid "Por que usar"
 msgstr "Por qué usar"
 
-#: templates/sobre.html:11
+#: templates/sobre.html:50
 msgid ""
 "Proteja sua privacidade e evite spam com endereços de email temporários "
 "seguros e eficientes"
@@ -1142,11 +1144,11 @@ msgstr ""
 "Protege tu privacidad y evita el spam con correos temporales seguros y "
 "eficientes"
 
-#: templates/sobre.html:20
+#: templates/sobre.html:59
 msgid "O que é um endereço de email temporário?"
 msgstr "¿Qué es una dirección de correo temporal?"
 
-#: templates/sobre.html:24
+#: templates/sobre.html:63
 msgid ""
 "Um endereço de email temporário permite criar um email válido e único para "
 "se cadastrar em serviços e sites sem revelar sua identidade real."
@@ -1154,7 +1156,7 @@ msgstr ""
 "Un correo temporal te permite registrarte en servicios y sitios sin revelar "
 "tu identidad real."
 
-#: templates/sobre.html:27
+#: templates/sobre.html:66
 msgid ""
 "Se o endereço temporário for comprometido ou usado em atividades abusivas, "
 "você pode simplesmente descartá-lo sem afetar seus outros contatos."
@@ -1162,7 +1164,7 @@ msgstr ""
 "Si la dirección se ve comprometida, puedes desecharla sin que afecte a tus "
 "otros contactos."
 
-#: templates/sobre.html:31
+#: templates/sobre.html:70
 msgid ""
 "Dica: O email temporário funciona como um 'passaporte descartável' para suas "
 "atividades online."
@@ -1170,19 +1172,19 @@ msgstr ""
 "Consejo: El correo temporal funciona como un 'pasaporte desechable' para tus "
 "actividades online."
 
-#: templates/sobre.html:43
+#: templates/sobre.html:82
 msgid "Email Temporário"
 msgstr "Correo Temporal"
 
-#: templates/sobre.html:46
+#: templates/sobre.html:85
 msgid "Seguro • Anônimo • Descartável"
 msgstr "Seguro • Anónimo • Desechable"
 
-#: templates/sobre.html:59
+#: templates/sobre.html:112
 msgid "Elimine o Spam"
 msgstr "Elimina el Spam"
 
-#: templates/sobre.html:62
+#: templates/sobre.html:115
 msgid ""
 "Evite receber milhares de emails promocionais indesejados. Use endereços "
 "temporários para cadastros em lojas, concursos e ofertas."
@@ -1190,11 +1192,11 @@ msgstr ""
 "Evita recibir miles de correos promocionales. Úsalo para registros en "
 "tiendas, concursos y ofertas."
 
-#: templates/sobre.html:71
+#: templates/sobre.html:124
 msgid "Proteja sua Privacidade"
 msgstr "Protege tu Privacidad"
 
-#: templates/sobre.html:74
+#: templates/sobre.html:127
 msgid ""
 "Mantenha seu email real seguro. Se uma loja for invadida, apenas o endereço "
 "temporário será comprometido."
@@ -1202,11 +1204,11 @@ msgstr ""
 "Mantén seguro tu correo real. Si hackean una tienda, solo se verá "
 "comprometida la dirección temporal."
 
-#: templates/sobre.html:83
+#: templates/sobre.html:136
 msgid "Teste Aplicativos"
 msgstr "Prueba Aplicaciones"
 
-#: templates/sobre.html:86
+#: templates/sobre.html:139
 msgid ""
 "Desenvolvedores podem testar aplicações criando múltiplas contas temporárias "
 "sem usar emails reais."
@@ -1214,11 +1216,11 @@ msgstr ""
 "Los desarrolladores pueden probar aplicaciones creando múltiples cuentas sin "
 "usar correos reales."
 
-#: templates/sobre.html:95
+#: templates/sobre.html:148
 msgid "Períodos de Teste"
 msgstr "Periodos de Prueba"
 
-#: templates/sobre.html:98
+#: templates/sobre.html:151
 msgid ""
 "Aproveite trials gratuitos de Netflix, Amazon Prime e outros serviços sem "
 "comprometer seu email principal."
@@ -1226,11 +1228,11 @@ msgstr ""
 "Disfruta de pruebas gratuitas de servicios sin comprometer tu correo "
 "principal."
 
-#: templates/sobre.html:107
+#: templates/sobre.html:160
 msgid "Contas Múltiplas"
 msgstr "Cuentas Múltiples"
 
-#: templates/sobre.html:110
+#: templates/sobre.html:163
 msgid ""
 "Crie contas adicionais em serviços como IFTTT, Twitter e outros sem "
 "gerenciar múltiplas caixas de entrada."
@@ -1238,26 +1240,26 @@ msgstr ""
 "Crea cuentas adicionales en servicios sin gestionar múltiples bandejas de "
 "entrada."
 
-#: templates/sobre.html:119
+#: templates/sobre.html:172
 msgid "Segurança Online"
 msgstr "Seguridad Online"
 
-#: templates/sobre.html:122
+#: templates/sobre.html:175
 msgid ""
 "Proteja-se em fóruns, wikis e salas de chat. Sua identidade real nunca será "
 "revelada ou vendida."
 msgstr ""
 "Protégete en foros y chats. Tu identidad real nunca será revelada ni vendida."
 
-#: templates/sobre.html:128
+#: templates/sobre.html:181
 msgid "Como Funciona o EmailRush"
 msgstr "Cómo Funciona EmailRush"
 
-#: templates/sobre.html:135
+#: templates/sobre.html:188
 msgid "Crie seu Email"
 msgstr "Crea tu Correo"
 
-#: templates/sobre.html:136
+#: templates/sobre.html:189
 msgid ""
 "Gere um endereço temporário único com apenas um clique. Sem cadastro ou "
 "informações pessoais."
@@ -1265,22 +1267,22 @@ msgstr ""
 "Genera una dirección única con un solo clic. Sin registros ni datos "
 "personales."
 
-#: templates/sobre.html:143
+#: templates/sobre.html:196
 msgid "Use Onde Quiser"
 msgstr "Úsalo Donde Quieras"
 
-#: templates/sobre.html:144
+#: templates/sobre.html:197
 msgid ""
 "Cadastre-se em qualquer serviço, loja ou aplicativo usando seu email "
 "temporário."
 msgstr ""
 "Regístrate en cualquier servicio o aplicación usando tu correo temporal."
 
-#: templates/sobre.html:151
+#: templates/sobre.html:204
 msgid "Receba Mensagens"
 msgstr "Recibe Mensajes"
 
-#: templates/sobre.html:152
+#: templates/sobre.html:205
 msgid ""
 "Veja seus emails na interface do EmailRush. Após o tempo expirar, tudo é "
 "automaticamente excluído."
@@ -1288,75 +1290,75 @@ msgstr ""
 "Mira tus correos en nuestra interfaz. Tras expirar el tiempo, todo se "
 "elimina automáticamente."
 
-#: templates/sobre.html:159
+#: templates/sobre.html:212
 msgid "Por que escolher EmailRush?"
 msgstr "¿Por qué elegir EmailRush?"
 
-#: templates/sobre.html:169
+#: templates/sobre.html:222
 #, python-format
 msgid "100%% Anônimo"
 msgstr "100%% Anónimo"
 
-#: templates/sobre.html:170
+#: templates/sobre.html:223
 msgid "Nenhum cadastro, nenhuma informação pessoal. Totalmente anônimo."
 msgstr "Sin registros ni información personal. Totalmente anónimo."
 
-#: templates/sobre.html:179
+#: templates/sobre.html:232
 msgid "Interface Intuitiva"
 msgstr "Interfaz Intuitiva"
 
-#: templates/sobre.html:180
+#: templates/sobre.html:233
 msgid "Design moderno e responsivo para desktop e mobile."
 msgstr "Diseño moderno y adaptable para escritorio y móviles."
 
-#: templates/sobre.html:189
+#: templates/sobre.html:242
 msgid "Sem Limitações"
 msgstr "Sin Limitaciones"
 
-#: templates/sobre.html:190
+#: templates/sobre.html:243
 msgid "Crie quantos emails temporários precisar, quando quiser."
 msgstr "Crea tantos correos temporales como necesites, cuando quieras."
 
-#: templates/sobre.html:201
+#: templates/sobre.html:254
 msgid "Seguro e Confiável"
 msgstr "Seguro y Confiable"
 
-#: templates/sobre.html:202
+#: templates/sobre.html:255
 msgid "Seus dados são automaticamente excluídos. Privacidade garantida."
 msgstr "Tus datos se eliminan automáticamente. Privacidad garantizada."
 
-#: templates/sobre.html:211
+#: templates/sobre.html:264
 msgid "Anti-Spam"
 msgstr "Anti-Spam"
 
-#: templates/sobre.html:212
+#: templates/sobre.html:265
 msgid "Mantenha sua caixa de entrada real livre de spam promocional."
 msgstr "Mantén tu bandeja de entrada real libre de spam publicitario."
 
-#: templates/sobre.html:221
+#: templates/sobre.html:274
 msgid "Gratuito"
 msgstr "Gratis"
 
-#: templates/sobre.html:222
+#: templates/sobre.html:275
 msgid "Serviço completamente gratuito, sem custos ocultos."
 msgstr "Servicio completamente gratuito, sin costes ocultos."
 
-#: templates/sobre.html:231
+#: templates/sobre.html:298
 msgid "Pronto para proteger sua privacidade?"
 msgstr "¿Listo para proteger tu privacidad?"
 
-#: templates/sobre.html:234
+#: templates/sobre.html:301
 msgid ""
 "Comece a usar EmailRush agora mesmo - é gratuito e leva apenas alguns "
 "segundos!"
 msgstr ""
 "Empieza a usar EmailRush ahora mismo: ¡es gratis y solo lleva unos segundos!"
 
-#: templates/sobre.html:239
+#: templates/sobre.html:306
 msgid "Criar Email Temporário"
 msgstr "Crear Correo Temporal"
 
-#: templates/termos.html:11
+#: templates/termos.html:50
 msgid ""
 "Bem-vindo ao EmailRush! Estes Termos de Serviço ('Termos') regem o uso de "
 "nosso serviço de email temporário. Ao acessar ou usar nosso serviço, você "
@@ -1365,11 +1367,11 @@ msgstr ""
 "¡Bienvenido a EmailRush! Estos Términos rigen el uso de nuestro servicio. Al "
 "acceder, aceptas estos términos."
 
-#: templates/termos.html:14
+#: templates/termos.html:53
 msgid "1. Descrição do Serviço"
 msgstr "1. Descripción del Servicio"
 
-#: templates/termos.html:16
+#: templates/termos.html:55
 msgid ""
 "EmailRush é um serviço gratuito que fornece endereços de email temporários "
 "para uso imediato. Os emails são válidos por tempo limitado e são "
@@ -1378,27 +1380,27 @@ msgstr ""
 "EmailRush proporciona correos temporales gratuitos. Los correos son válidos "
 "por tiempo limitado y se eliminan automáticamente."
 
-#: templates/termos.html:19
+#: templates/termos.html:58
 msgid "Endereços de email temporários gerados automaticamente"
 msgstr "Direcciones generadas automáticamente"
 
-#: templates/termos.html:20
+#: templates/termos.html:59
 msgid "Recebimento de emails por período limitado"
 msgstr "Recepción de correos por tiempo limitado"
 
-#: templates/termos.html:21
+#: templates/termos.html:60
 msgid "Interface web para visualização de mensagens"
 msgstr "Interfaz web para ver mensajes"
 
-#: templates/termos.html:22
+#: templates/termos.html:61
 msgid "Recursos de segurança e proteção contra spam"
 msgstr "Recursos de seguridad y protección anti-spam"
 
-#: templates/termos.html:25
+#: templates/termos.html:64
 msgid "2. Elegibilidade e Uso Aceitável"
 msgstr "2. Elegibilidad y Uso Aceptable"
 
-#: templates/termos.html:27
+#: templates/termos.html:66
 msgid ""
 "Nosso serviço é destinado para uso pessoal e legítimo. Você concorda em usar "
 "o serviço apenas para fins legais e de acordo com estes termos."
@@ -1406,77 +1408,77 @@ msgstr ""
 "Nuestro servicio es para uso personal. Aceptas usarlo solo para fines "
 "legales."
 
-#: templates/termos.html:29
+#: templates/termos.html:68
 msgid "Uso proibido inclui:"
 msgstr "El uso prohibido incluye:"
 
-#: templates/termos.html:31
+#: templates/termos.html:70
 msgid "Atividades fraudulentas ou enganosas"
 msgstr "Actividades fraudulentas o engañosas"
 
-#: templates/termos.html:32
+#: templates/termos.html:71
 msgid "Violação de leis ou direitos de terceiros"
 msgstr "Violación de leyes o derechos de terceros"
 
-#: templates/termos.html:35
+#: templates/termos.html:74
 msgid "3. Disponibilidade e Limitações"
 msgstr "3. Disponibilidad y Limitaciones"
 
-#: templates/termos.html:37
+#: templates/termos.html:76
 msgid ""
 "Nosso serviço é fornecido 'como está' e podemos modificar ou interromper o "
 "serviço a qualquer momento sem aviso prévio."
 msgstr ""
 "El servicio se ofrece 'tal cual'. Podemos modificarlo sin previo aviso."
 
-#: templates/termos.html:40
+#: templates/termos.html:79
 #, python-format
 msgid "Não garantimos entrega de 100%% dos emails"
 msgstr "No garantizamos la entrega del 100%% de los correos"
 
-#: templates/termos.html:41
+#: templates/termos.html:80
 msgid "Emails podem ser filtrados como spam por provedores externos"
 msgstr "Los correos pueden ser filtrados por proveedores externos"
 
-#: templates/termos.html:42
+#: templates/termos.html:81
 msgid "Limitações técnicas podem afetar a funcionalidade"
 msgstr "Limitaciones técnicas pueden afectar el funcionamiento"
 
-#: templates/termos.html:43
+#: templates/termos.html:82
 msgid "Reservamo-nos o direito de bloquear endereços ou IPs suspeitos"
 msgstr "Nos reservamos el derecho de bloquear IPs sospechosas"
 
-#: templates/termos.html:46
+#: templates/termos.html:85
 msgid "4. Privacidade e Dados"
 msgstr "4. Privacidad y Datos"
 
-#: templates/termos.html:48
+#: templates/termos.html:87
 msgid ""
 "Sua privacidade é importante para nós. Para mais detalhes sobre como "
 "tratamos suas informações, consulte nossa Política de Privacidade."
 msgstr "Tu privacidad es importante. Consulta nuestra Política de Privacidad."
 
-#: templates/termos.html:51
+#: templates/termos.html:90
 msgid "Não requeremos registro ou dados pessoais"
 msgstr "No requerimos registros ni datos personales"
 
-#: templates/termos.html:52
+#: templates/termos.html:91
 msgid "Emails são temporários e automaticamente excluídos"
 msgstr "Los correos son temporales y se eliminan automáticamente"
 
-#: templates/termos.html:53
+#: templates/termos.html:92
 msgid "Não vendemos ou compartilhamos dados com terceiros"
 msgstr "No vendemos ni compartimos datos con terceros"
 
-#: templates/termos.html:54
+#: templates/termos.html:93
 msgid "Usamos medidas de segurança apropriadas"
 msgstr "Usamos medidas de seguridad adecuadas"
 
-#: templates/termos.html:57
+#: templates/termos.html:96
 msgid "5. Propriedade Intelectual"
 msgstr "5. Propiedad Intelectual"
 
-#: templates/termos.html:59
+#: templates/termos.html:98
 msgid ""
 "Todo o conteúdo, funcionalidades e código do serviço são propriedade nossa "
 "ou de nossos licenciadores. Você não pode copiar, modificar ou distribuir "
@@ -1484,83 +1486,90 @@ msgid ""
 msgstr ""
 "Todo el contenido es propiedad nuestra. No puedes copiarlo sin autorización."
 
-#: templates/termos.html:62
+#: templates/termos.html:101
 msgid "6. Isenção de Responsabilidade"
 msgstr "6. Descargo de Responsabilidad"
 
-#: templates/termos.html:64
+#: templates/termos.html:103
 msgid "Na extensão máxima permitida por lei, não nos responsabilizamos por:"
 msgstr "En la medida permitida por la ley, no nos responsabilizamos por:"
 
-#: templates/termos.html:67
+#: templates/termos.html:106
 msgid "Perda de emails ou dados"
 msgstr "Pérdida de correos o datos"
 
-#: templates/termos.html:68
+#: templates/termos.html:107
 msgid "Interrupções do serviço"
 msgstr "Interrupciones del servicio"
 
-#: templates/termos.html:69
+#: templates/termos.html:108
 msgid "Danos indiretos ou consequenciais"
 msgstr "Daños indirectos o consecuentes"
 
-#: templates/termos.html:70
+#: templates/termos.html:109
 msgid "Problemas de compatibilidade com outros serviços"
 msgstr "Problemas de compatibilidad con otros servicios"
 
-#: templates/termos.html:73
+#: templates/termos.html:112
 msgid "7. Indenização"
 msgstr "7. Indemnización"
 
-#: templates/termos.html:75
+#: templates/termos.html:114
 msgid ""
 "Você concorda em indenizar e isentar-nos de qualquer reclamação, dano ou "
 "despesa resultante do seu uso indevido do serviço ou violação destes termos."
 msgstr ""
 "Aceptas indemnizarnos por cualquier daño derivado del mal uso del servicio."
 
-#: templates/termos.html:78
+#: templates/termos.html:117
 msgid "8. Rescisão"
 msgstr "8. Rescisión"
 
-#: templates/termos.html:80
+#: templates/termos.html:119
 msgid ""
 "Podemos suspender ou encerrar seu acesso ao serviço a qualquer momento, com "
 "ou sem motivo, sem aviso prévio."
 msgstr "Podemos suspender tu acceso en cualquier momento sin previo aviso."
 
-#: templates/termos.html:83
+#: templates/termos.html:122
 msgid "9. Lei Aplicável"
 msgstr "9. Ley Aplicable"
 
-#: templates/termos.html:85
+#: templates/termos.html:124
 msgid ""
 "Estes termos são regidos pelas leis brasileiras. Qualquer disputa será "
 "resolvida nos tribunais competentes."
 msgstr "Estos términos se rigen por las leyes brasileñas."
 
-#: templates/termos.html:88
+#: templates/termos.html:127
 msgid "10. Alterações aos Termos"
 msgstr "10. Cambios en los Términos"
 
-#: templates/termos.html:90
+#: templates/termos.html:129
 msgid ""
 "Podemos modificar estes termos periodicamente. O uso continuado do serviço "
 "após alterações constitui aceitação dos novos termos."
 msgstr ""
 "Podemos modificar estos términos. El uso continuado implica su aceptación."
 
-#: templates/termos.html:93
+#: templates/termos.html:132
 msgid "11. Contato"
 msgstr "11. Contacto"
 
-#: templates/termos.html:95
+#: templates/termos.html:134
 msgid ""
 "Para dúvidas sobre estes termos, entre em contato conosco através da página "
 "de contato."
 msgstr ""
 "Para dudas sobre estos términos, contáctanos a través de la página de "
 "contacto."
+
+#~ msgid ""
+#~ "Receba códigos de verificação sem expor seu número real. Rápido, seguro e "
+#~ "prático."
+#~ msgstr ""
+#~ "Recibe códigos de verificación sin exponer tu número real. Rápido, seguro "
+#~ "y práctico."
 
 #~ msgid "Editar vs Excluir"
 #~ msgstr "Editar vs Eliminar"
